@@ -1,6 +1,4 @@
-﻿namespace TheOmenDen.CrowsAgainstHumility.Data
+﻿namespace TheOmenDen.CrowsAgainstHumility.Data;
+public class DroppedCard
 {
-    public class DroppedCard
-    {
-    }
 }
