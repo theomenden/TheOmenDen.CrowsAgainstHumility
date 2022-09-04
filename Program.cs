@@ -4,7 +4,6 @@ using Blazorise.Icons.Bootstrap;
 using Serilog;
 using Serilog.Events;
 using System.Net.Mime;
-using TheOmenDen.CrowsAgainstHumility.Data;
 using TheOmenDen.CrowsAgainstHumility.Extensions;
 using TheOmenDen.Shared.Logging.Serilog;
 
@@ -26,13 +25,25 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    builder.Logging.ClearProviders()
-        .AddSerilog()
-        .AddConsole()
-        .AddJsonConsole();
+    builder.Host
+        .ConfigureAppConfiguration((context, config) =>
+            {
+                config
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json", true, true)
+                    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true)
+                    .AddEnvironmentVariables();
+            })
+        .UseDefaultServiceProvider(options => options.ValidateScopes = false)
+        .UseSerilog((context, services, configuration) => configuration
+            .ReadFrom.Configuration(context.Configuration)
+            .ReadFrom.Services(services));
+
+    builder.Logging
+        .ClearProviders()
+        .AddSerilog();
 
     // Add services to the container.
-
     builder.Services.AddBlazorise(options => options.Immediate = true)
         .AddBootstrap5Providers()
         .AddBootstrap5Components()
@@ -40,7 +51,6 @@ try
 
     builder.Services.AddRazorPages();
     builder.Services.AddServerSideBlazor();
-    builder.Services.AddSingleton<WeatherForecastService>();
 
     builder.Services.AddResponseCompression(options =>
     {

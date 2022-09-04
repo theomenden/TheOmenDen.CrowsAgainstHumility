@@ -1,22 +1,65 @@
-﻿@inherits LayoutComponentBase
+﻿@layout RootLayout
+@inherits LayoutComponentBase
 
 <PageTitle>Crows Against Humility</PageTitle>
 
 <Layout Sider>
     <LayoutSider>
         <LayoutSiderContent>
-            <NavMenu />
+            <Bar Mode="BarMode.VerticalInline"
+                 Background="Background.Dark"
+                 ThemeContrast="ThemeContrast.Dark"
+                 CollapseMode="BarCollapseMode.Small"
+                 Breakpoint="Breakpoint.Desktop"
+                 NavigationBreakpoint="Breakpoint.Tablet"
+                 TextOverflow="TextOverflow.Truncate">
+                <BarToggler />
+                <BarBrand>
+                    <BarItem>
+                        <BarLink To="">
+                            <BarIcon IconName="IconName.Home" />
+                        </BarLink>
+                    </BarItem>
+                </BarBrand>
+                <BarMenu>
+                    <BarItem>Example</BarItem>
+                </BarMenu>
+            </Bar>
         </LayoutSiderContent>
     </LayoutSider>
     <Layout>
         <LayoutHeader Fixed>
-            
+            <Bar Breakpoint="Breakpoint.Desktop"
+                 Background="Background.Dark"
+                 ThemeContrast="ThemeContrast.Dark">
+                <BarBrand>
+                    Crows Against Humility
+                </BarBrand>
+                <BarToggler />
+                <BarMenu>
+                    <BarStart>
+                        <BarItem>
+                            <BarLink To="">Home</BarLink>
+                        </BarItem>
+                        <BarItem>
+                            <BarLink To="#docs">Rules</BarLink>
+                        </BarItem>
+                    </BarStart>
+                    <BarEnd>
+                        <BarItem>
+                            <Button Color="Color.Primary">Sign up</Button>
+                            <Button Color="Color.Secondary">Log in</Button>
+                        </BarItem>
+                    </BarEnd>
+                </BarMenu>
+            </Bar>
         </LayoutHeader>
-        <Layout Padding="Padding.Is4.OnX">
+        <LayoutContent Padding="Padding.Is4.OnX"
+                       Margin="Margin.Is4.OnX">
             @Body
-        </Layout>
+        </LayoutContent>
         <LayoutFooter Fixed>
-
+            <CrowsAgainstHumilityFooter />
         </LayoutFooter>
     </Layout>
 </Layout>

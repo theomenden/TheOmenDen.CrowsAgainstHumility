@@ -1,0 +1,8 @@
+﻿.flip:hover .flip-in {
+  transform: rotateY(180deg);
+}
+
+.bc {
+  background-color: black;
+  color: white;
+}

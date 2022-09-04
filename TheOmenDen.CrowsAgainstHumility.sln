@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32819.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOmenDen.CrowsAgainstHumility", "TheOmenDen.CrowsAgainstHumility.csproj", "{9125903F-0F81-4A28-A647-85DE55B1058F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheOmenDen.CrowsAgainstHumility", "TheOmenDen.CrowsAgainstHumility.csproj", "{9125903F-0F81-4A28-A647-85DE55B1058F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOmenDen.CrowsAgainstHumility.Core", "..\TheOmenDen.CrowsAgainstHumility.Core\TheOmenDen.CrowsAgainstHumility.Core.csproj", "{423C5394-0F37-4BAC-803A-2F8E93F720DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{9125903F-0F81-4A28-A647-85DE55B1058F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9125903F-0F81-4A28-A647-85DE55B1058F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9125903F-0F81-4A28-A647-85DE55B1058F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{423C5394-0F37-4BAC-803A-2F8E93F720DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{423C5394-0F37-4BAC-803A-2F8E93F720DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{423C5394-0F37-4BAC-803A-2F8E93F720DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{423C5394-0F37-4BAC-803A-2F8E93F720DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
