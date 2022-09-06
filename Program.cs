@@ -6,6 +6,10 @@ using Serilog.Events;
 using System.Net.Mime;
 using TheOmenDen.CrowsAgainstHumility.Extensions;
 using TheOmenDen.Shared.Logging.Serilog;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using TheOmenDen.CrowsAgainstHumility.Areas.Identity.Data;
+using TheOmenDen.CrowsAgainstHumility.Data;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
@@ -56,7 +60,13 @@ try
     {
         options.MimeTypes = new[] { MediaTypeNames.Application.Octet };
     });
+    var connectionString = builder.Configuration.GetConnectionString("UserContextConnection") ?? throw new InvalidOperationException("Connection string 'UserContextConnection' not found.");
 
+    builder.Services.AddDbContext<UserContext>(options =>
+        options.UseSqlite(connectionString));
+
+    builder.Services.AddDefaultIdentity<CAHUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        .AddEntityFrameworkStores<UserContext>();
     builder.Services.AddResponseCaching();
 
     var app = builder.Build();
@@ -68,7 +78,7 @@ try
     app.UseSerilogRequestLogging(options => options.EnrichDiagnosticContext = RequestLoggingConfigurer.EnrichFromRequest);
 
     app.UseWebSockets();
-
+    app.UseAuthentication();
 
     app.UseHttpsRedirection();
 

@@ -5,13 +5,13 @@ VisualStudioVersion = 17.3.32819.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheOmenDen.CrowsAgainstHumility", "TheOmenDen.CrowsAgainstHumility.csproj", "{9125903F-0F81-4A28-A647-85DE55B1058F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOmenDen.CrowsAgainstHumility.Core", "..\TheOmenDen.CrowsAgainstHumility.Core\TheOmenDen.CrowsAgainstHumility.Core.csproj", "{423C5394-0F37-4BAC-803A-2F8E93F720DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheOmenDen.CrowsAgainstHumility.Core", "..\TheOmenDen.CrowsAgainstHumility.Core\TheOmenDen.CrowsAgainstHumility.Core.csproj", "{423C5394-0F37-4BAC-803A-2F8E93F720DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOmenDen.CrowsAgainstHumility.Data", "..\TheOmenDen.CrowsAgainstHumility.Data\TheOmenDen.CrowsAgainstHumility.Data.csproj", "{50638F44-C0EB-404A-86B6-6148977F6612}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheOmenDen.CrowsAgainstHumility.Data", "..\TheOmenDen.CrowsAgainstHumility.Data\TheOmenDen.CrowsAgainstHumility.Data.csproj", "{50638F44-C0EB-404A-86B6-6148977F6612}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOmenDen.CrowsAgainstHumility.Mediator", "..\TheOmenDen.CrowsAgainstHumility.Mediator\TheOmenDen.CrowsAgainstHumility.Mediator.csproj", "{388AAA4B-49DF-4AB1-9C8A-C9826E145443}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheOmenDen.CrowsAgainstHumility.Mediator", "..\TheOmenDen.CrowsAgainstHumility.Mediator\TheOmenDen.CrowsAgainstHumility.Mediator.csproj", "{388AAA4B-49DF-4AB1-9C8A-C9826E145443}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOmenDen.CrowsAgainstHumility.Services", "..\TheOmenDen.CrowsAgainstHumility.Services\TheOmenDen.CrowsAgainstHumility.Services.csproj", "{DF3AA64E-69C9-4788-899C-9A3248A2CD1F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheOmenDen.CrowsAgainstHumility.Services", "..\TheOmenDen.CrowsAgainstHumility.Services\TheOmenDen.CrowsAgainstHumility.Services.csproj", "{DF3AA64E-69C9-4788-899C-9A3248A2CD1F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

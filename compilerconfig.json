@@ -2,5 +2,13 @@
   {
     "outputFile": "wwwroot/css/site.css",
     "inputFile": "Styles/crowsStyles.scss"
+  },
+  {
+    "outputFile": "wwwroot/Identity/css/crowsStyles.css",
+    "inputFile": "Styles/crowsStyles.scss"
+  },
+  {
+    "outputFile": "wwwroot/Identity/css/crowFooterStyles.css",
+    "inputFile": "Styles/crowFooterStyles.scss"
   }
 ]
