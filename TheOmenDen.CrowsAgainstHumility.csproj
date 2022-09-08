@@ -85,6 +85,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Core\TheOmenDen.CrowsAgainstHumility.Core.csproj" />
+    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Data\TheOmenDen.CrowsAgainstHumility.Data.csproj" />
+    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Mediator\TheOmenDen.CrowsAgainstHumility.Mediator.csproj" />
+    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Services\TheOmenDen.CrowsAgainstHumility.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>
