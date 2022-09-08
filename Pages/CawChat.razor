@@ -1,0 +1,51 @@
+﻿@page "/chatroom"
+<Container Fluid 
+    Background="Background.Dark" 
+TextColor="TextColor.Light"
+Margin="Margin.Is3.OnY"
+Padding="Padding.Is4.OnY">
+    <Heading Size="HeadingSize.Is2">Chat</Heading>
+    <Divider />
+
+    @if (!_isChatting)
+    {
+        <Paragraph>
+            Enter your name to start chatting:
+        </Paragraph>
+
+        <TextEdit MaxLength="32" @bind-Text="@_username" />
+        <Button Type="ButtonType.Button" Clicked="@Chat" Color="Color.Success" TextColor="TextColor.Light"><Span Class="oi oi-chat" aria-hidden="true"></Span>Chat!</Button>
+
+        // Error messages
+        @if (_message is not null)
+        {
+            <Div Class="invalid-feedback">@_message</Div>
+            <Small id="emailHelp" Class="form-text text-muted">@_message</Small>
+        }
+    }
+    else
+    {
+        // banner to show current user
+        <Alert Color="Color.Secondary" Margin="Margin.Is4.FromTop" role="alert">
+            <Span Class="oi oi-person mr-2" aria-hidden="true"></Span>
+            <Span>You are connected as <Strong>@_username</Strong></Span>
+            <Button Margin="Margin.IsAuto.FromStart" Color="Color.Warning" Size="Size.Small" Clicked="@DisconnectAsync">Disconnect</Button>
+        </Alert>
+        // display messages
+        <Div id="scrollbox">
+            <Repeater TItem="Message" Items="_messages">
+                @if (context.IsNotice)
+                {
+                    <Alert Color="Color.Info">@context.Body</Alert>
+                }
+                <Div Class="@context.CSS">
+                    <Div Class="user">@context.Username</Div>
+                    <Div Class="msg">@context.Body</Div>
+                    </Div>
+            </Repeater>
+            <Divider />
+            <TextEdit Size="Size.Large" Placeholder="enter your comment" @bind-Text="@_newMessage"></TextEdit>
+            <Button Clicked="@(() => SendAsync(_newMessage))" Color="Color.Info" TextColor="TextColor.Light">Send</Button>
+        </Div>
+    }
+</Container>

@@ -1,6 +1,5 @@
 ﻿@layout RootLayout
 @inherits LayoutComponentBase
-
 <PageTitle>Crows Against Humility</PageTitle>
 
 <Layout Sider>
@@ -22,7 +21,9 @@
                     </BarItem>
                 </BarBrand>
                 <BarMenu>
-                    <BarItem>Example</BarItem>
+                    <AuthorizeView>
+                        <BarItem>Example</BarItem>
+                    </AuthorizeView>
                 </BarMenu>
             </Bar>
         </LayoutSiderContent>
@@ -47,8 +48,7 @@
                     </BarStart>
                     <BarEnd>
                         <BarItem>
-                            <Button Color="Color.Primary" Type="ButtonType.Link" To="" Outline>Sign up</Button>
-                            <Button Color="Color.Secondary" Type="ButtonType.Link" To="/identity/account/login" Outline>Log in</Button>
+                            <LoginDisplay />
                         </BarItem>
                     </BarEnd>
                 </BarMenu>

@@ -1,9 +1,37 @@
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager Navigation
+@inject TokenProvider TokenProvider
 <AuthorizeView>
     <Authorized>
         Hello, @context.User.Identity?.Name!
-        <a href="Identity/Account/SignOut">Log out</a>
+        <Form method="post" action="/Identity/Account/Logout?returnUrl=%2F">
+            <Button Type="ButtonType.Submit"
+                    To="Identity/Account/SignOut"
+                    Color="Color.Danger"
+                    TextColor="TextColor.Danger">
+                Log out
+            </Button>
+            <input type="hidden" name="__RequestVerificationToken" value="@TokenProvider.XSRFToken" />
+        </Form>
     </Authorized>
     <NotAuthorized>
-        <a href="Identity/Account/SignIn">Log in</a>
+        <Button Type="ButtonType.Link"
+                To="Identity/Account/Register"
+                Color="Color.Info"
+                TextColor="TextColor.Dark"
+                Border="Border.Is2.Light.OnAll.Rounded"
+                Shadow="Shadow.Default"
+                TextWeight="TextWeight.Bold">
+            Register
+        </Button>
+        <Button Type="ButtonType.Link"
+                To="Identity/Account/Login"
+                Color="Color.Success"
+                TextColor="TextColor.Light"
+                Border="Border.Is2.Light.OnAll.Rounded"
+                Shadow="Shadow.Default"
+                TextWeight="TextWeight.Bold">
+            Log in
+        </Button>
     </NotAuthorized>
 </AuthorizeView>

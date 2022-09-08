@@ -5,7 +5,7 @@
     ViewData["Title"] = "Log in";
 }
 <h1 class="display-2 text-light text-center">@ViewData["Title"]</h1>
-<div class="row d-flex flex-column flex-grow-1 flex-shrink-1 align-content-center">
+<div class="row d-flex flex-column flex-grow-1 flex-shrink-1 align-content-center align-items-center">
     <div class="col-md-4 bg-dark text-light border border-2 border-light rounded-2 shadow pb-4 mb-3">
         <section>
             <div class="col col-6 bg-dark text-light px-4 w-100">
@@ -72,16 +72,19 @@
                             <p>
                                 @foreach (var provider in Model.ExternalLogins)
                                 {
-                                    <button type="submit" class="btn btn-outline-primary rounded-2 shadow" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
+                                    <button type="submit" class="btn btn-outline-primary rounded-2 shadow mx-2 px-4 bounce-in" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
                                         <span class="visually-hidden">@provider.DisplayName</span> 
                                         
                                         @switch (provider.DisplayName)
                                         {
                                             case var pn when String.Equals(pn, "twitch", StringComparison.OrdinalIgnoreCase):
-                                                <i class="bi bi-twitch text-light display-2"></i>
+                                                <i class="bi bi-twitch text-light display-3"></i>
                                                 break;
                                             case var pn when String.Equals(pn,"twitter", StringComparison.OrdinalIgnoreCase):
                                                 <i class="bi bi-twitter text-light display-3"></i>
+                                                break;
+                                            case var pn when String.Equals(pn,"discord", StringComparison.OrdinalIgnoreCase):
+                                                <i class="bi bi-discord text-light display-3"></i>
                                                 break;
                                             default :
                                                 break;

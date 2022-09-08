@@ -9,6 +9,8 @@ using TheOmenDen.Shared.Logging.Serilog;
 using Microsoft.EntityFrameworkCore;
 using TheOmenDen.CrowsAgainstHumility.Areas.Identity.Data;
 using System.Reflection;
+using Discord.WebSocket;
+using TheOmenDen.CrowsAgainstHumility.Hubs;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
@@ -75,7 +77,20 @@ try
 
             options.ClientId = twitchKeys.ClientId;
             options.ClientSecret = twitchKeys.Key;
+        })
+        .AddDiscord(options =>
+        {
+            var discordKeys = new DiscordStrings(
+                builder.Configuration["discord-clientId"],
+                builder.Configuration["discord-secret"]
+                );
+
+            options.ClientId = discordKeys.Id;
+            options.ClientSecret = discordKeys.Secret;
         });
+
+    builder.Services.AddHttpClient();
+    builder.Services.AddScoped<TokenProvider>();
 
     builder.Services.AddRazorPages();
     builder.Services.AddServerSideBlazor();
@@ -93,7 +108,7 @@ try
         .AddEntityFrameworkStores<UserContext>();
     builder.Services.AddResponseCaching();
 
-    var app = builder.Build();
+    await using var app = builder.Build();
 
     app.UseResponseCompression();
 
@@ -110,10 +125,16 @@ try
 
     app.UseAuthentication();
     app.UseAuthorization();
-    app.MapBlazorHub();
-    app.MapFallbackToPage("/_Host");
 
-    app.Run();
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapRazorPages();
+        endpoints.MapBlazorHub();
+        endpoints.MapHub<CawHub>(CawHub.HubUrl);
+        endpoints.MapFallbackToPage("/_Host");
+    });
+
+    await app.RunAsync();
 }
 catch(Exception ex)
 {

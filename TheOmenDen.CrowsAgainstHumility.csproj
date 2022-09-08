@@ -26,6 +26,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="TheOmenDen.CrowsAgainstHumility.Core\**" />
+    <Compile Remove="TheOmenDen.CrowsAgainstHumility.Data\**" />
+    <Compile Remove="TheOmenDen.CrowsAgainstHumility.Mediator\**" />
+    <Compile Remove="TheOmenDen.CrowsAgainstHumility.Services\**" />
+    <Content Remove="TheOmenDen.CrowsAgainstHumility.Core\**" />
+    <Content Remove="TheOmenDen.CrowsAgainstHumility.Data\**" />
+    <Content Remove="TheOmenDen.CrowsAgainstHumility.Mediator\**" />
+    <Content Remove="TheOmenDen.CrowsAgainstHumility.Services\**" />
+    <EmbeddedResource Remove="TheOmenDen.CrowsAgainstHumility.Core\**" />
+    <EmbeddedResource Remove="TheOmenDen.CrowsAgainstHumility.Data\**" />
+    <EmbeddedResource Remove="TheOmenDen.CrowsAgainstHumility.Mediator\**" />
+    <EmbeddedResource Remove="TheOmenDen.CrowsAgainstHumility.Services\**" />
+    <None Remove="TheOmenDen.CrowsAgainstHumility.Core\**" />
+    <None Remove="TheOmenDen.CrowsAgainstHumility.Data\**" />
+    <None Remove="TheOmenDen.CrowsAgainstHumility.Mediator\**" />
+    <None Remove="TheOmenDen.CrowsAgainstHumility.Services\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="compilerconfig.json" />
   </ItemGroup>
 
@@ -34,6 +53,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNet.Security.OAuth.Discord" Version="6.0.11" />
     <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="6.0.11" />
     <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="6.0.11" />
     <PackageReference Include="Blazorise" Version="1.0.6" />
@@ -44,10 +64,13 @@
     <PackageReference Include="Blazorise.Markdown" Version="1.0.6" />
     <PackageReference Include="Blazorise.QRCode" Version="1.0.6" />
     <PackageReference Include="Blazorise.SpinKit" Version="1.0.6" />
+    <PackageReference Include="Discord.Net" Version="3.8.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Antiforgery" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.8">
@@ -84,10 +107,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Core\TheOmenDen.CrowsAgainstHumility.Core.csproj" />
-    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Data\TheOmenDen.CrowsAgainstHumility.Data.csproj" />
-    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Mediator\TheOmenDen.CrowsAgainstHumility.Mediator.csproj" />
-    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Services\TheOmenDen.CrowsAgainstHumility.Services.csproj" />
+    <ProjectReference Include="TheOmenDen.CrowsAgainstHumility.Core\TheOmenDen.CrowsAgainstHumility.Core.csproj" />
+    <ProjectReference Include="TheOmenDen.CrowsAgainstHumility.Data\TheOmenDen.CrowsAgainstHumility.Data.csproj" />
+    <ProjectReference Include="TheOmenDen.CrowsAgainstHumility.Mediator\TheOmenDen.CrowsAgainstHumility.Mediator.csproj" />
+    <ProjectReference Include="TheOmenDen.CrowsAgainstHumility.Services\TheOmenDen.CrowsAgainstHumility.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>

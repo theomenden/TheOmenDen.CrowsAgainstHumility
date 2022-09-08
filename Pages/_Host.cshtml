@@ -1,8 +1,14 @@
 ﻿@page "/"
 @namespace TheOmenDen.CrowsAgainstHumility.Pages
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery XSRF
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     Layout = "_Layout";
+
+    var tokens = new TokenProvider {
+        XSRFToken  = XSRF.GetAndStoreTokens(HttpContext).RequestToken,
+        RefreshToken = XSRF.GetAndStoreTokens(HttpContext).CookieToken 
+    };
 }
 
-<component type="typeof(App)" render-mode="ServerPrerendered" />
+<component type="typeof(App)" param-InitialState="tokens" render-mode="ServerPrerendered" />

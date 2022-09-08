@@ -1,15 +1,29 @@
-﻿<Router AppAssembly="@typeof(App).Assembly">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-    </Found>
-    <NotFound>
-        <PageTitle>Not found</PageTitle>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <Alert>Sorry, there's nothing at this address.</Alert>
-        </LayoutView>
-    </NotFound>
-</Router>
-<PageProgressAlert />
-<NotificationAlert />
-<MessageAlert />
+﻿@inject TokenProvider TokenProvider
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <Alert>Sorry, there's nothing at this address.</Alert>
+            </LayoutView>
+        </NotFound>
+    </Router>
+    <PageProgressAlert />
+    <NotificationAlert />
+    <MessageAlert />
+</CascadingAuthenticationState>
+@code {
+    [Parameter]
+    public TokenProvider InitialState { get; set; }
+
+    protected override Task OnInitializedAsync()
+    {
+        TokenProvider.XSRFToken = InitialState.XSRFToken;
+
+        return base.OnInitializedAsync();
+    }
+}
