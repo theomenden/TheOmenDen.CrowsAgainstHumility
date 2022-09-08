@@ -21,6 +21,8 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>blazor;csharp;theomenden;cardsagainsthumanity;crows</PackageTags>
     <PackageLicenseExpression> Apache-2.0</PackageLicenseExpression>
+    <SignAssembly>False</SignAssembly>
+    <UserSecretsId>25d93bbd-3c81-4aed-82e2-36899ef356a2</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,6 +34,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="6.0.11" />
+    <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="6.0.11" />
     <PackageReference Include="Blazorise" Version="1.0.6" />
     <PackageReference Include="Blazorise.Animate" Version="1.0.6" />
     <PackageReference Include="Blazorise.Bootstrap5" Version="1.0.6" />
@@ -40,6 +44,7 @@
     <PackageReference Include="Blazorise.Markdown" Version="1.0.6" />
     <PackageReference Include="Blazorise.QRCode" Version="1.0.6" />
     <PackageReference Include="Blazorise.SpinKit" Version="1.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.8" />
@@ -67,13 +72,15 @@
     <PackageReference Include="Serilog.Formatting.Compact" Version="1.1.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.3.0" />
     <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
     <PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
     <PackageReference Include="TheOmenDen.Shared" Version="2022.8.27.345" />
     <PackageReference Include="TheOmenDen.Shared.Interfaces" Version="1.8.27.428" />
     <PackageReference Include="TheOmenDen.Shared.Logging" Version="1.8.27.435" />
+    <PackageReference Include="TwitchLib" Version="3.4.1" />
+    <PackageReference Include="TwitchLib.PubSub" Version="3.2.5" />
   </ItemGroup>
 
   <ItemGroup>

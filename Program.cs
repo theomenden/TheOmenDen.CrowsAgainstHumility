@@ -6,10 +6,9 @@ using Serilog.Events;
 using System.Net.Mime;
 using TheOmenDen.CrowsAgainstHumility.Extensions;
 using TheOmenDen.Shared.Logging.Serilog;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TheOmenDen.CrowsAgainstHumility.Areas.Identity.Data;
-using TheOmenDen.CrowsAgainstHumility.Data;
+using System.Reflection;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
@@ -36,6 +35,7 @@ try
                     .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json", true, true)
                     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true)
+                    .AddUserSecrets(Assembly.GetExecutingAssembly(), true)
                     .AddEnvironmentVariables();
             })
         .UseDefaultServiceProvider(options => options.ValidateScopes = false)
@@ -52,6 +52,30 @@ try
         .AddBootstrap5Providers()
         .AddBootstrap5Components()
         .AddBootstrapIcons();
+
+    builder.Services.AddAuthentication(options =>
+        {
+            /* Authentication options */
+        })
+        .AddTwitter(options =>
+        {
+            var twitterKeys = new TwitterStrings(
+                builder.Configuration["twitter-key"],
+                builder.Configuration["twitter-secret"],
+                builder.Configuration["twitter-bearer"]);
+            
+            options.ConsumerKey = twitterKeys.Key;
+            options.ConsumerSecret = twitterKeys.Secret;
+        })
+        .AddTwitch(options =>
+        {
+            var twitchKeys = new TwitchStrings(
+                builder.Configuration["twitch-key"],
+                builder.Configuration["twitch-clientId"]);
+
+            options.ClientId = twitchKeys.ClientId;
+            options.ClientSecret = twitchKeys.Key;
+        });
 
     builder.Services.AddRazorPages();
     builder.Services.AddServerSideBlazor();
@@ -78,14 +102,14 @@ try
     app.UseSerilogRequestLogging(options => options.EnrichDiagnosticContext = RequestLoggingConfigurer.EnrichFromRequest);
 
     app.UseWebSockets();
-    app.UseAuthentication();
-
     app.UseHttpsRedirection();
 
     app.UseStaticFiles();
 
     app.UseRouting();
 
+    app.UseAuthentication();
+    app.UseAuthorization();
     app.MapBlazorHub();
     app.MapFallbackToPage("/_Host");
 

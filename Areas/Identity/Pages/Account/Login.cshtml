@@ -15,12 +15,12 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="emailLabel"><i class="bi bi-envelope-fill text-dark ms-2"></i><span class="visually-hidden">Email</span></span>
-                        <input asp-for="Input.Email" aria-describedby="emailLabel" class="form-control" autocomplete="username" aria-required="true" type="email" placeholder="Enter your email"/>
+                        <input asp-for="Input.Email" aria-describedby="emailLabel" class="form-control" autocomplete="username" aria-required="true" type="email" placeholder="Enter your email" />
                         <span asp-validation-for="Input.Email" class="text-danger"></span>
                     </div>
                     <div class="input-group my-3">
                         <span class="input-group-text" id="passwordLabel"><i class="bi bi-file-earmark-lock-fill text-dark ms-2"></i><span class="visually-hidden">Password</span> </span>
-                        <input asp-for="Input.Password" aria-describedby="passwordLabel" class="form-control" autocomplete="current-password" aria-required="true" type="password" placeholder="Enter your password"/>
+                        <input asp-for="Input.Password" aria-describedby="passwordLabel" class="form-control" autocomplete="current-password" aria-required="true" type="password" placeholder="Enter your password" />
                         <span asp-validation-for="Input.Password" class="text-danger"></span>
                     </div>
                     <div>
@@ -68,11 +68,25 @@
                 else
                 {
                     <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
+                        <div class="d-grid gap-2 col-6 mx-auto">
                             <p>
                                 @foreach (var provider in Model.ExternalLogins)
                                 {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                    <button type="submit" class="btn btn-outline-primary rounded-2 shadow" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
+                                        <span class="visually-hidden">@provider.DisplayName</span> 
+                                        
+                                        @switch (provider.DisplayName)
+                                        {
+                                            case var pn when String.Equals(pn, "twitch", StringComparison.OrdinalIgnoreCase):
+                                                <i class="bi bi-twitch text-light display-2"></i>
+                                                break;
+                                            case var pn when String.Equals(pn,"twitter", StringComparison.OrdinalIgnoreCase):
+                                                <i class="bi bi-twitter text-light display-3"></i>
+                                                break;
+                                            default :
+                                                break;
+                                        }
+                                    </button>
                                 }
                             </p>
                         </div>
