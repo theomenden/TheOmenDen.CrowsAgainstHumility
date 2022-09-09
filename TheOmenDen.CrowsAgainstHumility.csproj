@@ -23,6 +23,7 @@
     <PackageLicenseExpression> Apache-2.0</PackageLicenseExpression>
     <SignAssembly>False</SignAssembly>
     <UserSecretsId>25d93bbd-3c81-4aed-82e2-36899ef356a2</UserSecretsId>
+    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
 
   <ItemGroup>

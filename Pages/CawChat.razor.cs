@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazorise;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using TheOmenDen.CrowsAgainstHumility.Hubs;
+using TwitchLib.Api.Helix;
 
 namespace TheOmenDen.CrowsAgainstHumility.Pages;
 public partial class CawChat : ComponentBase
@@ -20,7 +22,7 @@ public partial class CawChat : ComponentBase
     private string _newMessage = String.Empty;
 
     // list of messages in chat
-    private readonly List<Message> _messages = new ();
+    private readonly List<ChatMessage> _messages = new ();
 
     private string _hubUrl = String.Empty;
     private HubConnection? _hubConnection;
@@ -44,7 +46,7 @@ public partial class CawChat : ComponentBase
             _messages.Clear();
 
             // Create the chat client
-            string baseUrl = NavigationManager.BaseUri;
+            var baseUrl = NavigationManager.BaseUri;
 
             _hubUrl = baseUrl.TrimEnd('/') + CawHub.HubUrl;
 
@@ -67,9 +69,9 @@ public partial class CawChat : ComponentBase
 
     private void BroadcastMessage(string name, string message)
     {
-        bool isMine = name.Equals(_username, StringComparison.OrdinalIgnoreCase);
+        var isMine = name.Equals(_username, StringComparison.OrdinalIgnoreCase);
 
-        _messages.Add(new Message(name, message, isMine));
+        _messages.Add(new ChatMessage(name, message, isMine, false, isMine ? "sent" : "received"));
 
         // Inform blazor the UI needs updating
         StateHasChanged();
@@ -91,29 +93,47 @@ public partial class CawChat : ComponentBase
 
     private async Task SendAsync(string message)
     {
+        /*        
+    const messageBubble = `<span class="chat-bubble">${userMessage}</span>`;
+
+
+    messageContainer.insertBefore(messageDiv, dots);
+    messageContainer.classList.add('chat-messages--typing');
+
+         */
+
         if (_isChatting && !string.IsNullOrWhiteSpace(message))
         {
+            InitializeChatSenderStatus(true);
+
             await _hubConnection.SendAsync("Broadcast", _username, message);
 
             _newMessage = string.Empty;
         }
     }
 
-    private class Message
+    private IFluentBorderWithAll GetChatBubbleBorder(String css)
     {
-        public Message(string username, string body, bool mine)
-        {
-            Username = username;
-            Body = body;
-            Mine = mine;
-        }
+        return String.Equals(css, "sent", StringComparison.OrdinalIgnoreCase)
+            ? Border.Primary.OnAll.RoundedEnd.Is2
+            : Border.Success.OnAll.RoundedStart.Is2;
+    }
 
-        public string Username { get; set; }
-        public string Body { get; set; }
-        public bool Mine { get; set; }
+    private String GetChatSenderStatus(Boolean isMine)
+    {
+        const string chatMessageClass = "chat-message chat-message";
 
-        public bool IsNotice => Body.StartsWith("[Notice]");
+        var attachedIdentifier= isMine ? "--sent" : "--received";
 
-        public string CSS => Mine ? "sent" : "received";
+        return $"{chatMessageClass}{attachedIdentifier}";
+    }
+
+    private String InitializeChatSenderStatus(Boolean isMine)
+    {
+        const string chatMessageClass = "chat-message chat-message";
+
+        var attachedIdentifier = isMine ? "--sent" : "--received";
+
+        return $"{chatMessageClass}{attachedIdentifier}";
     }
 }

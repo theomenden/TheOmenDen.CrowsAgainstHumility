@@ -130,10 +130,10 @@ try
     {
         endpoints.MapRazorPages();
         endpoints.MapBlazorHub();
-        endpoints.MapHub<CawHub>(CawHub.HubUrl);
         endpoints.MapFallbackToPage("/_Host");
     });
 
+    app.MapHub<CawHub>(CawHub.HubUrl);
     await app.RunAsync();
 }
 catch(Exception ex)
