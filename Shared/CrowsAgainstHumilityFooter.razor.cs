@@ -8,10 +8,10 @@ public partial class CrowsAgainstHumilityFooter : ComponentBase
         get
         {
             var attributes = Assembly.GetExecutingAssembly()
-                .GetCustomAttributes(typeof(AssemblyVersionAttribute), false);
+                .GetCustomAttributes(typeof(AssemblyFileVersionAttribute), false);
             return attributes.Length == 0 ?
                 String.Empty :
-                ((AssemblyVersionAttribute)attributes[0]).Version;
+                ((AssemblyFileVersionAttribute)attributes[0]).Version;
         }
     }
 

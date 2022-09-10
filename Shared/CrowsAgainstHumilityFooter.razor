@@ -13,7 +13,12 @@
                 <Column ColumnSize="ColumnSize.Is4.OnWidescreen.Is5.OnDesktop">
                     <Text TextWeight="TextWeight.Light" Italic TextColor="TextColor.Muted" Margin="Margin.Is0.FromBottom.OnDesktop" Class="f_400">
                         <Blazorise.Icon Name="IconName.Copyright" IconSize="IconSize.ExtraSmall" />
-                        @ApplicationDevelopmentCompany
+                        <Span>@ApplicationDevelopmentCompany<sup><Icon Name="@("bi bi-badge-tm")" 
+                            IconSize="IconSize.ExtraSmall" 
+                            IconStyle="IconStyle.Solid" 
+                            TextColor="TextColor.Light"
+                            Margin="Margin.Is1.FromTop"
+                            Padding="Padding.Is1.FromTop"/></sup></Span>
                     </Text>
                 </Column>
             </Row>

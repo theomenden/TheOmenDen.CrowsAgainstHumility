@@ -1,4 +1,6 @@
-﻿namespace TheOmenDen.CrowsAgainstHumility.Extensions;
+﻿using TheOmenDen.CrowsAgainstHumility.Middleware;
+
+namespace TheOmenDen.CrowsAgainstHumility.Extensions;
 public static class ApplicationBuilderExtensions
 {
     public static IApplicationBuilder UseEnvironmentMiddleware(this IApplicationBuilder app, IWebHostEnvironment env)
@@ -17,5 +19,21 @@ public static class ApplicationBuilderExtensions
         app.UseHsts();
 
         return app;
+    }
+
+    public static IApplicationBuilder UseApiExceptionHandler(this IApplicationBuilder applicationBuilder)
+    {
+        var options = new ApiExceptionOptions();
+
+        return applicationBuilder.UseMiddleware<ExceptionLogger>(options);
+    }
+
+    public static IApplicationBuilder UseApiExceptionHandler(this IApplicationBuilder builder, Action<ApiExceptionOptions> configureOptions)
+    {
+        var options = new ApiExceptionOptions();
+
+        configureOptions(options);
+
+        return builder.UseMiddleware<ExceptionLogger>(options);
     }
 }

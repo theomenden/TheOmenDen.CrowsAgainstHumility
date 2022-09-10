@@ -5,7 +5,7 @@ using TheOmenDen.CrowsAgainstHumility.Hubs;
 using TwitchLib.Api.Helix;
 
 namespace TheOmenDen.CrowsAgainstHumility.Pages;
-public partial class CawChat : ComponentBase
+public partial class CawChat : ComponentBase, IAsyncDisposable
 {
     [Inject] NavigationManager NavigationManager { get; init; }
 
@@ -104,7 +104,7 @@ public partial class CawChat : ComponentBase
 
         if (_isChatting && !string.IsNullOrWhiteSpace(message))
         {
-            InitializeChatSenderStatus(true);
+            GetChatSenderStatus(true);
 
             await _hubConnection.SendAsync("Broadcast", _username, message);
 
@@ -112,14 +112,7 @@ public partial class CawChat : ComponentBase
         }
     }
 
-    private IFluentBorderWithAll GetChatBubbleBorder(String css)
-    {
-        return String.Equals(css, "sent", StringComparison.OrdinalIgnoreCase)
-            ? Border.Primary.OnAll.RoundedEnd.Is2
-            : Border.Success.OnAll.RoundedStart.Is2;
-    }
-
-    private String GetChatSenderStatus(Boolean isMine)
+    private static String GetChatSenderStatus(Boolean isMine)
     {
         const string chatMessageClass = "chat-message chat-message";
 
@@ -128,12 +121,13 @@ public partial class CawChat : ComponentBase
         return $"{chatMessageClass}{attachedIdentifier}";
     }
 
-    private String InitializeChatSenderStatus(Boolean isMine)
+    public async ValueTask DisposeAsync()
     {
-        const string chatMessageClass = "chat-message chat-message";
+        if (_hubConnection is not null)
+        {
+            await _hubConnection.DisposeAsync();
+        }
 
-        var attachedIdentifier = isMine ? "--sent" : "--received";
-
-        return $"{chatMessageClass}{attachedIdentifier}";
+        GC.SuppressFinalize(this);
     }
 }

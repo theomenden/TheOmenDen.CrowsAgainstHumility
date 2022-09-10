@@ -7,6 +7,15 @@
     "secrets1": {
       "type": "secrets",
       "dynamicId": null
+    },
+    "secrets2": {
+      "type": "secrets",
+      "connectionId": "VaultUri"
+    },
+    "signalr1": {
+      "type": "signalr",
+      "connectionId": "Azure:SignalR:ConnectionString",
+      "dynamicId": null
     }
   }
 }

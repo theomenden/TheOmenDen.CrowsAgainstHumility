@@ -9,8 +9,14 @@ using TheOmenDen.Shared.Logging.Serilog;
 using Microsoft.EntityFrameworkCore;
 using TheOmenDen.CrowsAgainstHumility.Areas.Identity.Data;
 using System.Reflection;
-using Discord.WebSocket;
 using TheOmenDen.CrowsAgainstHumility.Hubs;
+using Microsoft.AspNetCore.Components.Server.Circuits;
+using TheOmenDen.CrowsAgainstHumility.Circuits;
+using TheOmenDen.CrowsAgainstHumility.Middleware;
+using Azure.Identity;
+using System.Security.Cryptography.X509Certificates;
+using Microsoft.Extensions.Configuration;
+using Azure;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
@@ -19,6 +25,7 @@ Log.Logger = new LoggerConfiguration()
     .Enrich.WithProcessName()
     .Enrich.WithEnvironmentUserName()
     .Enrich.WithMemoryUsage()
+    .Enrich.WithEventType()
     .WriteTo.Async(a =>
     {
         a.File("./logs/log-.txt", rollingInterval: RollingInterval.Day);
@@ -38,16 +45,24 @@ try
                     .AddJsonFile("appsettings.json", true, true)
                     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true)
                     .AddUserSecrets(Assembly.GetExecutingAssembly(), true)
-                    .AddEnvironmentVariables();
+                    .AddEnvironmentVariables()
+                    .AddAzureKeyVault(
+                    new Uri(builder.Configuration["VaultUri"]),
+                    new DefaultAzureCredential());
+
             })
         .UseDefaultServiceProvider(options => options.ValidateScopes = false)
         .UseSerilog((context, services, configuration) => configuration
             .ReadFrom.Configuration(context.Configuration)
-            .ReadFrom.Services(services));
+            .ReadFrom.Services(services)
+            .Enrich.FromLogContext()
+            .Enrich.WithEventType()
+            );
 
     builder.Logging
         .ClearProviders()
-        .AddSerilog();
+        .AddSerilog(dispose: true);
+
 
     // Add services to the container.
     builder.Services.AddBlazorise(options => options.Immediate = true)
@@ -65,7 +80,7 @@ try
                 builder.Configuration["twitter-key"],
                 builder.Configuration["twitter-secret"],
                 builder.Configuration["twitter-bearer"]);
-            
+
             options.ConsumerKey = twitterKeys.Key;
             options.ConsumerSecret = twitterKeys.Secret;
         })
@@ -92,21 +107,32 @@ try
     builder.Services.AddHttpClient();
     builder.Services.AddScoped<TokenProvider>();
 
-    builder.Services.AddRazorPages();
-    builder.Services.AddServerSideBlazor();
-
     builder.Services.AddResponseCompression(options =>
     {
         options.MimeTypes = new[] { MediaTypeNames.Application.Octet };
     });
     var connectionString = builder.Configuration.GetConnectionString("UserContextConnection") ?? throw new InvalidOperationException("Connection string 'UserContextConnection' not found.");
 
+    builder.Services.AddSingleton<SessionDetails>();
+
+    builder.Services.AddScoped<CircuitHandler, TrackingCircuitHandler>(sp => new TrackingCircuitHandler(sp.GetRequiredService<SessionDetails>()));
+
     builder.Services.AddDbContext<UserContext>(options =>
         options.UseSqlite(connectionString));
 
     builder.Services.AddDefaultIdentity<CAHUser>(options => options.SignIn.RequireConfirmedAccount = true)
         .AddEntityFrameworkStores<UserContext>();
+
     builder.Services.AddResponseCaching();
+
+    builder.Services.AddSignalR(options => options.MaximumReceiveMessageSize = 104_857_600);
+
+    builder.Services.AddRazorPages();
+    builder.Services.AddServerSideBlazor()
+        .AddHubOptions(options =>
+        {
+            options.MaximumReceiveMessageSize = 104_857_600;
+        });
 
     await using var app = builder.Build();
 
@@ -123,9 +149,16 @@ try
 
     app.UseRouting();
 
+    app.UseApiExceptionHandler(options =>
+    {
+        options.AddResponseDetails = OptionsDelegates.UpdateApiErrorResponse;
+        options.DetermineLogLevel = OptionsDelegates.DetermineLogLevel;
+    });
+
     app.UseAuthentication();
     app.UseAuthorization();
 
+    app.MapHub<CawHub>(CawHub.HubUrl);
     app.UseEndpoints(endpoints =>
     {
         endpoints.MapRazorPages();
@@ -133,10 +166,9 @@ try
         endpoints.MapFallbackToPage("/_Host");
     });
 
-    app.MapHub<CawHub>(CawHub.HubUrl);
     await app.RunAsync();
 }
-catch(Exception ex)
+catch (Exception ex)
 {
     Log.Fatal("An error occurred before {AppName} could launch: {@Ex}", nameof(TheOmenDen.CrowsAgainstHumility), ex);
 }

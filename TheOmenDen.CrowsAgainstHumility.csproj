@@ -9,6 +9,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
+	<Date>$([System.DateTime]::Now.ToString("1.MM.dd.HHss"))</Date>
+	<AssemblyFileVersionAttribute>[assembly:System.Reflection.AssemblyFileVersion("$(Date)")]</AssemblyFileVersionAttribute>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -24,6 +26,16 @@
     <SignAssembly>False</SignAssembly>
     <UserSecretsId>25d93bbd-3c81-4aed-82e2-36899ef356a2</UserSecretsId>
     <ErrorReport>prompt</ErrorReport>
+    <Copyright>2022</Copyright>
+    <PackageProjectUrl>https://crowsagainsthumility.app</PackageProjectUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Deterministic>False</Deterministic>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Deterministic>False</Deterministic>
   </PropertyGroup>
 
   <ItemGroup>
@@ -57,6 +69,8 @@
     <PackageReference Include="AspNet.Security.OAuth.Discord" Version="6.0.11" />
     <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="6.0.11" />
     <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="6.0.11" />
+    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.0.0" />
+    <PackageReference Include="Azure.Identity" Version="1.6.0" />
     <PackageReference Include="Blazorise" Version="1.0.6" />
     <PackageReference Include="Blazorise.Animate" Version="1.0.6" />
     <PackageReference Include="Blazorise.Bootstrap5" Version="1.0.6" />
@@ -72,6 +86,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.8" />
+    <PackageReference Include="Microsoft.Azure.SignalR" Version="1.4.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.8">
