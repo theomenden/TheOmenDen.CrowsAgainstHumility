@@ -1,18 +1,26 @@
 ﻿.chat {
-  width: 100%;
-  max-width: 500px;
+  min-width: 500px;
+  width: calc(100% - 500px);
+  max-width: 100%;
+  max-height: 100%;
   margin: 55px auto;
   background: darkgray;
   border-radius: 20px 20px 0 0;
 }
 
 .chat-messages {
-  height: 500px;
-  max-height: 500px;
+  min-height: 500px;
+  max-height: 100%;
   overflow-y: scroll;
   overflow-x: auto;
-  padding: 30px;
-  overflow: hidden;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  padding-left: 45px;
+  padding-right: 45px;
+  background-color: darkgray;
+  min-width: 500px;
+  width: calc(100% - 500px);
+  max-width: 100%;
 }
 .chat-messages > * + * {
   margin-top: 40px;
@@ -44,9 +52,12 @@
 
 .chat-bubble {
   background: #F2D7EE;
-  padding: 6px 10px;
+  padding-top: 6px;
+  padding-right: 10px;
   border-radius: 10px;
   color: #1a1a1a;
+  min-width: fit-content;
+  max-width: 100%;
 }
 
 .chat-dots, .chat-dot3, .chat-dot2 {
@@ -71,9 +82,16 @@
 .chat-input {
   position: absolute;
   display: flex;
-  width: 500px;
+  max-width: 100%;
+  width: calc(100% - 32em - 6px);
+  min-width: 500px;
   align-items: center;
-  padding: 30px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  padding-right: 45px;
+  padding-left: 45px;
+  margin-left: calc(0% - 12px);
+  margin-right: calc(100% - 30px);
   border-top: 1px solid #ddd;
   background: white;
   border-radius: 0 0 20px 20px;
@@ -100,6 +118,7 @@
   font-size: 18px;
   flex: 1;
   border: none;
+  width: 100%;
 }
 .chat-inputField:focus {
   outline: none;

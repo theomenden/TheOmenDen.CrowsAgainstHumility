@@ -40,19 +40,22 @@
     }
     else
     {
-        <ListView Class="chat-messages"
-              TItem="ChatMessage"
-              Data="@_messages"
-              Mode="ListGroupMode.Static">
+        <ListGroup Flush
+               Class="chat-messages"
+               Mode="ListGroupMode.Static"
+               Background="Background.Transparent"
+               TextOverflow="TextOverflow.Wrap">
             <Repeater TItem="ChatMessage" Items="@_messages">
                 <Card TextColor="TextColor.Light"
-                  Background="Background.Transparent">
+                  Background="Background.Transparent"
+                  Border="Border.Is0.OnAll.Rounded"
+                  Margin="Margin.Is0.OnAll">
                     <CardBody Class="@GetChatSenderStatus(context.IsMine)">
                         <CardText Class="chat-bubble">@context.Body</CardText>
                     </CardBody>
                 </Card>
             </Repeater>
-        </ListView>
+        </ListGroup>
     }
 
     <Form Class="chat-input js-inputForm" autocomplete="off" method="post">
