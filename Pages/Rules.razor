@@ -8,7 +8,7 @@
            Padding="Padding.Is3.OnY.Is2.OnX"
            Border="Border.Secondary.OnAll.Rounded.Is3"
            Shadow="Shadow.Large">
-    <Heading Size="HeadingSize.Is1" 
+    <Heading Size="HeadingSize.Is1"
              TextColor="TextColor.Light"
              TextWeight="TextWeight.Light"
              TextAlignment="TextAlignment.Center">
@@ -43,7 +43,7 @@
                         draws back up to ten white cards
                     </DescriptionListDefinition>
                     <DescriptionListTerm TextWeight="TextWeight.Bold" TextColor="TextColor.Warning">
-                        PICK <Icon Name="@("bi bi-2-circle-fill")" TextColor="TextColor.Warning" IconSize="IconSize.Large"/>
+                        PICK <Icon Name="@("bi bi-2-circle-fill")" TextColor="TextColor.Warning" IconSize="IconSize.Large" />
                     </DescriptionListTerm>
                     <DescriptionListDefinition TextColor="TextColor.Light" TextWeight="TextWeight.Light">
                         Some black cards say “PICK 2” on the bottom. To answer these,
@@ -79,15 +79,279 @@
                 </Paragraph>
             </CollapseBody>
         </Collapse>
+        <Collapse Visible="@collapse3Visible" Background="Background.Transparent">
+            <CollapseHeader Background="Background.Secondary" Border="Border.Is0.OnAll.Rounded">
+                <Heading Size="HeadingSize.Is5">
+                    <Button TextColor="TextColor.Light" Background="Background.Secondary" Clicked="@(() => collapse3Visible = !collapse3Visible)">@GameTypes.HappyEnding.Name</Button>
+                </Heading>
+            </CollapseHeader>
+            <CollapseBody Background="Background.Transparent">
+                <Paragraph TextAlignment="TextAlignment.Justified" TextColor="TextColor.Light">
+                    When you’re ready to end the game, play the “Make
+                    a haiku” black card. This is the official ceremonial ending of a good
+                    game of Cards Against Humanity. Note: Haikus don’t need to follow
+                    the 5-7-5 form. They just have to be read dramatically
+                </Paragraph>
+            </CollapseBody>
+        </Collapse>
+        <Collapse Visible="@collapse4Visible" Background="Background.Transparent">
+            <CollapseHeader Background="Background.Secondary" Border="Border.Is0.OnAll.Rounded">
+                <Heading Size="HeadingSize.Is5">
+                    <Button TextColor="TextColor.Light" Background="Background.Secondary" Clicked="@(() => collapse4Visible = !collapse4Visible)">@GameTypes.NeverHaveIEver.Name</Button>
+                </Heading>
+            </CollapseHeader>
+            <CollapseBody Background="Background.Transparent">
+                <Paragraph TextAlignment="TextAlignment.Justified" TextColor="TextColor.Light">
+                    At any time, players may discard cards that they
+                    don’t understand, but they must confess their ignorance to the group
+                    and suffer the resulting humiliation
+                </Paragraph>
+            </CollapseBody>
+        </Collapse>
+        <Collapse Visible="@collapse5Visible" Background="Background.Transparent">
+            <CollapseHeader Background="Background.Secondary" Border="Border.Is0.OnAll.Rounded">
+                <Heading Size="HeadingSize.Is5">
+                    <Button TextColor="TextColor.Light" Background="Background.Secondary" Clicked="@(() => collapse5Visible = !collapse5Visible)">@GameTypes.WheatonsLaw.Name</Button>
+                </Heading>
+            </CollapseHeader>
+            <CollapseBody Background="Background.Transparent">
+                <Paragraph TextAlignment="TextAlignment.Justified" TextColor="TextColor.Light">
+                    Each round, the Card Czar draws two black cards,
+                    chooses the one they’d prefer to play, and puts the other at the
+                    bottom of the black card pile.
+                </Paragraph>
+            </CollapseBody>
+        </Collapse>
+        <Collapse Visible="@collapse6Visible" Background="Background.Transparent">
+            <CollapseHeader Background="Background.Secondary" Border="Border.Is0.OnAll.Rounded">
+                <Heading Size="HeadingSize.Is5">
+                    <Button TextColor="TextColor.Light" Background="Background.Secondary" Clicked="@(() => collapse6Visible = !collapse6Visible)">@GameTypes.RebootingTheUniverse.Name</Button>
+                </Heading>
+            </CollapseHeader>
+            <CollapseBody Background="Background.Transparent">
+                <Paragraph TextAlignment="TextAlignment.Justified" TextColor="TextColor.Light">
+                    At any time, players may trade in a point to
+                    return as many white cards as they’d like to the deck and draw back
+                    to ten.
+                </Paragraph>
+            </CollapseBody>
+        </Collapse>
+        <Collapse Visible="@collapse7Visible" Background="Background.Transparent">
+            <CollapseHeader Background="Background.Secondary" Border="Border.Is0.OnAll.Rounded">
+                <Heading Size="HeadingSize.Is5">
+                    <Button TextColor="TextColor.Light" Background="Background.Secondary" Clicked="@(() => collapse7Visible = !collapse7Visible)">@GameTypes.PackingHeat.Name</Button>
+                </Heading>
+            </CollapseHeader>
+            <CollapseBody Background="Background.Transparent">
+                <Paragraph TextAlignment="TextAlignment.Justified" TextColor="TextColor.Light">
+                    For Pick 2s, all players draw an extra card before
+                    playing the hand to open up more options
+                </Paragraph>
+            </CollapseBody>
+        </Collapse>
+        <Collapse Visible="@collapse8Visible" Background="Background.Transparent">
+            <CollapseHeader Background="Background.Secondary" Border="Border.Is0.OnAll.Rounded">
+                <Heading Size="HeadingSize.Is5">
+                    <Button TextColor="TextColor.Light" Background="Background.Secondary" Clicked="@(() => collapse8Visible = !collapse8Visible)">@GameTypes.Meritocracy.Name</Button>
+                </Heading>
+            </CollapseHeader>
+            <CollapseBody Background="Background.Transparent">
+                <Paragraph TextAlignment="TextAlignment.Justified" TextColor="TextColor.Light">
+                    Instead of passing clockwise, the role of Card Czar
+                    passes to the winner of the previous round
+                </Paragraph>
+            </CollapseBody>
+        </Collapse>
+        <Collapse Visible="@collapse9Visible" Background="Background.Transparent">
+            <CollapseHeader Background="Background.Secondary" Border="Border.Is0.OnAll.Rounded">
+                <Heading Size="HeadingSize.Is5">
+                    <Button TextColor="TextColor.Light" Background="Background.Secondary" Clicked="@(() => collapse9Visible = !collapse9Visible)">@GameTypes.SmoothOperator.Name</Button>
+                </Heading>
+            </CollapseHeader>
+            <CollapseBody Background="Background.Transparent">
+                <Paragraph TextAlignment="TextAlignment.Justified" TextColor="TextColor.Light">
+                    If a player slips a card from their hand into
+                    conversation without anyone noticing, they may trade it for one point.
+                    If the player is called out, they lose a point. If this rule is confusing,
+                    you’re taking this game too seriously
+                </Paragraph>
+            </CollapseBody>
+        </Collapse>
+        <Collapse Visible="@collapse10Visible" Background="Background.Transparent">
+            <CollapseHeader Background="Background.Secondary" Border="Border.Is0.OnAll.Rounded">
+                <Heading Size="HeadingSize.Is5">
+                    <Button TextColor="TextColor.Light" Background="Background.Secondary" Clicked="@(() => collapse10Visible = !collapse10Visible)">@GameTypes.TieBreaker.Name</Button>
+                </Heading>
+            </CollapseHeader>
+            <CollapseBody Background="Background.Transparent">
+                <Paragraph TextAlignment="TextAlignment.Justified" TextColor="TextColor.Light">
+                    If the Card Czar can’t decide between two white cards,
+                    they may declare a Tie Breaker. In the event of a Tie Breaker, the
+                    more conventionally attractive player wins.
+                </Paragraph>
+            </CollapseBody>
+        </Collapse>
+        <Collapse Visible="@collapse11Visible" Background="Background.Transparent">
+            <CollapseHeader Background="Background.Secondary" Border="Border.Is0.OnAll.Rounded">
+                <Heading Size="HeadingSize.Is5">
+                    <Button TextColor="TextColor.Light" Background="Background.Secondary" Clicked="@(() => collapse11Visible = !collapse11Visible)">@GameTypes.ChubbyBunny.Name</Button>
+                </Heading>
+            </CollapseHeader>
+            <CollapseBody Background="Background.Transparent">
+                <Paragraph TextAlignment="TextAlignment.Justified" TextColor="TextColor.Light">
+                    Players crumple up their winning cards and keep
+                    them in their mouths as points
+                </Paragraph>
+            </CollapseBody>
+        </Collapse>
+        <Collapse Visible="@collapse12Visible" Background="Background.Transparent">
+            <CollapseHeader Background="Background.Secondary" Border="Border.Is0.OnAll.Rounded">
+                <Heading Size="HeadingSize.Is5">
+                    <Button TextColor="TextColor.Light" Background="Background.Secondary" Clicked="@(() => collapse12Visible = !collapse12Visible)">@GameTypes.FreakyFriday.Name</Button>
+                </Heading>
+            </CollapseHeader>
+            <CollapseBody Background="Background.Transparent">
+                <Paragraph TextAlignment="TextAlignment.Justified" TextColor="TextColor.Light">
+                    Players play Cards Against Humanity while wearing
+                    their mothers’ underpants
+                </Paragraph>
+            </CollapseBody>
+        </Collapse>
+        <Collapse Visible="@collapse13Visible" Background="Background.Transparent">
+            <CollapseHeader Background="Background.Secondary" Border="Border.Is0.OnAll.Rounded">
+                <Heading Size="HeadingSize.Is5">
+                    <Button TextColor="TextColor.Light" Background="Background.Secondary" Clicked="@(() => collapse13Visible = !collapse13Visible)">@GameTypes.HardMode.Name</Button>
+                </Heading>
+            </CollapseHeader>
+            <CollapseBody Background="Background.Transparent">
+                <Paragraph TextAlignment="TextAlignment.Justified" TextColor="TextColor.Light">
+                    Play Cards Against Humanity while raising four kids,
+                    dealing with chronic back pain, and waiting tables at Chili’s. Bonus!
+                    For an added challenge, try being gay or black
+                </Paragraph>
+            </CollapseBody>
+        </Collapse>
+        <Collapse Visible="@collapse14Visible" Background="Background.Transparent">
+            <CollapseHeader Background="Background.Secondary" Border="Border.Is0.OnAll.Rounded">
+                <Heading Size="HeadingSize.Is5">
+                    <Button TextColor="TextColor.Light" Background="Background.Secondary" Clicked="@(() => collapse14Visible = !collapse14Visible)">@GameTypes.RussianRoulette.Name</Button>
+                </Heading>
+            </CollapseHeader>
+            <CollapseBody Background="Background.Transparent">
+                <Paragraph TextAlignment="TextAlignment.Justified" TextColor="TextColor.Light">
+                    The Card Czar takes out a revolver. They place
+                    one bullet at random in the cylinder, spin it, and close it. They then
+                    hold the gun to their head and pull the trigger. If the Card Czar
+                    survives, they defiantly place the gun in the center of the table and
+                    eye the other players, challenging them to pick up the gun “if they’re
+                    man enough.” The Card Czar wins a point
+                    <Small TextWeight="TextWeight.Bold" TextTransform="TextTransform.Uppercase">(Note: Don't do this)</Small>
+                </Paragraph>
+            </CollapseBody>
+        </Collapse>
+        <Collapse Visible="@collapse15Visible" Background="Background.Transparent">
+            <CollapseHeader Background="Background.Secondary" Border="Border.Is0.OnAll.Rounded">
+                <Heading Size="HeadingSize.Is5">
+                    <Button TextColor="TextColor.Light" Background="Background.Secondary" Clicked="@(() => collapse15Visible = !collapse15Visible)">@GameTypes.HailToTheCheif.Name</Button>
+                </Heading>
+            </CollapseHeader>
+            <CollapseBody Background="Background.Transparent">
+                <Paragraph TextAlignment="TextAlignment.Justified" TextColor="TextColor.Light">
+                    A player may earn a point at any time by
+                    announcing candidacy for and successfully being elected President
+                    of the United States of America
+                    <Small TextWeight="TextWeight.Bold" TextTransform="TextTransform.Uppercase">(Note: Announcing candidacy does not imply a succesfful campaign. Results may vary. The Omen Den is not responsible for your dirty laundry being aired.)</Small>
+                </Paragraph>
+            </CollapseBody>
+        </Collapse>
+        <Collapse Visible="@collapse16Visible" Background="Background.Transparent">
+            <CollapseHeader Background="Background.Secondary" Border="Border.Is0.OnAll.Rounded">
+                <Heading Size="HeadingSize.Is5">
+                    <Button TextColor="TextColor.Light" Background="Background.Secondary" Clicked="@(() => collapse16Visible = !collapse16Visible)">@GameTypes.RaceToTheMoon.Name</Button>
+                </Heading>
+            </CollapseHeader>
+            <CollapseBody Background="Background.Transparent">
+                <Paragraph TextAlignment="TextAlignment.Justified" TextColor="TextColor.Light">
+                    All players begin masturbating immediately.
+                    Then what happens?
+                    <Small TextWeight="TextWeight.Bold" TextTransform="TextTransform.Uppercase">(Note: The Omen Den does not recommend this. No judgements from us, but uh, certainly some looks.)</Small>
+                </Paragraph>
+            </CollapseBody>
+        </Collapse>
+        <Collapse Visible="@collapse17Visible" Background="Background.Transparent">
+            <CollapseHeader Background="Background.Secondary" Border="Border.Is0.OnAll.Rounded">
+                <Heading Size="HeadingSize.Is5">
+                    <Button TextColor="TextColor.Light" Background="Background.Secondary" Clicked="@(() => collapse17Visible = !collapse17Visible)">@GameTypes.SmokeOpiumAndPlay.Name</Button>
+                </Heading>
+            </CollapseHeader>
+            <CollapseBody Background="Background.Transparent">
+                <Paragraph TextAlignment="TextAlignment.Justified" TextColor="TextColor.Light">
+                    Great idea!
+                    <Small TextWeight="TextWeight.Bold" TextTransform="TextTransform.Uppercase">(Note: The Omen Den does not recommend this for various health, legal, and personal reasons.)</Small>
+                </Paragraph>
+            </CollapseBody>
+        </Collapse>
+        <Collapse Visible="@collapse18Visible" Background="Background.Transparent">
+            <CollapseHeader Background="Background.Secondary" Border="Border.Is0.OnAll.Rounded">
+                <Heading Size="HeadingSize.Is5">
+                    <Button TextColor="TextColor.Light" Background="Background.Secondary" Clicked="@(() => collapse18Visible = !collapse18Visible)">@GameTypes.WaitForGodot.Name</Button>
+                </Heading>
+            </CollapseHeader>
+            <CollapseBody Background="Background.Transparent">
+                <Paragraph TextAlignment="TextAlignment.Justified" TextColor="TextColor.Light">
+                    At the start of the game, instead of drawing a
+                    hand, players stare at the pile of white cards. After an indeterminate
+                    amount of time, players move their gaze to the pile of black cards.
+                    The game doesn’t begin. How can it begin? It has already ended. In
+                    the gloom, players shift their cloudy gaze from pile to pile. Is it a trick
+                    of the light, or do the black cards and white cards seem to converge
+                    in an indistinguishable grayness? Mote by mote, dust settles on the
+                    cards. Nobody accumulates points. Nobody wins.
+                </Paragraph>
+            </CollapseBody>
+        </Collapse>
+        <Collapse Visible="@collapse19Visible" Background="Background.Transparent">
+            <CollapseHeader Background="Background.Secondary" Border="Border.Is0.OnAll.Rounded">
+                <Heading Size="HeadingSize.Is5">
+                    <Button TextColor="TextColor.Light" Background="Background.Secondary" Clicked="@(() => collapse19Visible = !collapse19Visible)">@GameTypes.DontPlay.Name</Button>
+                </Heading>
+            </CollapseHeader>
+            <CollapseBody Background="Background.Transparent">
+                <Paragraph TextAlignment="TextAlignment.Justified" TextColor="TextColor.Light">
+                    Walk to a park. Call your mother. Live a little.
+                    <Small TextWeight="TextWeight.Bold" TextTransform="TextTransform.Uppercase">(Note: The Omen Den does recommend this for various health, legal, and personal reasons.)</Small>
+                </Paragraph>
+            </CollapseBody>
+        </Collapse>
     </Accordion>
-    <Blazorise.Link 
-        TextColor="TextColor.Light"
-        To="https://cdn.sanity.io/files/vc07edlh/production/ddf02ce6c4a0bbebdb737abdf86c00e2795ee1b2.pdf"
-        Target="Target.Blank">
+    <Blazorise.Link TextColor="TextColor.Light"
+                    To="https://cdn.sanity.io/files/vc07edlh/production/ddf02ce6c4a0bbebdb737abdf86c00e2795ee1b2.pdf"
+                    Target="Target.Blank">
         <Small TextColor="TextColor.Light">Official Rules Source</Small>
     </Blazorise.Link>
+    <Paragraph TextColor="TextColor.Light" Italic>
+    <Small>Reminder, Cards Against Humanity is not affiliated with this application in any way - this is purely an entertainment project and coding exercie.</Small>
+    <Small>The Omen Den is not affiliated in any way, shape, or form with Cards Against Humanity, and is not endorsing any of these play modes. Be safe, responsible, and make good decisions.</Small>    
+</Paragraph>
 </Container>
 @code {
     bool collapse1Visible = true;
     bool collapse2Visible;
+    bool collapse3Visible;
+    bool collapse4Visible;
+    bool collapse5Visible;
+    bool collapse6Visible;
+    bool collapse7Visible;
+    bool collapse8Visible;
+    bool collapse9Visible;
+    bool collapse10Visible;
+    bool collapse11Visible;
+    bool collapse12Visible;
+    bool collapse13Visible;
+    bool collapse14Visible;
+    bool collapse15Visible;
+    bool collapse16Visible;
+    bool collapse17Visible;
+    bool collapse18Visible;
+    bool collapse19Visible;
 }
