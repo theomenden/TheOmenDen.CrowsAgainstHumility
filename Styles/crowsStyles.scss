@@ -4,8 +4,10 @@ $second-white-card: ".none";
 
 html, body {
     overflow-x: hidden;
-    overflow-y: hidden;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    overflow-y: auto;
+    height:100vh;
+    width:100vw;
+    font-family: 'Roboto', Helvetica, Arial, sans-serif;
 }
 
 h1:focus {

@@ -8,10 +8,16 @@
     <TypeScriptTarget>ESNext</TypeScriptTarget>
   </PropertyGroup>
 
+	<PropertyGroup>
+		<Deterministic>False</Deterministic>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	</PropertyGroup>
+
   <PropertyGroup>
 	<Date>$([System.DateTime]::Now.ToString("1.MM.dd.HHss"))</Date>
 	<AssemblyFileVersionAttribute>[assembly:System.Reflection.AssemblyFileVersion("$(Date)")]</AssemblyFileVersionAttribute>
-    <TargetFramework>net6.0</TargetFramework>
+	  <AssemblyCompanyAttribute>[assembly:System.Reflection.AssemblyCompany("The Omen Den L.L.C.")]</AssemblyCompanyAttribute>
+	  <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <Title>Crows Against Humility</Title>
@@ -22,23 +28,19 @@
     <RepositoryUrl>https://github.com/theomenden/TheOmenDen.CrowsAgainstHumility</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>blazor;csharp;theomenden;cardsagainsthumanity;crows</PackageTags>
-    <PackageLicenseExpression> Apache-2.0</PackageLicenseExpression>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <SignAssembly>False</SignAssembly>
     <UserSecretsId>25d93bbd-3c81-4aed-82e2-36899ef356a2</UserSecretsId>
     <ErrorReport>prompt</ErrorReport>
     <Copyright>2022</Copyright>
     <PackageProjectUrl>https://crowsagainsthumility.app</PackageProjectUrl>
   </PropertyGroup>
+	
+	<Target Name="GenerateVersionInfo" BeforeTargets="BeforeBuild">
+		<WriteLinesToFile File="Properties\VersionInfo.cs" Lines="$(AssemblyFileVersionAttribute)$([System.Environment]::NewLine)$(AssemblyCompanyAttribute)" Overwrite="true"></WriteLinesToFile>
+	</Target>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <Deterministic>False</Deterministic>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <Deterministic>False</Deterministic>
-  </PropertyGroup>
-
-  <ItemGroup>
+	<ItemGroup>
     <Compile Remove="TheOmenDen.CrowsAgainstHumility.Core\**" />
     <Compile Remove="TheOmenDen.CrowsAgainstHumility.Data\**" />
     <Compile Remove="TheOmenDen.CrowsAgainstHumility.Mediator\**" />
@@ -80,6 +82,8 @@
     <PackageReference Include="Blazorise.QRCode" Version="1.0.6" />
     <PackageReference Include="Blazorise.SpinKit" Version="1.0.6" />
     <PackageReference Include="Discord.Net" Version="3.8.0" />
+    <PackageReference Include="Fluxor" Version="5.4.0" />
+    <PackageReference Include="Fluxor.Blazor.Web" Version="5.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Antiforgery" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.8" />
@@ -122,6 +126,10 @@
     <PackageReference Include="TwitchLib.PubSub" Version="3.2.5" />
   </ItemGroup>
 
+	<ItemGroup Condition="$(Configuration)=='Debug'">
+		<PackageReference Include="Fluxor.Blazor.Web.ReduxDevTools" Version="5.4.0" />
+	</ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="TheOmenDen.CrowsAgainstHumility.Core\TheOmenDen.CrowsAgainstHumility.Core.csproj" />
     <ProjectReference Include="TheOmenDen.CrowsAgainstHumility.Data\TheOmenDen.CrowsAgainstHumility.Data.csproj" />
@@ -136,11 +144,7 @@
     </None>
   </ItemGroup>
 
-	<Target Name="SetPackageVersion" DependsOnTargets="Build">
-		<PropertyGroup>
-			<PackageVersion>$([System.DateTime]::Now.ToString("1.MM.dd.HHss"))</PackageVersion>
-			<AssemblyVersion>$([System.DateTime]::Now.ToString("1.MM.dd.HHss"))</AssemblyVersion>
-			<FileVersion>$([System.DateTime]::Now.ToString("1.MM.dd.HHss"))</FileVersion>
-		</PropertyGroup>
-	</Target>
+  <ItemGroup>
+    <Folder Include="Store\UseCases\" />
+  </ItemGroup>
 </Project>

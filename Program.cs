@@ -15,8 +15,10 @@ using TheOmenDen.CrowsAgainstHumility.Circuits;
 using TheOmenDen.CrowsAgainstHumility.Middleware;
 using Azure.Identity;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Azure;
+using Fluxor;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
@@ -62,7 +64,6 @@ try
     builder.Logging
         .ClearProviders()
         .AddSerilog(dispose: true);
-
 
     // Add services to the container.
     builder.Services.AddBlazorise(options => options.Immediate = true)
@@ -112,6 +113,26 @@ try
         options.MimeTypes = new[] { MediaTypeNames.Application.Octet };
     });
     var connectionString = builder.Configuration.GetConnectionString("UserContextConnection") ?? throw new InvalidOperationException("Connection string 'UserContextConnection' not found.");
+
+    var currentAssembly = typeof(Program).Assembly;
+
+    builder.Services.AddFluxor(options => options
+        .ScanAssemblies(currentAssembly)
+#if DEBUG
+        .UseReduxDevTools(rdt =>
+        {
+            rdt.Name = nameof(TheOmenDen.CrowsAgainstHumility);
+            rdt.UseSystemTextJson(_ =>
+                new ()
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    PropertyNameCaseInsensitive = true
+                }
+            );
+        })
+#endif
+        .UseRouting()
+        .AddMiddleware<StoreLoggingMiddleware>());
 
     builder.Services.AddSingleton<SessionDetails>();
 

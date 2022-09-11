@@ -1,0 +1,93 @@
+﻿@page "/rules"
+@using TheOmenDen.CrowsAgainstHumility.Core.Rules
+<PageTitle>Rules</PageTitle>
+
+<Container Fluid Background="Background.Dark"
+           TextColor="TextColor.Light"
+           Margin="Margin.Is4.OnY.Is3.OnX"
+           Padding="Padding.Is3.OnY.Is2.OnX"
+           Border="Border.Secondary.OnAll.Rounded.Is3"
+           Shadow="Shadow.Large">
+    <Heading Size="HeadingSize.Is1" 
+             TextColor="TextColor.Light"
+             TextWeight="TextWeight.Light"
+             TextAlignment="TextAlignment.Center">
+        Game Rules
+    </Heading>
+    <Accordion Background="Background.Transparent"
+               Margin="Margin.Is3.OnX"
+               Padding="Padding.Is4.OnX.Is2.OnY">
+        <Collapse Visible="@collapse1Visible" Background="Background.Transparent">
+            <CollapseHeader Background="Background.Secondary"
+                            Border="Border.Is0.OnAll.Rounded">
+                <Heading Size="HeadingSize.Is5">
+                    <Button TextColor="TextColor.Light" Background="Background.Secondary" Clicked="@(() => collapse1Visible = !collapse1Visible)">@GameTypes.Normal.Name</Button>
+                </Heading>
+            </CollapseHeader>
+            <CollapseBody Background="Background.Transparent">
+                <DescriptionList>
+                    <DescriptionListTerm><Heading Size="HeadingSize.Is3" TextColor="TextColor.Warning" TextWeight="TextWeight.Bold">Basic Rules</Heading></DescriptionListTerm>
+                    <DescriptionListDefinition TextAlignment="TextAlignment.Justified" TextColor="TextColor.Light" TextWeight="TextWeight.Light">
+                        To start the game, each player draws ten white cards.
+                        The player who most recently pooped begins as the Card Czar
+                        and draws a black card. If Hugh Jackman is playing, he goes first,
+                        regardless of how recently he pooped.
+                        The Card Czar reads the question or fill-in-the-blank phrase on the
+                        black card out loud. Everyone else answers the question or fills in the
+                        blank by passing one white card, face down, to the Card Czar.
+                        The Card Czar then shuffles all the answers and reads each card
+                        combination out loud to the group. The Card Czar should re-read
+                        the black card before presenting each answer. Finally, the Card Czar
+                        picks the funniest play, and whoever submitted it gets one point.
+                        After the round, a new player becomes the Card Czar and everyone
+                        draws back up to ten white cards
+                    </DescriptionListDefinition>
+                    <DescriptionListTerm TextWeight="TextWeight.Bold" TextColor="TextColor.Warning">
+                        PICK <Icon Name="@("bi bi-2-circle-fill")" TextColor="TextColor.Warning" IconSize="IconSize.Large"/>
+                    </DescriptionListTerm>
+                    <DescriptionListDefinition TextColor="TextColor.Light" TextWeight="TextWeight.Light">
+                        Some black cards say “PICK 2” on the bottom. To answer these,
+                        each player plays two white cards in combination. <Strong>IMPORTANT:</Strong>
+                        Arrange them in the order that the Card Czar should read them—play
+                        the first card face down, and then play the second card face down on
+                        top of it.
+                    </DescriptionListDefinition>
+                    <DescriptionListTerm TextWeight="TextWeight.Bold" TextColor="TextColor.Warning">
+                        Gambling
+                    </DescriptionListTerm>
+                    <DescriptionListDefinition TextColor="TextColor.Light" TextWeight="TextWeight.Light">
+                        If you have more than one white card that you think could win a
+                        round, you can bet one of your points to play an extra white card. If
+                        you win, you keep the point. If you lose, whoever wins gets the point
+                        you wagered.
+                    </DescriptionListDefinition>
+                </DescriptionList>
+            </CollapseBody>
+        </Collapse>
+        <Collapse Visible="@collapse2Visible" Background="Background.Transparent">
+            <CollapseHeader Background="Background.Secondary" Border="Border.Is0.OnAll.Rounded">
+                <Heading Size="HeadingSize.Is5">
+                    <Button TextColor="TextColor.Light" Background="Background.Secondary" Clicked="@(() => collapse2Visible = !collapse2Visible)">@GameTypes.RandoCardrissian.Name</Button>
+                </Heading>
+            </CollapseHeader>
+            <CollapseBody Background="Background.Transparent">
+                <Paragraph TextAlignment="TextAlignment.Justified" TextColor="TextColor.Light">
+                    Every round, pick one random white card from
+                    the pile and place it into play. This card belongs to an imaginary
+                    player named Rando Cardrissian, and if he wins the game, all players
+                    go home in a state of everlasting shame.
+                </Paragraph>
+            </CollapseBody>
+        </Collapse>
+    </Accordion>
+    <Blazorise.Link 
+        TextColor="TextColor.Light"
+        To="https://cdn.sanity.io/files/vc07edlh/production/ddf02ce6c4a0bbebdb737abdf86c00e2795ee1b2.pdf"
+        Target="Target.Blank">
+        <Small TextColor="TextColor.Light">Official Rules Source</Small>
+    </Blazorise.Link>
+</Container>
+@code {
+    bool collapse1Visible = true;
+    bool collapse2Visible;
+}

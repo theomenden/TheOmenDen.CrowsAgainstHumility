@@ -7,8 +7,7 @@ public class TrackingCircuitHandler : CircuitHandler
     {
         SessionData = sessionData;
     }
-
-
+    
     public event EventHandler CircuitsChanged;
 
     public String CircuitId { get; set; } = String.Empty;

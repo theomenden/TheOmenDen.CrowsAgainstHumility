@@ -13,7 +13,7 @@ public partial class Index
     {
         if (firstRender)
         {
-            await JSRuntime.InvokeVoidAsync("registerBlazorApp", $"{NavigationManager.BaseUri}");
+            await JSRuntime.InvokeVoidAsync("registerBlazorApp", $"{NavigationManager.BaseUri}Identity/Account/Login");
         }
     }
 }
