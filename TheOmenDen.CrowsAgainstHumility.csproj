@@ -69,8 +69,8 @@
     <PackageReference Include="AspNet.Security.OAuth.Discord" Version="6.0.11" />
     <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="6.0.11" />
     <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="6.0.11" />
-    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.0.0" />
-    <PackageReference Include="Azure.Identity" Version="1.6.0" />
+    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
+    <PackageReference Include="Azure.Identity" Version="1.6.1" />
     <PackageReference Include="Blazorise" Version="1.0.6" />
     <PackageReference Include="Blazorise.Animate" Version="1.0.6" />
     <PackageReference Include="Blazorise.Bootstrap5" Version="1.0.6" />
