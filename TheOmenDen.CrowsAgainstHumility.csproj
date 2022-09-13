@@ -28,7 +28,7 @@
     <RepositoryUrl>https://github.com/theomenden/TheOmenDen.CrowsAgainstHumility</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>blazor;csharp;theomenden;cardsagainsthumanity;crows</PackageTags>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageLicenseExpression>CC-BY-NC-SA-4.0</PackageLicenseExpression>
     <SignAssembly>False</SignAssembly>
     <UserSecretsId>25d93bbd-3c81-4aed-82e2-36899ef356a2</UserSecretsId>
     <ErrorReport>prompt</ErrorReport>
