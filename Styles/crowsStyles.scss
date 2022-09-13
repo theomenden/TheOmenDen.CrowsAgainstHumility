@@ -1,13 +1,15 @@
 ﻿@import 'cawChatStyles.scss';
+@import 'crowScrollers.scss';
 $first-white-card: ".none";
 $second-white-card: ".none";
 
 html, body {
     overflow-x: hidden;
     overflow-y: auto;
-    height:100vh;
-    width:100vw;
+    height: 100vh;
+    width: 100%;
     font-family: 'Roboto', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
 }
 
 h1:focus {

@@ -46,7 +46,7 @@ try
                     .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json", true, true)
                     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true)
-                    .AddUserSecrets(Assembly.GetExecutingAssembly(), true)
+                    //.AddUserSecrets(Assembly.GetExecutingAssembly(), true)
                     .AddEnvironmentVariables()
                     .AddAzureKeyVault(
                     new Uri(builder.Configuration["VaultUri"]),
