@@ -13,7 +13,8 @@
                  Breakpoint="Breakpoint.Desktop"
                  NavigationBreakpoint="Breakpoint.Tablet"
                  TextOverflow="TextOverflow.Truncate"
-                 Shadow="Shadow.Default">
+                 Shadow="Shadow.Default"
+                 Border="Border.Is2.OnEnd.RoundedEnd.Light.OnEnd">
                 <BarToggler />
                 <BarBrand />
                 <BarMenu>
@@ -30,21 +31,27 @@
                                 Rules
                             </BarLink>
                         </BarItem>
-                        <AuthorizeView>
-                            <BarItem>
-                                <BarLink To="/chatroom">
-                                    Chat
-                                </BarLink>
-                            </BarItem>
-                            <BarItem>Example</BarItem>
-                        </AuthorizeView>
+                        <BarItem>
+                            <BarLink To="/createGame">
+                                <BarIcon IconName="IconName.Dice" />
+                                Game Creation
+                            </BarLink>
+                        </BarItem>
+                        <BarItem>
+                            <BarLink To="/chatRoom">
+                                <BarIcon IconName="@("bi bi-chat-dots")" TextColor="TextColor.Light" />
+                                Chat Room
+                            </BarLink>
+                        </BarItem>
                     </BarStart>
                     <BarEnd>
                         <BarItem TextWeight="TextWeight.Light"
                                  TextColor="TextColor.Muted"
                                  Class="fst-italic fs-6">
                             <BarLink>
-                                <BarIcon IconName="IconName.Code" IconSize="IconSize.ExtraSmall" IconStyle="IconStyle.Light" />
+                                <BarIcon IconName="IconName.Code" 
+                                         IconSize="IconSize.ExtraSmall" 
+                                         IconStyle="IconStyle.Light" />
                                 v-@AssemblyProductVersion
                             </BarLink>
                         </BarItem>
@@ -53,7 +60,8 @@
                                  Margin="Margin.Is0.FromBottom.OnDesktop"
                                  Class="f_400 fst-italic fs-6">
                             <BarLink>
-                            <BarIcon IconName="IconName.Copyright" IconSize="IconSize.ExtraSmall" />
+                                <BarIcon IconName="IconName.Copyright" 
+                                         IconSize="IconSize.ExtraSmall" />
                             @ApplicationDevelopmentCompany
                                 <sup>
                                     <Icon Name="@("bi bi-badge-tm")"
@@ -75,8 +83,9 @@
             <Bar Breakpoint="Breakpoint.Desktop"
                  Background="Background.Dark"
                  ThemeContrast="ThemeContrast.Dark"
-                 Shadow="Shadow.Default">
-                <BarBrand>
+                 Shadow="Shadow.Default"
+                 Border="Border.Is2.OnBottom.RoundedBottom.Light.OnBottom">
+                <BarBrand Margin="Margin.Is2.FromStart" Casing="CharacterCasing.Upper">
                     Crows Against Humility
                 </BarBrand>
                 <BarToggler />

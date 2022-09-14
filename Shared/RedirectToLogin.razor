@@ -1,10 +1,12 @@
 ﻿@inject NavigationManager NavigationManager
 
 @code {
+    private const string IdentityAccountLoginPath = "Identity/Account/Login?returnUrl=";
+
     protected override void OnInitialized()
     {
-        var rootNavigationString = $"Identity/Account/Login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}";
-
-        NavigationManager.NavigateTo(rootNavigationString, true);
+        NavigationManager
+            .NavigateTo($"{IdentityAccountLoginPath}{Uri.EscapeDataString(NavigationManager.Uri)}",
+            true);
     }
 }

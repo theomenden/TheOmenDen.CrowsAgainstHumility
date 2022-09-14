@@ -8,16 +8,12 @@ using TheOmenDen.CrowsAgainstHumility.Extensions;
 using TheOmenDen.Shared.Logging.Serilog;
 using Microsoft.EntityFrameworkCore;
 using TheOmenDen.CrowsAgainstHumility.Areas.Identity.Data;
-using System.Reflection;
 using TheOmenDen.CrowsAgainstHumility.Hubs;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using TheOmenDen.CrowsAgainstHumility.Circuits;
 using TheOmenDen.CrowsAgainstHumility.Middleware;
 using Azure.Identity;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
-using Microsoft.Extensions.Configuration;
-using Azure;
 using Fluxor;
 
 Log.Logger = new LoggerConfiguration()
@@ -46,7 +42,6 @@ try
                     .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json", true, true)
                     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true)
-                    //.AddUserSecrets(Assembly.GetExecutingAssembly(), true)
                     .AddEnvironmentVariables()
                     .AddAzureKeyVault(
                     new Uri(builder.Configuration["VaultUri"]),
@@ -123,7 +118,7 @@ try
         {
             rdt.Name = nameof(TheOmenDen.CrowsAgainstHumility);
             rdt.UseSystemTextJson(_ =>
-                new ()
+                new()
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                     PropertyNameCaseInsensitive = true
@@ -134,9 +129,9 @@ try
         .UseRouting()
         .AddMiddleware<StoreLoggingMiddleware>());
 
-    builder.Services.AddSingleton<SessionDetails>();
+    builder.Services.AddSingleton<ISessionDetails, SessionDetails>();
 
-    builder.Services.AddScoped<CircuitHandler, TrackingCircuitHandler>(sp => new TrackingCircuitHandler(sp.GetRequiredService<SessionDetails>()));
+    builder.Services.AddScoped<CircuitHandler, TrackingCircuitHandler>(sp => new TrackingCircuitHandler(sp.GetRequiredService<ISessionDetails>()));
 
     builder.Services.AddDbContext<UserContext>(options =>
         options.UseSqlite(connectionString));

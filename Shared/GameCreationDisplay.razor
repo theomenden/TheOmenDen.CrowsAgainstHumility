@@ -1,0 +1,105 @@
+﻿@page "/createGame"
+@using TheOmenDen.CrowsAgainstHumility.Core.Rules
+
+<Container Fluid
+           Background="Background.Dark"
+           Border="Border.Is2.Secondary.OnAll.Rounded"
+           Padding="Padding.Is4.OnX"
+           Margin="Margin.Is5.OnY"
+           Shadow="Shadow.Large">
+    <DisplayHeading TextColor="TextColor.Warning"
+                    TextAlignment="TextAlignment.Start"
+                    Size="DisplayHeadingSize.Is2"
+                    Margin="Margin.Is2.OnY">
+        Use the form below to create a Rule Set for your game!
+    </DisplayHeading>
+    <Form Flex="Flex.Grow.Is0.Shrink.Is1">
+        <Row Flex="Flex.InlineFlex.Row" Margin="Margin.Is1.FromTop">
+            <Column ColumnSize="ColumnSize.Is2">
+                <Field>
+                    <FieldLabel TextColor="TextColor.Warning">
+                        Game Rules
+                    </FieldLabel>
+                    <FieldBody>
+                        <Select TValue="Int32">
+                            <Repeater TItem="GameTypes" Items="GameTypes.ReadOnlyEnumerationList">
+                                <SelectItem Value="@context.Value">
+                                    @context.Name
+                                </SelectItem>
+                            </Repeater>
+                        </Select>
+                    </FieldBody>
+                </Field>
+            </Column>
+            <Column ColumnSize="ColumnSize.Is10">
+                <Paragraph TextWeight="TextWeight.Light"
+                           TextColor="TextColor.Light"
+                           Italic>
+                    Every round, pick one random white card from the pile and place it into play. 
+                    This card belongs to an imaginary player named Rando Cardrissian, 
+                    and if he wins the game, all players go home in a state of everlasting shame.
+                </Paragraph>
+            </Column>
+        </Row>
+        <Row>
+            <Column ColumnSize="ColumnSize.IsQuarter">
+                <Field>
+                    <FieldLabel TextColor="TextColor.Warning">
+                        Players to Include
+                    </FieldLabel>
+                    <FieldBody>
+                        <TextEdit Placeholder="Twitch User Name..." @bind-Text="@_playerToAdd" />
+                        <Button Color="Color.Success"
+                                Border="Border.Is2.Light.OnAll.Rounded"
+                                Clicked="AddPlayerToList">
+                            Add To List
+                        </Button>
+                    </FieldBody>
+                </Field>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                @if (!_playerNames.Any())
+                {
+                    <Paragraph TextColor="TextColor.Light"
+                               TextWeight="TextWeight.Light">
+                        Add players to your game by their Twitch or Discord Handle
+                    </Paragraph>
+                    <Small TextColor="TextColor.Light" 
+                           Class="fst-italic">
+                        (If adding by discord, please include the numbers in their handle after the #)
+                    </Small>
+                }
+                else
+                {
+                    <ListGroup Flush
+                               Background="Background.Dark"
+                               Border="Border.Is2.Warning.OnAll.Rounded"
+                               Shadow="Shadow.Small"
+                               Margin="Margin.Is3.OnY"
+                               Mode="ListGroupMode.Selectable" 
+                               @bind-SelectedItem="@_playerName">
+                        <Repeater TItem="String" Items="@_playerNames">
+                            <ListGroupItem Background="Background.Secondary"
+                                           TextColor="TextColor.Light"
+                                           Name="@context">
+                                @context
+                            </ListGroupItem>
+                        </Repeater>
+                    </ListGroup>
+                }
+            </Column>
+        </Row>
+        <Row>
+            <Column ColumnSize="ColumnSize.Is2">
+                <Field>
+                    <FieldLabel>
+                        Number of Points (Black Cards) Needed to Win
+                    </FieldLabel>
+                    <FieldBody>
+                        <NumericPicker TValue="Int32" Placeholder="10" Min="2" Max="25" Value="10"/>
+                    </FieldBody>
+                </Field>
+            </Column>
+        </Row>
+    </Form>
+</Container>

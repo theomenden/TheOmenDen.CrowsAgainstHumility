@@ -7,24 +7,35 @@ public sealed class SessionModel : IEquatable<SessionModel>, IComparable<Session
     public SessionModel()
     {
         Id = Guid.NewGuid();
+        Name = String.Empty;
+        User = SessionUser.DefaultUser;
     }
 
     public SessionModel(String name)
     {
-        Id = Guid.Empty;
+        Id = Guid.NewGuid();
         Name = name;
+        User = SessionUser.DefaultUser;
     }
-        
+
+    public SessionModel(String name, SessionUser user)
+    {
+        Id = Guid.NewGuid();
+        Name = name;
+        User = user;
+    }
 
     /// <summary>
     /// The unique Id for this session
     /// </summary>
     public Guid Id { get; }
 
+    public SessionUser User { get; set; }
+
     /// <summary>
     /// The name associated with the session
     /// </summary>
-    public String Name { get; set; } = String.Empty;
+    public String Name { get; }
 
     /// <summary>
     /// The id of the circuit associated with this session
@@ -41,8 +52,7 @@ public sealed class SessionModel : IEquatable<SessionModel>, IComparable<Session
     public bool Equals(SessionModel? other) =>
         other is not null &&
             Id == other.Id;
-
-
+    
     public override bool Equals(object? obj)
     {
         if (obj is null)

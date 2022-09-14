@@ -1,8 +1,10 @@
 ﻿@page "/"
 <PageTitle>Crows Against Humility</PageTitle>
 <Container Fluid>
-    <Row Flex="Flex.JustifyContent.Between">
-        <Column ColumnSize="ColumnSize.Is2" Padding="Padding.Is3.OnY">
+    <Row Flex="Flex.JustifyContent.Between"
+         Margin="Margin.Is3.OnY">
+        <Column ColumnSize="ColumnSize.Is2" 
+                Padding="Padding.Is3.OnY">
             <CAHBlack />
         </Column>
         <Column ColumnSize="ColumnSize.Is10"
@@ -10,9 +12,9 @@
             <CAHPlayArea />
         </Column>
     </Row>
-@*    <Row>
-        <Column ColumnSize="ColumnSize.IsAuto">
+    <Row Margin="Margin.Is4.OnY">
+        <Column>
             <CAHContainer />
         </Column>
-    </Row>*@
+    </Row>
 </Container>

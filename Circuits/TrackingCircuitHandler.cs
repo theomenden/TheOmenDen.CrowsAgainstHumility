@@ -3,24 +3,18 @@
 namespace TheOmenDen.CrowsAgainstHumility.Circuits;
 public class TrackingCircuitHandler : CircuitHandler
 {
-    public TrackingCircuitHandler(SessionDetails sessionData)
+    public TrackingCircuitHandler(ISessionDetails sessionData)
     {
         SessionData = sessionData;
     }
-    
-    public event EventHandler CircuitsChanged;
 
-    public String CircuitId { get; set; } = String.Empty;
+    public String CircuitId { get; private set; } = String.Empty;
 
-    public SessionDetails SessionData { get; set; }
-
-    protected virtual void OnCircuitsChanged() => CircuitsChanged?.Invoke(this, EventArgs.Empty);
+    public ISessionDetails SessionData { get; }
 
     public override Task OnCircuitClosedAsync(Circuit circuit, CancellationToken cancellationToken)
     {
-        SessionData.RemoveSession(circuit.Id);
-
-        OnCircuitsChanged();
+        SessionData.DisconnectSession(circuit.Id);
 
         return base.OnCircuitClosedAsync(circuit, cancellationToken);   
     }
@@ -28,8 +22,6 @@ public class TrackingCircuitHandler : CircuitHandler
     public override Task OnCircuitOpenedAsync(Circuit circuit, CancellationToken cancellationToken)
     {
         CircuitId = circuit.Id;
-
-        OnCircuitsChanged();
 
         return base.OnCircuitOpenedAsync(circuit, cancellationToken);
     }
