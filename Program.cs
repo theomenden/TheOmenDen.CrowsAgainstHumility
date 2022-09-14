@@ -174,11 +174,11 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
 
-    app.MapHub<CawHub>(CawHub.HubUrl);
     app.UseEndpoints(endpoints =>
     {
         endpoints.MapRazorPages();
         endpoints.MapBlazorHub();
+        endpoints.MapHub<CawHub>(CawHub.HubUrl);
         endpoints.MapFallbackToPage("/_Host");
     });
 
