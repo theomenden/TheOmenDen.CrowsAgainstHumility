@@ -1,5 +1,6 @@
 ﻿@layout RootLayout
 @using System.Reflection
+@inject IJSRuntime JSRunTime
 @inherits LayoutComponentBase
 <PageTitle>@ApplicationTitle</PageTitle>
 
@@ -51,11 +52,11 @@
                                          Class="fst-italic fs-6">
                                 <BarDropdownToggle>
                                     <BarIcon IconName="IconName.Book" TextColor="TextColor.Light" IconSize="IconSize.Small" />
-                                   Policies
+                                    Policies
                                 </BarDropdownToggle>
                                 <BarDropdownMenu>
                                     <BarDropdownItem To="/privacy-policy" Match="Match.All">
-                                        <BarIcon IconName="IconName.Lock"IconSize="IconSize.Small" />
+                                        <BarIcon IconName="IconName.Lock" IconSize="IconSize.Small" />
                                         Privacy Policy
                                     </BarDropdownItem>
                                     <BarDropdownItem To="/terms-of-service" Match="Match.All">
@@ -93,6 +94,18 @@
                                 </sup>
                             </BarLink>
                         </BarItem>
+                        <BarItem>
+                            <BarLink To="@certLink"
+                                     onmouseout="tLTC('tl_popupPOSEV')"
+                                     ondragstart="return false;"
+                                     onmouseover="tLeB(event,'https://secure.trust-provider.com/ttb_searcher/trustlogo?v_querytype=C&v_shortname=POSEV&v_search=https://crowsagainsthumility.app/&x=6&y=5','tl_popupPOSEV')">
+                                <Image Fluid Source="@imagePath"
+                                       Text="EV Cert Provider: https://secure.trust-provider.com/"
+                                       loading="lazy"
+                                       onmousedown="return tLKB(event,'https://secure.trust-provider.com/ttb_searcher/trustlogo?v_querytype=W&v_shortname=POSEV&v_search=https://crowsagainsthumility.app/&x=6&y=5');"
+                                       oncontextmenu="return tLLB(event);" />
+                            </BarLink>
+                        </BarItem>
                     </BarEnd>
                 </BarMenu>
             </Bar>
@@ -126,6 +139,8 @@
 </Layout>
 
 @code {
+    private const string imagePath = @"https://www.positivessl.com/images/seals/positivessl_trust_seal_lg_222x54.png";
+    private const string certLink = @"javascript:if(window.open('https://secure.trust-provider.com/ttb_searcher/trustlogo?v_querytype=W&v_shortname=POSEV&v_search=https://crowsagainsthumility.app/&x=6&y=5','tl_wnd_credentials'+(new Date()).getTime(),'toolbar=0,scrollbars=1,location=1,status=1,menubar=1,resizable=1,width=374,height=660,left=60,top=120')){};tLlB(tLTB);";
 
     private static string AssemblyProductVersion
     {
