@@ -45,6 +45,26 @@
                         </BarItem>
                     </BarStart>
                     <BarEnd>
+                        <BarItem>
+                            <BarDropdown TextWeight="TextWeight.Light"
+                                         TextColor="TextColor.Muted"
+                                         Class="fst-italic fs-6">
+                                <BarDropdownToggle>
+                                    <BarIcon IconName="IconName.Book" TextColor="TextColor.Light" IconSize="IconSize.Small" />
+                                   Policies
+                                </BarDropdownToggle>
+                                <BarDropdownMenu>
+                                    <BarDropdownItem To="/privacy-policy" Match="Match.All">
+                                        <BarIcon IconName="IconName.Lock"IconSize="IconSize.Small" />
+                                        Privacy Policy
+                                    </BarDropdownItem>
+                                    <BarDropdownItem To="/terms-of-service" Match="Match.All">
+                                        <BarIcon IconName="IconName.StickyNote" IconSize="IconSize.Small" />
+                                        Terms of Service
+                                    </BarDropdownItem>
+                                </BarDropdownMenu>
+                            </BarDropdown>
+                        </BarItem>
                         <BarItem TextWeight="TextWeight.Light"
                                  TextColor="TextColor.Muted"
                                  Class="fst-italic fs-6">

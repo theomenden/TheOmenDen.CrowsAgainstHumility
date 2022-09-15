@@ -1,0 +1,21 @@
+﻿@page "/terms-of-service"
+@inject IJSRuntime JSRunTime
+<PageTitle>Terms of Service</PageTitle>
+
+    <Container Fluid
+           Background="Background.Dark"
+           TextColor="TextColor.Light"
+           Border="Border.Is2.Secondary.OnAll.Rounded"
+           id="__enzuzo-root-tos"
+           Shadow="Shadow.Large"
+           Margin="Margin.Is3.OnY"
+           Padding="Padding.Is2.OnX" />
+@code {
+
+    private const string termsScriptUrl = @"https://stores.enzuzo.com/__enzuzo-privacy-app.js?mode=tos&apiHost=https://stores.enzuzo.com&buttonStyle=%0A%7B%0A%20%20%22buttonWidget%22%3A%20%7B%0A%20%20%20%20%22backgroundColor%22%3A%20%22%23ffffff%22%2C%0A%20%20%20%20%22color%22%3A%20%22%23000000%22%2C%0A%20%20%20%20%22%26%3Ahover%22%3A%20%7B%0A%20%20%20%20%20%20%22backgroundColor%22%3A%20%22%23a4a4a4%22%2C%0A%20%20%20%20%20%20%22color%22%3A%20%22%23000000%22%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A&qt=1631040568795&referral=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJDdXN0b21lcklEIjoxNjY3LCJDdXN0b21lck5hbWUiOiJzaG9waWZ5LXRoZS1vbWVuLWRlbi5teXNob3BpZnkuY29tIiwiQ3VzdG9tZXJMb2dvVVJMIjoiIiwiUm9sZXMiOlsicmVmZXJyYWwiXSwiUHJvZHVjdCI6InNob3BpZnkiLCJpc3MiOiJFbnp1em8gSW5jLiIsIm5iZiI6MTYzMTA0MDU3MX0.y1ZFIrEeQOrgwoA-VyhSIwMOVEI0RkmYkwczTlvpQMs";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRunTime.InvokeVoidAsync("loadJs", termsScriptUrl);
+    }
+}

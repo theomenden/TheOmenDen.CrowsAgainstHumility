@@ -151,6 +151,5 @@
 
   <ItemGroup>
     <Folder Include="Store\UseCases\" />
-    <Folder Include="wwwroot\js\" />
   </ItemGroup>
 </Project>

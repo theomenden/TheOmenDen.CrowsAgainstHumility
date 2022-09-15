@@ -1,0 +1,23 @@
+﻿@page "/privacy-policy"
+@inject IJSRuntime JSRunTime
+<PageTitle>Privacy Policy</PageTitle>
+
+    <Container Fluid
+           Background="Background.Dark"
+           TextColor="TextColor.Light"
+           Border="Border.Is2.Secondary.OnAll.Rounded"
+           id="__enzuzo-root-privacy"
+           Shadow="Shadow.Large"
+           Margin="Margin.Is3.OnY"
+           Padding="Padding.Is2.OnX" />
+
+@code {
+
+    private const string privacyScriptUrl = @"https://stores.enzuzo.com/__enzuzo-privacy-app.js?mode=privacy&apiHost=https://stores.enzuzo.com&buttonStyle=%0A%7B%0A%20%20%22buttonWidget%22%3A%20%7B%0A%20%20%20%20%22backgroundColor%22%3A%20%22%23ffffff%22%2C%0A%20%20%20%20%22color%22%3A%20%22%23000000%22%2C%0A%20%20%20%20%22%26%3Ahover%22%3A%20%7B%0A%20%20%20%20%20%20%22backgroundColor%22%3A%20%22%23a4a4a4%22%2C%0A%20%20%20%20%20%20%22color%22%3A%20%22%23000000%22%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A&qt=1663256104966&referral=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJDdXN0b21lcklEIjo2NjY3LCJDdXN0b21lck5hbWUiOiJzaG9waWZ5LXRoZS1vbWVuLWRlbi5teXNob3BpZnkuY29tIiwiQ3VzdG9tZXJMb2dvVVJMIjoiIiwiUm9sZXMiOlsicmVmZXJyYWwiXSwiUHJvZHVjdCI6InNob3BpZnkiLCJpc3MiOiJFbnp1em8gSW5jLiIsIm5iZiI6MTY2MzI1NTg2M30.5ltsDun8hHbVHtim61An_rpsigNtFtMFHaTirBHpnzo";
+    private const string privacyScriptId = @"__enzuzo-root-script";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRunTime.InvokeVoidAsync("loadJsById", privacyScriptId, privacyScriptUrl);
+    }
+}
