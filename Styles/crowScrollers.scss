@@ -1,4 +1,5 @@
 ﻿$scrollbar-bg: rgb(1 2 3 / 40%);
+$scrollbar-track-bg: rgba(0,0,0,0.3);
 
 ::-webkit-scrollbar {
     width: 6px;
@@ -13,7 +14,7 @@
 
 ::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-    background-color: rgba(0,0,0,0.3);
+    background-color: $scrollbar-track-bg;
     border-radius: 10px;
 }
 

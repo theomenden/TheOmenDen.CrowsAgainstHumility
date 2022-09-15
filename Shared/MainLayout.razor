@@ -1,7 +1,7 @@
 ﻿@layout RootLayout
 @using System.Reflection
 @inherits LayoutComponentBase
-<PageTitle>Crows Against Humility</PageTitle>
+<PageTitle>@ApplicationTitle</PageTitle>
 
 <Layout Sider>
     <LayoutSider>
@@ -10,8 +10,8 @@
                  Background="Background.Dark"
                  ThemeContrast="ThemeContrast.Dark"
                  CollapseMode="BarCollapseMode.Small"
-                 Breakpoint="Breakpoint.Desktop"
-                 NavigationBreakpoint="Breakpoint.Tablet"
+                 Breakpoint="Breakpoint.FullHD"
+                 NavigationBreakpoint="Breakpoint.Desktop"
                  TextOverflow="TextOverflow.Truncate"
                  Shadow="Shadow.Default"
                  Border="Border.Is2.OnEnd.RoundedEnd.Light.OnEnd">
@@ -49,8 +49,8 @@
                                  TextColor="TextColor.Muted"
                                  Class="fst-italic fs-6">
                             <BarLink>
-                                <BarIcon IconName="IconName.Code" 
-                                         IconSize="IconSize.ExtraSmall" 
+                                <BarIcon IconName="IconName.Code"
+                                         IconSize="IconSize.ExtraSmall"
                                          IconStyle="IconStyle.Light" />
                                 v-@AssemblyProductVersion
                             </BarLink>
@@ -60,9 +60,9 @@
                                  Margin="Margin.Is0.FromBottom.OnDesktop"
                                  Class="f_400 fst-italic fs-6">
                             <BarLink>
-                                <BarIcon IconName="IconName.Copyright" 
+                                <BarIcon IconName="IconName.Copyright"
                                          IconSize="IconSize.ExtraSmall" />
-                            @ApplicationDevelopmentCompany
+                                @ApplicationDevelopmentCompany
                                 <sup>
                                     <Icon Name="@("bi bi-badge-tm")"
                                           IconSize="IconSize.ExtraSmall"
@@ -86,7 +86,7 @@
                  Shadow="Shadow.Default"
                  Border="Border.Is2.OnBottom.RoundedBottom.Light.OnBottom">
                 <BarBrand Margin="Margin.Is2.FromStart" Casing="CharacterCasing.Upper">
-                    Crows Against Humility
+                    @ApplicationTitle
                 </BarBrand>
                 <BarToggler />
                 <BarMenu>
@@ -99,8 +99,7 @@
                 </BarMenu>
             </Bar>
         </LayoutHeader>
-        <LayoutContent Padding="Padding.Is4.OnX"
-                       Margin="Margin.Is4.OnX">
+        <LayoutContent Padding="Padding.Is4.OnX">
             @Body
         </LayoutContent>
     </Layout>
@@ -129,6 +128,18 @@
             return attributes.Length == 0 ?
                 String.Empty :
                 ((AssemblyCompanyAttribute)attributes[0]).Company;
+        }
+    }
+
+    private static string ApplicationTitle
+    {
+        get
+        {
+            var attributes = Assembly.GetExecutingAssembly()
+            .GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
+            return attributes.Length == 0
+            ? String.Empty
+            : ((AssemblyTitleAttribute)attributes[0]).Title;
         }
     }
 }

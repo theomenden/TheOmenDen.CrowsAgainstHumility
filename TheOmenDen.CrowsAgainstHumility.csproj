@@ -17,6 +17,7 @@
 	<Date>$([System.DateTime]::Now.ToString("1.MM.dd.HHss"))</Date>
 	<AssemblyFileVersionAttribute>[assembly:System.Reflection.AssemblyFileVersion("$(Date)")]</AssemblyFileVersionAttribute>
 	  <AssemblyCompanyAttribute>[assembly:System.Reflection.AssemblyCompany("The Omen Den L.L.C.")]</AssemblyCompanyAttribute>
+	  <AssemblyTitleAttribute>[assembly:System.Reflection.AssemblyTitle("Crows Against Humility")]</AssemblyTitleAttribute>
 	  <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -37,7 +38,7 @@
   </PropertyGroup>
 	
 	<Target Name="GenerateVersionInfo" BeforeTargets="BeforeBuild">
-		<WriteLinesToFile File="Properties\VersionInfo.cs" Lines="$(AssemblyFileVersionAttribute)$([System.Environment]::NewLine)$(AssemblyCompanyAttribute)" Overwrite="true"></WriteLinesToFile>
+		<WriteLinesToFile File="Properties\VersionInfo.cs" Lines="$(AssemblyFileVersionAttribute)$([System.Environment]::NewLine)$(AssemblyCompanyAttribute)$([System.Environment]::NewLine)$(AssemblyTitleAttribute)" Overwrite="true"></WriteLinesToFile>
 	</Target>
 
 	<ItemGroup>
@@ -101,6 +102,10 @@
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.2" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.8.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.8" />
     <PackageReference Include="Serilog" Version="2.12.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
@@ -146,5 +151,6 @@
 
   <ItemGroup>
     <Folder Include="Store\UseCases\" />
+    <Folder Include="wwwroot\js\" />
   </ItemGroup>
 </Project>
