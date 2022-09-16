@@ -15,6 +15,8 @@ using TheOmenDen.CrowsAgainstHumility.Middleware;
 using Azure.Identity;
 using System.Text.Json;
 using Fluxor;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
@@ -66,10 +68,7 @@ try
         .AddBootstrap5Components()
         .AddBootstrapIcons();
 
-    builder.Services.AddAuthentication(options =>
-        {
-            /* Authentication options */
-        })
+    builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
         .AddTwitter(options =>
         {
             var twitterKeys = new TwitterStrings(
@@ -85,7 +84,7 @@ try
             var twitchKeys = new TwitchStrings(
                 builder.Configuration["twitch-key"],
                 builder.Configuration["twitch-clientId"]);
-
+            
             options.ClientId = twitchKeys.ClientId;
             options.ClientSecret = twitchKeys.Key;
         })
