@@ -17,6 +17,7 @@ using System.Text.Json;
 using Fluxor;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using TheOmenDen.CrowsAgainstHumility.Data.Extensions;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
@@ -101,6 +102,8 @@ try
 
     builder.Services.AddHttpClient();
     builder.Services.AddScoped<TokenProvider>();
+
+    builder.Services.AddCorvidDataServices(builder.Configuration["ConnectionStrings:CrowsAgainstHumilityDb"]);
 
     builder.Services.AddResponseCompression(options =>
     {
