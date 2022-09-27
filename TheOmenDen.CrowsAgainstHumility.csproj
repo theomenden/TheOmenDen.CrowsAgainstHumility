@@ -125,6 +125,7 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
     <PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
     <PackageReference Include="TheOmenDen.Shared" Version="2022.9.19.1408" />
     <PackageReference Include="TheOmenDen.Shared.Interfaces" Version="1.8.27.428" />
@@ -153,5 +154,11 @@
 
   <ItemGroup>
     <Folder Include="Store\UseCases\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="logs\log-20220917.json" />
+    <_ContentIncludedByDefault Remove="logs\log-20220918.json" />
+    <_ContentIncludedByDefault Remove="logs\log-20220925.json" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,6 @@
 ﻿namespace TheOmenDen.CrowsAgainstHumility.Components;
+
 public partial class CAHWhite: ComponentBase
     {
-        private readonly WhiteCard? _whiteCard = new();
+        [Parameter] public  WhiteCard? WhiteCard { get; set; } = new();
     }

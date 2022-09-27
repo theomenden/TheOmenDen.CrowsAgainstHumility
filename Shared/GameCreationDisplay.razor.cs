@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TheOmenDen.CrowsAgainstHumility.Data.Contexts;
+using TheOmenDen.Shared.Extensions;
+using TheOmenDen.Shared.Utilities;
 
 namespace TheOmenDen.CrowsAgainstHumility.Shared
 {
@@ -12,13 +14,13 @@ namespace TheOmenDen.CrowsAgainstHumility.Shared
 
         private string _playerToAdd = String.Empty;
 
-        private List<String> _playerNames = new (10);
+        private readonly List<String> _playerNames = new (10);
 
         private Pack[] _packs = Array.Empty<Pack>();
 
-        private List<Pack> _chosenPacks = new (10);
+        private readonly List<Pack> _chosenPacks = new (10);
 
-        private List<String> _chosenPackTexts = new(10);
+        private List<string> _chosenPackTexts = new(10);
 
         protected override async Task OnInitializedAsync()
         {
@@ -46,7 +48,9 @@ namespace TheOmenDen.CrowsAgainstHumility.Shared
 
         private Task AddRandomPacks()
         {
-            var packsToAdd = _packs.
+            var packsToAdd = _packs.GetRandomElements(5);
+            
+            _chosenPacks.AddRange(packsToAdd);
 
             return Task.CompletedTask;
         }
