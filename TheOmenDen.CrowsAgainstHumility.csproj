@@ -76,7 +76,7 @@
     <PackageReference Include="Azure.Identity" Version="1.7.0" />
     <PackageReference Include="Blazorise" Version="1.1.1" />
     <PackageReference Include="Blazorise.Animate" Version="1.1.1" />
-    <PackageReference Include="Blazorise.Bootstrap5" Version="1.1.0" />
+    <PackageReference Include="Blazorise.Bootstrap5" Version="1.1.1" />
     <PackageReference Include="Blazorise.Components" Version="1.1.1" />
     <PackageReference Include="Blazorise.Icons.Bootstrap" Version="1.1.0" />
     <PackageReference Include="Blazorise.Markdown" Version="1.1.1" />
