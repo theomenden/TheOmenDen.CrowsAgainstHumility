@@ -14,6 +14,7 @@ using TheOmenDen.CrowsAgainstHumility.Circuits;
 using TheOmenDen.CrowsAgainstHumility.Middleware;
 using Azure.Identity;
 using System.Text.Json;
+using Blazorise.LoadingIndicator;
 using Fluxor;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -69,6 +70,8 @@ try
         .AddBootstrap5Components()
         .AddBootstrapIcons();
 
+    builder.Services.AddLoadingIndicator();
+    
     builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
         .AddTwitter(options =>
         {

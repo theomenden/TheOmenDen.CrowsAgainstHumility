@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TheOmenDen.CrowsAgainstHumility.Core.Models;
 
-public partial class Pack
+public partial class Pack: IComparable<Pack>, IEquatable<Pack>
 {
     public Pack()
     {
@@ -22,4 +22,32 @@ public partial class Pack
 
     public virtual ICollection<BlackCard> BlackCards { get; set; }
     public virtual ICollection<WhiteCard> WhiteCards { get; set; }
+
+    public int CompareTo(Pack other)
+        => String.CompareOrdinal(Name, other.Name);
+
+    public bool Equals(Pack other)
+        => other is not null
+           && Id == other.Id
+           && Name == other.Name;
+
+    public override bool Equals(object obj)
+    {
+        if (obj is null)
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+        
+        return obj is Pack other && Equals(other);
+    }
+    
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Id, Name);
+    }
 }

@@ -93,15 +93,6 @@ public partial class CawChat : ComponentBase, IAsyncDisposable
 
     private async Task SendAsync(string message)
     {
-        /*        
-    const messageBubble = `<span class="chat-bubble">${userMessage}</span>`;
-
-
-    messageContainer.insertBefore(messageDiv, dots);
-    messageContainer.classList.add('chat-messages--typing');
-
-         */
-
         if (_isChatting && !string.IsNullOrWhiteSpace(message))
         {
             GetChatSenderStatus(true);

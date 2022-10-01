@@ -48,7 +48,7 @@
                         Players to Include
                     </FieldLabel>
                     <FieldBody>
-                        <TextEdit Placeholder="Twitch User Name..." @bind-Text="@_playerToAdd" />
+                        <TextEdit Placeholder="Twitch User Name..." @bind-Text="@_playerToAdd"/>
                         <Button Color="Color.Success"
                                 Border="Border.Is2.Light.OnAll.Rounded"
                                 Clicked="AddPlayerToList">
@@ -61,27 +61,27 @@
                 @if (!_playerNames.Any())
                 {
                     <Paragraph TextColor="TextColor.Light"
-                           TextWeight="TextWeight.Light">
+                               TextWeight="TextWeight.Light">
                         Add players to your game by their Twitch or Discord Handle
                     </Paragraph>
                     <Small TextColor="TextColor.Light"
-                       Class="fst-italic">
+                           Class="fst-italic">
                         (If adding by discord, please include the numbers in their handle after the #)
                     </Small>
                 }
                 else
                 {
                     <ListGroup Flush
-                           Background="Background.Dark"
-                           Border="Border.Is2.Warning.OnAll.Rounded"
-                           Shadow="Shadow.Small"
-                           Margin="Margin.Is3.OnY"
-                           Mode="ListGroupMode.Selectable"
-                           @bind-SelectedItem="@_playerName">
+                               Background="Background.Dark"
+                               Border="Border.Is2.Warning.OnAll.Rounded"
+                               Shadow="Shadow.Small"
+                               Margin="Margin.Is3.OnY"
+                               Mode="ListGroupMode.Selectable"
+                               @bind-SelectedItem="@_playerName">
                         <Repeater TItem="String" Items="@_playerNames">
                             <ListGroupItem Background="Background.Secondary"
-                                       TextColor="TextColor.Light"
-                                       Name="@context">
+                                           TextColor="TextColor.Light"
+                                           Name="@context">
                                 @context
                             </ListGroupItem>
                         </Repeater>
@@ -91,22 +91,17 @@
         </Row>
         <Row>
             <Column ColumnSize="ColumnSize.IsThird">
-                @if (!_packs.Any())
-                {
-                    <SpinKit Centered Color="#ff4a3d" Type="SpinKitType.Chase" />
-                }
-                else
-                {
-                    <Autocomplete TItem="Pack"
-                              TValue="Pack"
-                              Data="@_packs"
-                              TextField="@(item => item.Name)"
-                              ValueField="@(item => item)"
-                              Placeholder="Search..."
-                              Multiple
-                              FreeTyping
-                              @bind-SelectedValues="_chosenPacks"
-                              @bind-SelectedTexts="_chosenPackTexts">
+                <Autocomplete TItem="Pack"
+                                  TValue="Pack"
+                                  Data="@_packs"
+                                  ReadData="OnHandleReadData"
+                                  TextField="@(item => item.Name)"
+                                  ValueField="@(item => item)"
+                                  Placeholder="Search..."
+                                  SelectionMode="AutocompleteSelectionMode.Multiple"
+                                  FreeTyping
+                                  @bind-SelectedValues="_chosenPacks"
+                                  @bind-SelectedTexts="_chosenPackTexts">
                         <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
                         <ItemContent>
                             <Div Flex="Flex.JustifyContent.Between.AlignContent.Center">
@@ -114,18 +109,23 @@
                                     @context.Text
                                 </Paragraph>
                                 <Badge Color="Color.Primary"
-                                   Display="@(context.Item.IsOfficialPack ? Display.Always : Display.None)">
+                                       Display="@(context.Item.IsOfficialPack ? Display.Always : Display.None)">
                                     @context.Item.OfficialPack
                                 </Badge>
                             </Div>
                         </ItemContent>
                     </Autocomplete>
-                }
             </Column>
             <Column ColumnSize="ColumnSize.IsThird">
                 Pack Options
                 <Buttons Role="ButtonsRole.Toolbar"
                          Flex="Flex.Column.Shrink.Is1">
+                                        <Button Color="Color.Success" Border="Border.Is3.Light.OnAll.Rounded"
+                                                Shadow="Shadow.Default"
+                                                Clicked="AddSearchedPacks"
+                                                Block>
+                                            Add packs from Search
+                                        </Button>
                     <Button Color="Color.Primary" Border="Border.Is3.Light.OnAll.Rounded"
                             Shadow="Shadow.Default"
                             Clicked="AddOfficialPacks"
@@ -138,18 +138,24 @@
                             Block>
                         Add 5 Random Packs!
                     </Button>
-                <Button Color="Color.Danger" Border="Border.Is3.Light.OnAll.Rounded"
-                        Shadow="Shadow.Default"
-                        Clicked="RemoveAllPacks"
-                        Block>
-                    Remove All Packs
-                </Button>
+                    <Button Color="Color.Danger" Border="Border.Is3.Light.OnAll.Rounded"
+                            Shadow="Shadow.Default"
+                            Clicked="RemoveAllPacks"
+                            Block>
+                        Remove All Packs
+                    </Button>
                 </Buttons>
             </Column>
-            <Column ColumnSize="ColumnSize.IsThird">
-                <ListGroup Mode="ListGroupMode.Static" Background="Background.Transparent">
+            <Column ColumnSize="ColumnSize.IsThird" 
+                    Overflow="Overflow.Hidden">
+                <ListGroup Mode="ListGroupMode.Static" 
+                           Background="Background.Transparent" 
+                           Flush 
+                           Border="Border.Is2.Secondary.OnAll.Rounded"
+                           Shadow="Shadow.Default"
+                           Style="max-height: max(calc(500px - 2.5em), 500px); overflow-x: hidden; overflow-y: scroll;">
                     <Repeater TItem="Pack" Items="_packsToChoose.Values">
-                        <ListGroupItem Name="@context.Name" Background="Background.Transparent">
+                        <ListGroupItem Name="@context.Name" Background="Background.Transparent" TextColor="TextColor.Light">
                             @context.Name
                         </ListGroupItem>
                     </Repeater>
@@ -163,7 +169,7 @@
                         Number of Points (Black Cards) Needed to Win
                     </FieldLabel>
                     <FieldBody>
-                        <NumericPicker TValue="Int32" Placeholder="10" Min="2" Max="25" Value="10" />
+                        <NumericPicker TValue="Int32" Placeholder="10" Min="2" Max="25" Value="10"/>
                     </FieldBody>
                 </Field>
             </Column>

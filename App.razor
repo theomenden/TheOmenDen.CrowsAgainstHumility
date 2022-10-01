@@ -1,10 +1,10 @@
 ﻿@inject TokenProvider TokenProvider
-<Fluxor.Blazor.Web.StoreInitializer />
+<Fluxor.Blazor.Web.StoreInitializer/>
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
-            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
+            <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
         </Found>
         <NotFound>
             <PageTitle>Not found</PageTitle>
@@ -13,11 +13,14 @@
             </LayoutView>
         </NotFound>
     </Router>
-    <PageProgressAlert />
-    <NotificationAlert />
-    <MessageAlert />
+    <ApplicationLoadingIndicator/>
+    <PageProgressAlert/>
+    <NotificationAlert/>
+    <MessageAlert/>
 </CascadingAuthenticationState>
+
 @code {
+
     [Parameter]
     public TokenProvider InitialState { get; set; }
 
@@ -27,4 +30,5 @@
 
         return base.OnInitializedAsync();
     }
+
 }

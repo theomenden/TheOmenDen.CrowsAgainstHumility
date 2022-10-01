@@ -79,6 +79,7 @@
     <PackageReference Include="Blazorise.Bootstrap5" Version="1.1.1" />
     <PackageReference Include="Blazorise.Components" Version="1.1.1" />
     <PackageReference Include="Blazorise.Icons.Bootstrap" Version="1.1.1" />
+    <PackageReference Include="Blazorise.LoadingIndicator" Version="1.1.1" />
     <PackageReference Include="Blazorise.Markdown" Version="1.1.1" />
     <PackageReference Include="Blazorise.QRCode" Version="1.1.1" />
     <PackageReference Include="Blazorise.SpinKit" Version="1.1.1" />
