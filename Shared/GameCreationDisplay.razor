@@ -147,10 +147,13 @@
                 </Buttons>
             </Column>
             <Column ColumnSize="ColumnSize.IsThird">
-                <ListView Mode="ListGroupMode.Static"
-                          TItem="String"
-                          Data="_chosenPacks.Select(p => p.Name).Distinct().ToArray()"
-                          TextField="item => item" />
+                <ListGroup Mode="ListGroupMode.Static" Background="Background.Transparent">
+                    <Repeater TItem="Pack" Items="_packsToChoose.Values">
+                        <ListGroupItem Name="@context.Name" Background="Background.Transparent">
+                            @context.Name
+                        </ListGroupItem>
+                    </Repeater>
+                </ListGroup>
             </Column>
         </Row>
         <Row>

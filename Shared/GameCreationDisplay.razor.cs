@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using TheOmenDen.CrowsAgainstHumility.Data.Contexts;
 using TheOmenDen.Shared.Extensions;
 using TheOmenDen.Shared.Utilities;
@@ -16,9 +18,9 @@ namespace TheOmenDen.CrowsAgainstHumility.Shared
 
         private readonly List<String> _playerNames = new (10);
 
-        private Pack[] _packs = Array.Empty<Pack>();
+        private ImmutableList<Pack> _packs = ImmutableList.Create<Pack>();
 
-        private readonly List<Pack> _chosenPacks = new (10);
+        private Dictionary<Guid,Pack> _packsToChoose = new(10);
 
         private List<string> _chosenPackTexts = new(10);
 
@@ -26,8 +28,8 @@ namespace TheOmenDen.CrowsAgainstHumility.Shared
         {
             await using var context = await DbContextFactory.CreateDbContextAsync();
 
-            _packs = await context.Packs
-                .ToArrayAsync();
+            _packs = context.Packs
+                .ToImmutableList();
         }
 
         private Task AddPlayerToList()
@@ -41,23 +43,27 @@ namespace TheOmenDen.CrowsAgainstHumility.Shared
         {
             var officialPacks = _packs.Where(p => p.IsOfficialPack).ToArray();
 
-            _chosenPacks.AddRange(officialPacks);
+            foreach (var pack in _packs.Where(p => p.IsOfficialPack))
+            {
+                _packsToChoose.TryAdd(pack.Id, pack);
+            }
 
             return Task.CompletedTask;
         }
 
         private Task AddRandomPacks()
         {
-            var packsToAdd = _packs.GetRandomElements(5);
-            
-            _chosenPacks.AddRange(packsToAdd);
+            foreach(var pack in _packs.GetRandomElements(5))
+            {
+                _packsToChoose.TryAdd(pack.Id,pack);
+            }
 
             return Task.CompletedTask;
         }
 
         private Task RemoveAllPacks()
         {
-            _chosenPacks.Clear();
+            _packsToChoose.Clear();
 
             return Task.CompletedTask;
         }
