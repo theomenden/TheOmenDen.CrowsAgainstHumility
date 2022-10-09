@@ -128,7 +128,7 @@
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
-    <PackageReference Include="TheOmenDen.Shared" Version="2022.9.19.1408" />
+    <PackageReference Include="TheOmenDen.Shared" Version="2022.10.8.41" />
     <PackageReference Include="TheOmenDen.Shared.Interfaces" Version="1.8.27.428" />
     <PackageReference Include="TheOmenDen.Shared.Logging" Version="1.8.27.435" />
     <PackageReference Include="TwitchLib" Version="3.4.1" />

@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
-    <PackageReference Include="TheOmenDen.Shared" Version="2022.9.19.1408" />
+    <PackageReference Include="TheOmenDen.Shared" Version="2022.10.8.41" />
   </ItemGroup>
 
   <ItemGroup>
