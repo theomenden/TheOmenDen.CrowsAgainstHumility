@@ -1,6 +1,4 @@
-﻿using TheOmenDen.Shared.Interfaces.Models;
-
-namespace TheOmenDen.CrowsAgainstHumility.Circuits;
+﻿namespace TheOmenDen.CrowsAgainstHumility.Circuits;
 
 /// <summary>
 /// 

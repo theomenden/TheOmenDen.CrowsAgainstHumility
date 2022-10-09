@@ -14,19 +14,19 @@
         </NotFound>
     </Router>
     <ApplicationLoadingIndicator/>
-    <PageProgressAlert/>
-    <NotificationAlert/>
-    <MessageAlert/>
+    <PageProgressProvider/>
+    <NotificationProvider/>
+    <MessageProvider/>
 </CascadingAuthenticationState>
 
 @code {
 
     [Parameter]
-    public TokenProvider InitialState { get; set; }
+    public TokenProvider? InitialState { get; set; }
 
     protected override Task OnInitializedAsync()
     {
-        TokenProvider.XSRFToken = InitialState.XSRFToken;
+        TokenProvider.XSRFToken = InitialState?.XSRFToken ?? String.Empty;
 
         return base.OnInitializedAsync();
     }

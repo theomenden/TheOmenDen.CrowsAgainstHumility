@@ -1,0 +1,7 @@
+﻿.game-creation-list {
+    min-height: 1.25rem;
+    height: fit-content;
+    max-height: calc(250px - 2.85em);
+    overflow-x: hidden;
+    overflow-y: scroll;
+}

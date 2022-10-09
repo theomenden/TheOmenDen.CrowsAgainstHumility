@@ -1,12 +1,13 @@
 ﻿@use 'cawChatStyles.scss';
 @use 'crowScrollers.scss';
+@use 'crowCardLists.scss';
 $first-white-card: ".none";
 $second-white-card: ".none";
 
 html, body {
     overflow-x: hidden;
     overflow-y: hidden;
-    height: 100vh;
+    height: 100%;
     width: 100%;
     font-family: 'Roboto', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -79,9 +80,69 @@ a, .btn-link {
 
 @media (prefers-color-scheme: dark) {
     body {
-        background-color: dimgrey;
-        font-size: 1.6em;
-        color: white;
+        margin: 0;
+        padding: 0;;
+        background-image: url('https://static.tumblr.com/03fbbc566b081016810402488936fbae/pqpk3dn/MRSmlzpj3/tumblr_static_bg3.png');
+        background-repeat: repeat;
+        background-size: contain;
+        background-position-x: 0;
+        background-position-y: 0;
+        background-color: rgb(163,145,147);
+        -webkit-animation: 10s linear 0s normal none infinite animate;
+        -moz-animation: 10s linear 0s normal none infinite animate;
+        -ms-animation: 10s linear 0s normal none infinite animate;
+        -o-animation: 10s linear 0s normal none infinite animate;
+        animation: 10s linear 0s normal none infinite animate;
+    }
+
+    @-webkit-keyframes animate {
+        from {
+            background-position: 0 0;
+        }
+
+        to {
+            background-position: 500px 0;
+        }
+    }
+
+    @-moz-keyframes animate {
+        from {
+            background-position: 0 0;
+        }
+
+        to {
+            background-position: 500px 0;
+        }
+    }
+
+    @-ms-keyframes animate {
+        from {
+            background-position: 0 0;
+        }
+
+        to {
+            background-position: 500px 0;
+        }
+    }
+
+    @-o-keyframes animate {
+        from {
+            background-position: 0 0;
+        }
+
+        to {
+            background-position: 500px 0;
+        }
+    }
+
+    @keyframes animate {
+        from {
+            background-position: 0 0;
+        }
+
+        to {
+            background-position: 500px 0;
+        }
     }
 }
 
@@ -90,7 +151,7 @@ $card-width: 64mm;
 $card-height: 89mm;
 $card-font-size: 1em;
 $card-padding: 1em;
-$card-line-height:1.6em;
+$card-line-height: 1.6em;
 $card-fullsize-width: 100%;
 $card-fullsize-height: 100%;
 
@@ -102,6 +163,7 @@ $card-fullsize-height: 100%;
     height: $card-height;
     margin: 10px;
 }
+
 .fullsize-container {
     width: $card-fullsize-width;
     height: $card-fullsize-height;
@@ -214,6 +276,7 @@ $card-fullsize-height: 100%;
     align-items: center;
     z-index: 1;
 }
+
 .cah-card-text {
     position: absolute;
     top: 4mm;
@@ -242,7 +305,7 @@ $card-fullsize-height: 100%;
     top: 0;
     bottom: 0;
     left: 0;
-    right:0;
+    right: 0;
     margin: auto;
 }
 
@@ -255,7 +318,7 @@ $card-fullsize-height: 100%;
     line-height: 30px;
     z-index: 2;
 }
-    /*End Card Hand Container*/
+/*End Card Hand Container*/
 
 
 /*Bounce In For Logos */

@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Collections.Immutable;
 using Blazorise.Components;
 using TheOmenDen.CrowsAgainstHumility.Data.Contexts;
 using TheOmenDen.Shared.Extensions;
 using TheOmenDen.Shared.Utilities;
+using Blazorise.LoadingIndicator;
 
 namespace TheOmenDen.CrowsAgainstHumility.Shared
 {
@@ -13,20 +12,24 @@ namespace TheOmenDen.CrowsAgainstHumility.Shared
         [Inject]
         public IDbContextFactory<CrowsAgainstHumilityContext> DbContextFactory { get; init; }
 
+        private Int32 _totalCardsInPool = 0;
+
         private string _playerName = String.Empty;
 
         private string _playerToAdd = String.Empty;
 
-        private readonly List<String> _playerNames = new (10);
+        private readonly List<String> _playerNames = new(10);
 
         private List<Pack> _packs = new(300);
 
-        private readonly Dictionary<Guid,Pack> _packsToChoose = new(10);
+        private readonly Dictionary<Guid, Pack> _packsToChoose = new(10);
 
-        private List<Pack> _chosenPacks = new (10);
-        
+        private List<Pack> _chosenPacks = new(10);
+
         private List<string> _chosenPackTexts = new(10);
-        
+
+        private bool _isIndicatorVisible;
+
         private async Task OnHandleReadData(AutocompleteReadDataEventArgs autocompleteReadDataEventArgs)
         {
             if (!autocompleteReadDataEventArgs.CancellationToken.IsCancellationRequested)
@@ -39,9 +42,11 @@ namespace TheOmenDen.CrowsAgainstHumility.Shared
                 {
                     packsQuery = packsQuery
                         .Where(p => p.Name.StartsWith(autocompleteReadDataEventArgs.SearchValue));
-                } 
-                
+                }
+
                 _packs = await packsQuery
+                    .Include(p => p.BlackCards)
+                    .Include(p => p.WhiteCards)
                     .ToListAsync(autocompleteReadDataEventArgs.CancellationToken);
             }
         }
@@ -56,43 +61,69 @@ namespace TheOmenDen.CrowsAgainstHumility.Shared
         private async Task AddOfficialPacks()
         {
             await using var context = await DbContextFactory.CreateDbContextAsync();
-            
-            foreach (var pack in context.Packs.Where(p => p.IsOfficialPack))
+
+            _isIndicatorVisible = true;
+
+            foreach (var pack in context.Packs
+                         .Where(p => p.IsOfficialPack)
+                         .Include(p => p.BlackCards)
+                         .Include(p => p.WhiteCards))
             {
+                pack.WhiteCards.TryGetNonEnumeratedCount(out var whiteCardCount);
+                _totalCardsInPool += whiteCardCount;
                 _packsToChoose.TryAdd(pack.Id, pack);
             }
+
+            _isIndicatorVisible = false;
         }
 
         private Task AddSearchedPacks()
         {
+            _isIndicatorVisible = true;
             foreach (var pack in _chosenPacks)
             {
+                pack.WhiteCards.TryGetNonEnumeratedCount(out var whiteCardCount);
+
+                _totalCardsInPool += whiteCardCount;
                 _packsToChoose.TryAdd(pack.Id, pack);
             }
+            _isIndicatorVisible = false;
             return Task.CompletedTask;
         }
-        
+
         private async Task AddRandomPacks()
         {
             await using var context = await DbContextFactory.CreateDbContextAsync();
 
-            var packs = context.Packs.Skip(ThreadSafeRandom.Global.Next(0, 130))
-                .Take(ThreadSafeRandom.Global.Next(0, 40))
-                .ToArray();
+            _isIndicatorVisible = true;
 
-            Array.ForEach(packs.GetRandomElementsFromArray(5), pack =>
+            var skippedRows = ThreadSafeRandom.Global.Next(0, 130);
+            var rowsToTake = ThreadSafeRandom.Global.Next(6, 40);
+
+            var packs = context.Packs
+                .Skip(skippedRows)
+                .Take(rowsToTake)
+                .Include(p => p.BlackCards)
+                .Include(p => p.WhiteCards);
+
+            foreach (var pack in packs.GetRandomElements(5))
             {
-                _packsToChoose.TryAdd(pack.Id,pack);
-            });
+                pack.WhiteCards.TryGetNonEnumeratedCount(out var whiteCardCount);
+                _totalCardsInPool += whiteCardCount;
+                _packsToChoose.TryAdd(pack.Id, pack);
+            }
+
+            _isIndicatorVisible = false;
         }
 
-        private Task RemoveAllPacks()
+        private async Task RemoveAllPacks()
         {
+            _isIndicatorVisible = true;
             _packsToChoose.Clear();
             _chosenPacks.Clear();
             _chosenPackTexts.Clear();
-            
-            return Task.CompletedTask;
+            _totalCardsInPool = 0;
+            _isIndicatorVisible = false;
         }
     }
 }

@@ -156,10 +156,4 @@
   <ItemGroup>
     <Folder Include="Store\UseCases\" />
   </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="logs\log-20220917.json" />
-    <_ContentIncludedByDefault Remove="logs\log-20220918.json" />
-    <_ContentIncludedByDefault Remove="logs\log-20220925.json" />
-  </ItemGroup>
 </Project>

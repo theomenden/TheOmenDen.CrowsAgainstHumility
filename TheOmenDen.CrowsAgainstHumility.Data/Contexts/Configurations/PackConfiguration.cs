@@ -18,6 +18,14 @@ public partial class PackConfiguration : IEntityTypeConfiguration<Pack>
         entity.Property(e => e.Name)
             .IsRequired()
             .HasMaxLength(200);
+        
+        entity.HasMany(e => e.WhiteCards)
+            .WithOne(w => w.Pack)
+            .HasForeignKey(w => w.PackId);
+
+        entity.HasMany(e => e.BlackCards)
+            .WithOne(b => b.Pack)
+            .HasForeignKey(b => b.PackId);
 
         OnConfigurePartial(entity);
     }

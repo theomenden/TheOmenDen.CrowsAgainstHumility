@@ -11,7 +11,7 @@
                     TextAlignment="TextAlignment.Start"
                     Size="DisplayHeadingSize.Is2"
                     Margin="Margin.Is2.OnY">
-        Use the form below to create a Rule Set for your game!
+        Create a Rule Set for your game!
     </DisplayHeading>
     <Form Flex="Flex.Grow.Is0.Shrink.Is1">
         <Row Flex="Flex.InlineFlex.Row" Margin="Margin.Is1.FromTop">
@@ -48,7 +48,7 @@
                         Players to Include
                     </FieldLabel>
                     <FieldBody>
-                        <TextEdit Placeholder="Twitch User Name..." @bind-Text="@_playerToAdd"/>
+                        <TextEdit Placeholder="Twitch User Name..." @bind-Text="@_playerToAdd" />
                         <Button Color="Color.Success"
                                 Border="Border.Is2.Light.OnAll.Rounded"
                                 Clicked="AddPlayerToList">
@@ -61,27 +61,27 @@
                 @if (!_playerNames.Any())
                 {
                     <Paragraph TextColor="TextColor.Light"
-                               TextWeight="TextWeight.Light">
+                           TextWeight="TextWeight.Light">
                         Add players to your game by their Twitch or Discord Handle
                     </Paragraph>
                     <Small TextColor="TextColor.Light"
-                           Class="fst-italic">
+                       Class="fst-italic">
                         (If adding by discord, please include the numbers in their handle after the #)
                     </Small>
                 }
                 else
                 {
                     <ListGroup Flush
-                               Background="Background.Dark"
-                               Border="Border.Is2.Warning.OnAll.Rounded"
-                               Shadow="Shadow.Small"
-                               Margin="Margin.Is3.OnY"
-                               Mode="ListGroupMode.Selectable"
-                               @bind-SelectedItem="@_playerName">
+                           Background="Background.Dark"
+                           Border="Border.Is2.Warning.OnAll.Rounded"
+                           Shadow="Shadow.Small"
+                           Margin="Margin.Is3.OnY"
+                           Mode="ListGroupMode.Selectable"
+                           @bind-SelectedItem="@_playerName">
                         <Repeater TItem="String" Items="@_playerNames">
                             <ListGroupItem Background="Background.Secondary"
-                                           TextColor="TextColor.Light"
-                                           Name="@context">
+                                       TextColor="TextColor.Light"
+                                       Name="@context">
                                 @context
                             </ListGroupItem>
                         </Repeater>
@@ -92,40 +92,40 @@
         <Row>
             <Column ColumnSize="ColumnSize.IsThird">
                 <Autocomplete TItem="Pack"
-                                  TValue="Pack"
-                                  Data="@_packs"
-                                  ReadData="OnHandleReadData"
-                                  TextField="@(item => item.Name)"
-                                  ValueField="@(item => item)"
-                                  Placeholder="Search..."
-                                  SelectionMode="AutocompleteSelectionMode.Multiple"
-                                  FreeTyping
-                                  @bind-SelectedValues="_chosenPacks"
-                                  @bind-SelectedTexts="_chosenPackTexts">
-                        <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
-                        <ItemContent>
-                            <Div Flex="Flex.JustifyContent.Between.AlignContent.Center">
-                                <Paragraph>
-                                    @context.Text
-                                </Paragraph>
-                                <Badge Color="Color.Primary"
-                                       Display="@(context.Item.IsOfficialPack ? Display.Always : Display.None)">
-                                    @context.Item.OfficialPack
-                                </Badge>
-                            </Div>
-                        </ItemContent>
-                    </Autocomplete>
+                              TValue="Pack"
+                              Data="@_packs"
+                              ReadData="OnHandleReadData"
+                              TextField="@(item => item.Name)"
+                              ValueField="@(item => item)"
+                              Placeholder="Search..."
+                              SelectionMode="AutocompleteSelectionMode.Multiple"
+                              FreeTyping
+                              @bind-SelectedValues="_chosenPacks"
+                              @bind-SelectedTexts="_chosenPackTexts">
+                    <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
+                    <ItemContent>
+                        <Div Flex="Flex.JustifyContent.Between.AlignContent.Center">
+                            <Paragraph>
+                                @context.Text
+                            </Paragraph>
+                            <Badge Color="Color.Primary"
+                                   Display="@(context.Item.IsOfficialPack ? Display.Always : Display.None)">
+                                @context.Item.OfficialPack
+                            </Badge>
+                        </Div>
+                    </ItemContent>
+                </Autocomplete>
             </Column>
             <Column ColumnSize="ColumnSize.IsThird">
                 Pack Options
                 <Buttons Role="ButtonsRole.Toolbar"
                          Flex="Flex.Column.Shrink.Is1">
-                                        <Button Color="Color.Success" Border="Border.Is3.Light.OnAll.Rounded"
-                                                Shadow="Shadow.Default"
-                                                Clicked="AddSearchedPacks"
-                                                Block>
-                                            Add packs from Search
-                                        </Button>
+                    <Button Color="Color.Success" Border="Border.Is3.Light.OnAll.Rounded"
+                            Shadow="Shadow.Default"
+                            Clicked="AddSearchedPacks"
+                            Block>
+                        Add packs from Search
+                    </Button>
                     <Button Color="Color.Primary" Border="Border.Is3.Light.OnAll.Rounded"
                             Shadow="Shadow.Default"
                             Clicked="AddOfficialPacks"
@@ -146,32 +146,81 @@
                     </Button>
                 </Buttons>
             </Column>
-            <Column ColumnSize="ColumnSize.IsThird" 
+            <Column ColumnSize="ColumnSize.IsThird"
                     Overflow="Overflow.Hidden">
-                <ListGroup Mode="ListGroupMode.Static" 
-                           Background="Background.Transparent" 
-                           Flush 
-                           Border="Border.Is2.Secondary.OnAll.Rounded"
-                           Shadow="Shadow.Default"
-                           Style="max-height: max(calc(500px - 2.5em), 500px); overflow-x: hidden; overflow-y: scroll;">
-                    <Repeater TItem="Pack" Items="_packsToChoose.Values">
-                        <ListGroupItem Name="@context.Name" Background="Background.Transparent" TextColor="TextColor.Light">
-                            @context.Name
-                        </ListGroupItem>
-                    </Repeater>
-                </ListGroup>
+                <Text TextAlignment="TextAlignment.Start"
+                      TextColor="TextColor.Light">
+                    Estimated Cards: @_totalCardsInPool
+                </Text>
+                <LoadingIndicator @bind-Visible="@_isIndicatorVisible" FadeIn>
+                    <ChildContent>
+                        <ListGroup Mode="ListGroupMode.Static"
+                                   Background="Background.Transparent"
+                                   Flush
+                                   Border="Border.Is2.Secondary.OnAll.Rounded"
+                                   Shadow="Shadow.Default"
+                                   Class="game-creation-list">
+                            <Repeater TItem="Pack" Items="_packsToChoose.Values">
+                                <ListGroupItem Name="@context.Name" Background="Background.Transparent" TextColor="TextColor.Light">
+                                    @context.Name
+                                </ListGroupItem>
+                            </Repeater>
+                        </ListGroup>
+                    </ChildContent>
+                    <IndicatorTemplate>
+                        <Animate Animation="Animations.FadeDownRight" Auto Duration="TimeSpan.FromMilliseconds( 700 )">
+                            <Div>
+                                <SpinKit Type="SpinKitType.Wave" Size="100px" Color="#fff" Centered />
+                            </Div>
+                        </Animate>
+                    </IndicatorTemplate>
+                </LoadingIndicator>
             </Column>
         </Row>
-        <Row>
-            <Column ColumnSize="ColumnSize.Is2">
-                <Field>
-                    <FieldLabel>
+        <Row Margin="Margin.Is2.OnY" Padding="Padding.Is3.FromTop">
+            <Column ColumnSize="ColumnSize.IsAuto" Flex="Flex.InlineFlex">
+                <Field Horizontal>
+                    <FieldLabel TextColor="TextColor.Warning">
                         Number of Points (Black Cards) Needed to Win
                     </FieldLabel>
                     <FieldBody>
-                        <NumericPicker TValue="Int32" Placeholder="10" Min="2" Max="25" Value="10"/>
+                        <NumericPicker TValue="Int32" 
+                                       Placeholder="10" 
+                                       Min="2" 
+                                       Max="25" 
+                                       Value="10" 
+                                       Size="Size.Small"
+                                       Width="Width.Is25"/>
                     </FieldBody>
                 </Field>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsQuarter">
+                <Div Flex="Flex.Column.JustifyContent.Around.AlignContent.End"
+                     TextColor="TextColor.Warning">
+                    <Switch TValue="bool"
+                            Color="Color.Primary">
+                        <Tooltip Text="Use our provided filters"
+                                 Placement="TooltipPlacement.TopEnd">
+                        Default Filters (TOS)
+                        </Tooltip>
+                    </Switch>
+                    <Switch TValue="bool"
+                            Color="Color.Primary">
+                        <Tooltip Text="Add your own word filters"
+                                 Placement="TooltipPlacement.TopEnd">
+                        Custom Filters
+                        </Tooltip>
+                    </Switch>
+                    <Switch TValue="bool"
+                            Color="Color.Success"
+                            Checked="true">
+                        <Tooltip 
+                            Text="Match Players against Discord/Twitch to ensure they aren't stream sniping"
+                            Placement="TooltipPlacement.TopEnd">
+                            Verify Players On Join
+                        </Tooltip>
+                    </Switch>
+                </Div>
             </Column>
         </Row>
     </Form>

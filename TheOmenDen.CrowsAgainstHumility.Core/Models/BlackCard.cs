@@ -10,7 +10,7 @@ public partial class BlackCard: IComparable<BlackCard>, IEquatable<BlackCard>
     public Guid PackId { get; set; }
     public virtual Pack Pack { get; set; }
     
-    public int CompareTo(WhiteCard other) => Id.CompareTo(other.Id);
+    public int CompareTo(BlackCard other) => Id.CompareTo(other.Id);
 
     public override string ToString() => Message ?? String.Empty;
 

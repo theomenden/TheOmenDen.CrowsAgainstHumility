@@ -5,7 +5,8 @@ public partial class WhiteCardConfiguration : IEntityTypeConfiguration<WhiteCard
 {
     public void Configure(EntityTypeBuilder<WhiteCard> entity)
     {
-        entity.HasIndex(e => e.PackId, "IX_WhiteCards_PackId");
+        entity.HasIndex(e => e.PackId, "IX_WhiteCards_PackId")
+            .IncludeProperties(e => e.CardText);
 
         entity.Property(e => e.Id).HasDefaultValueSql("(newsequentialid())");
 
