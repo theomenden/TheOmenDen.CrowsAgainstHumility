@@ -16,9 +16,9 @@ using Azure.Identity;
 using System.Text.Json;
 using Blazorise.LoadingIndicator;
 using Fluxor;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using TheOmenDen.CrowsAgainstHumility.Data.Extensions;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
@@ -60,18 +60,38 @@ try
             .Enrich.WithEventType()
             );
 
+    var appInsightsConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"];
+
     builder.Logging
         .ClearProviders()
+        .AddApplicationInsights(
+            config => config.ConnectionString = appInsightsConnectionString,
+            options =>
+            {
+                options.FlushOnDispose = true;
+                options.IncludeScopes = true;
+                options.TrackExceptionsAsExceptionTelemetry = true;
+            }
+            )
+        .AddFilter<ApplicationInsightsLoggerProvider>(typeof(Program).FullName, LogLevel.Trace)
         .AddSerilog(dispose: true);
 
     // Add services to the container.
     builder.Services.AddBlazorise(options => options.Immediate = true)
         .AddBootstrap5Providers()
         .AddBootstrap5Components()
-        .AddBootstrapIcons();
-
-    builder.Services.AddLoadingIndicator();
+        .AddBootstrapIcons()
+        .AddLoadingIndicator();
     
+    builder.Services.AddApplicationInsightsTelemetry(
+        options => options.ConnectionString = appInsightsConnectionString);
+
+    var twitchStrings = new TwitchStrings(
+        builder.Configuration["twitch-key"],
+        builder.Configuration["twitch-clientId"]);
+
+    builder.Services.AddSingleton(twitchStrings);
+
     builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
         .AddTwitter(options =>
         {
@@ -85,12 +105,8 @@ try
         })
         .AddTwitch(options =>
         {
-            var twitchKeys = new TwitchStrings(
-                builder.Configuration["twitch-key"],
-                builder.Configuration["twitch-clientId"]);
-            
-            options.ClientId = twitchKeys.ClientId;
-            options.ClientSecret = twitchKeys.Key;
+            options.ClientId = twitchStrings.ClientId;
+            options.ClientSecret = twitchStrings.Key;
         })
         .AddDiscord(options =>
         {
@@ -106,7 +122,10 @@ try
     builder.Services.AddHttpClient();
     builder.Services.AddScoped<TokenProvider>();
 
-    builder.Services.AddCorvidDataServices(builder.Configuration["ConnectionStrings:CrowsAgainstHumilityDb"]);
+    var dbConnection = builder.Configuration["ConnectionStrings:UserContextConnection"]
+                       ?? builder.Configuration["ConnectionStrings:CrowsAgainstHumilityDb"];
+
+    builder.Services.AddCorvidDataServices(dbConnection);
 
     builder.Services.AddResponseCompression(options =>
     {

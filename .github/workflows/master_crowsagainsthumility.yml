@@ -54,4 +54,4 @@ jobs:
           app-name: 'crowsagainsthumility'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_9B7B3525DD204A5BA0E7C6AA5E013B5A }}
-          package: .
+          package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH}}/crowsagainsthumility'

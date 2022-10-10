@@ -3,7 +3,6 @@ using Blazorise.Components;
 using TheOmenDen.CrowsAgainstHumility.Data.Contexts;
 using TheOmenDen.Shared.Extensions;
 using TheOmenDen.Shared.Utilities;
-using Blazorise.LoadingIndicator;
 
 namespace TheOmenDen.CrowsAgainstHumility.Shared
 {
@@ -64,14 +63,18 @@ namespace TheOmenDen.CrowsAgainstHumility.Shared
 
             _isIndicatorVisible = true;
 
-            foreach (var pack in context.Packs
+            await foreach (var pack in context.Packs
                          .Where(p => p.IsOfficialPack)
                          .Include(p => p.BlackCards)
-                         .Include(p => p.WhiteCards))
+                         .Include(p => p.WhiteCards)
+                         .AsAsyncEnumerable())
             {
-                pack.WhiteCards.TryGetNonEnumeratedCount(out var whiteCardCount);
-                _totalCardsInPool += whiteCardCount;
-                _packsToChoose.TryAdd(pack.Id, pack);
+                if(_packsToChoose.TryAdd(pack.Id, pack))
+                {
+                    pack.WhiteCards.TryGetNonEnumeratedCount(out var whiteCardCount);
+                    _totalCardsInPool += whiteCardCount;
+                }
+                await InvokeAsync(StateHasChanged);
             }
 
             _isIndicatorVisible = false;
@@ -98,25 +101,27 @@ namespace TheOmenDen.CrowsAgainstHumility.Shared
             _isIndicatorVisible = true;
 
             var skippedRows = ThreadSafeRandom.Global.Next(0, 130);
-            var rowsToTake = ThreadSafeRandom.Global.Next(6, 40);
-
-            var packs = context.Packs
-                .Skip(skippedRows)
-                .Take(rowsToTake)
-                .Include(p => p.BlackCards)
-                .Include(p => p.WhiteCards);
-
-            foreach (var pack in packs.GetRandomElements(5))
+            var rowsToTake = ThreadSafeRandom.Global.Next(5, 10);
+            
+            await foreach (var pack in context.Packs
+                         .Skip(skippedRows)
+                         .Take(rowsToTake)
+                         .Include(p => p.BlackCards)
+                         .Include(p => p.WhiteCards)
+                         .AsAsyncEnumerable())
             {
-                pack.WhiteCards.TryGetNonEnumeratedCount(out var whiteCardCount);
-                _totalCardsInPool += whiteCardCount;
-                _packsToChoose.TryAdd(pack.Id, pack);
+                if (_packsToChoose.TryAdd(pack.Id, pack))
+                {
+                    pack.WhiteCards.TryGetNonEnumeratedCount(out var whiteCardCount);
+                    _totalCardsInPool += whiteCardCount;
+                }
+                await InvokeAsync(StateHasChanged);
             }
 
             _isIndicatorVisible = false;
         }
 
-        private async Task RemoveAllPacks()
+        private Task RemoveAllPacks()
         {
             _isIndicatorVisible = true;
             _packsToChoose.Clear();
@@ -124,6 +129,10 @@ namespace TheOmenDen.CrowsAgainstHumility.Shared
             _chosenPackTexts.Clear();
             _totalCardsInPool = 0;
             _isIndicatorVisible = false;
+
+            StateHasChanged();
+
+            return Task.CompletedTask;
         }
     }
 }
