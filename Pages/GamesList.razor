@@ -1,0 +1,18 @@
+﻿@page "/games"
+
+<ListView Data="@_currentGames"
+          TextField="item => item"
+          ValueField="item => item"
+          Mode="ListGroupMode.Static">
+    <ItemTemplate>
+        <Div Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
+            <Heading Margin="Margin.Is2.FromBottom">@context</Heading>
+            <Button Color="Color.Primary"
+                    Size="Size.Small"
+                    Border="Border.Is2.Light.OnAll.Rounded"
+                    Shadow="Shadow.Small">
+                Join @context <Icon Name="IconName.PlayCircle" TextColor="TextColor.Success" />
+            </Button>
+        </Div>
+    </ItemTemplate>
+</ListView>
