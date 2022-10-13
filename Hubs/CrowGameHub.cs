@@ -12,13 +12,15 @@ public class CrowGameHub : Hub<ICrowGame>
     /// <summary>
     /// Stores the Game name as the key, and the usernames as the value - inspired by ApocDev (2022-10-12)
     /// </summary>
-    public readonly ConcurrentDictionary<String, HashSet<String>> CurrentGames = new(StringComparer.OrdinalIgnoreCase);
+    private readonly ConcurrentDictionary<String, HashSet<String>> _currentGames = new(StringComparer.OrdinalIgnoreCase);
+
+    public IDictionary<String, HashSet<String>> CurrentGames => _currentGames;  
 
     public async Task CreateGame(String username, String gameName, CancellationToken cancellationToken = default)
     {
         var currentId = Context.ConnectionId;
 
-        if (CurrentGames.TryAdd(gameName, new HashSet<string> { username }))
+        if (_currentGames.TryAdd(gameName, new HashSet<string> { username }))
         {
             await Groups.AddToGroupAsync(currentId, gameName, cancellationToken);
 
@@ -31,7 +33,7 @@ public class CrowGameHub : Hub<ICrowGame>
     {
         var currentId = Context.ConnectionId;
 
-        if (CurrentGames.TryGetValue(gameName, out var gamePopulation)
+        if (_currentGames.TryGetValue(gameName, out var gamePopulation)
             && gamePopulation.Add(username))
         {
             await Groups.AddToGroupAsync(currentId, gameName, cancellationToken);
@@ -45,7 +47,7 @@ public class CrowGameHub : Hub<ICrowGame>
     {
         var currentId = Context.ConnectionId;
 
-        if (CurrentGames.TryGetValue(gameName, out var gamePopulation)
+        if (_currentGames.TryGetValue(gameName, out var gamePopulation)
             && gamePopulation.Remove(username))
         {
             await Groups.RemoveFromGroupAsync(currentId, gameName, cancellationToken);
