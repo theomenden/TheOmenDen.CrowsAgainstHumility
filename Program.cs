@@ -19,6 +19,7 @@ using Fluxor;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using TheOmenDen.CrowsAgainstHumility.Data.Extensions;
 using Microsoft.Extensions.Logging.ApplicationInsights;
+using TheOmenDen.CrowsAgainstHumility.Services;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
@@ -153,6 +154,8 @@ try
         .UseRouting()
         .AddMiddleware<StoreLoggingMiddleware>());
 
+    builder.Services.AddSingleton<CrowGameService>();
+
     builder.Services.AddSingleton<ISessionDetails, SessionDetails>();
 
     builder.Services.AddScoped<CircuitHandler, TrackingCircuitHandler>(sp => new TrackingCircuitHandler(sp.GetRequiredService<ISessionDetails>()));
@@ -203,6 +206,7 @@ try
         endpoints.MapRazorPages();
         endpoints.MapBlazorHub();
         endpoints.MapHub<CawHub>(CawHub.HubUrl);
+        endpoints.MapHub<CrowGameHub>(CrowGameHub.HubUrl);
         endpoints.MapFallbackToPage("/_Host");
     });
 

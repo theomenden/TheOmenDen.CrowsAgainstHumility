@@ -1,18 +1,30 @@
-﻿@page "/games"
+﻿@page "/game-list"
 
-<ListView Data="@_currentGames"
-          TextField="item => item"
-          ValueField="item => item"
-          Mode="ListGroupMode.Static">
-    <ItemTemplate>
-        <Div Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
-            <Heading Margin="Margin.Is2.FromBottom">@context</Heading>
-            <Button Color="Color.Primary"
-                    Size="Size.Small"
-                    Border="Border.Is2.Light.OnAll.Rounded"
-                    Shadow="Shadow.Small">
-                Join @context <Icon Name="IconName.PlayCircle" TextColor="TextColor.Success" />
-            </Button>
-        </Div>
-    </ItemTemplate>
-</ListView>
+<Container Fluid
+           Background="Background.Dark"
+           TextColor="TextColor.Light">
+    <Card Background="Background.Transparent" TextColor="TextColor.Light">
+        <CardHeader Background="Background.Secondary" TextColor="TextColor.Light">
+            Create A Game!
+        </CardHeader>
+        <CardBody Background="Background.Transparent" TextColor="TextColor.Light">
+            <Form Background="Background.Transparent" TextColor="TextColor.Light">
+                <Field>
+                    <FieldLabel>
+                        Game Name
+                    </FieldLabel>
+                    <FieldBody>
+                        <TextEdit @bind-Text="@_gameName" Placeholder="Pick Your Game's Name"/>
+                    </FieldBody>
+                    <FieldLabel>
+                        Room Code
+                    </FieldLabel>
+                    <TextEdit Plaintext 
+                              TextColor="TextColor.Light"
+                              Text="@GenerateGameCode()"
+                              @bind="@_gameCode" />
+                </Field>
+            </Form>
+        </CardBody>
+    </Card>
+</Container>

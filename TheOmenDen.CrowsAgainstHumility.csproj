@@ -47,18 +47,23 @@
     <Compile Remove="TheOmenDen.CrowsAgainstHumility.Data\**" />
     <Compile Remove="TheOmenDen.CrowsAgainstHumility.Mediator\**" />
     <Compile Remove="TheOmenDen.CrowsAgainstHumility.Services\**" />
+    <Compile Remove="TheOmenDen.CrowsAgainstHumility.Twitch\**" />
     <Content Remove="TheOmenDen.CrowsAgainstHumility.Core\**" />
     <Content Remove="TheOmenDen.CrowsAgainstHumility.Data\**" />
     <Content Remove="TheOmenDen.CrowsAgainstHumility.Mediator\**" />
     <Content Remove="TheOmenDen.CrowsAgainstHumility.Services\**" />
+    <Content Remove="TheOmenDen.CrowsAgainstHumility.Twitch\**" />
     <EmbeddedResource Remove="TheOmenDen.CrowsAgainstHumility.Core\**" />
     <EmbeddedResource Remove="TheOmenDen.CrowsAgainstHumility.Data\**" />
     <EmbeddedResource Remove="TheOmenDen.CrowsAgainstHumility.Mediator\**" />
     <EmbeddedResource Remove="TheOmenDen.CrowsAgainstHumility.Services\**" />
+    <EmbeddedResource Remove="TheOmenDen.CrowsAgainstHumility.Twitch\**" />
     <None Remove="TheOmenDen.CrowsAgainstHumility.Core\**" />
     <None Remove="TheOmenDen.CrowsAgainstHumility.Data\**" />
     <None Remove="TheOmenDen.CrowsAgainstHumility.Mediator\**" />
     <None Remove="TheOmenDen.CrowsAgainstHumility.Services\**" />
+    <None Remove="TheOmenDen.CrowsAgainstHumility.Twitch\**" />
+    <TypeScriptCompile Remove="TheOmenDen.CrowsAgainstHumility.Twitch\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -149,6 +154,7 @@
     <ProjectReference Include="TheOmenDen.CrowsAgainstHumility.Data\TheOmenDen.CrowsAgainstHumility.Data.csproj" />
     <ProjectReference Include="TheOmenDen.CrowsAgainstHumility.Mediator\TheOmenDen.CrowsAgainstHumility.Mediator.csproj" />
     <ProjectReference Include="TheOmenDen.CrowsAgainstHumility.Services\TheOmenDen.CrowsAgainstHumility.Services.csproj" />
+    <ProjectReference Include="TheOmenDen.CrowsAgainstHumility.Twitch\TheOmenDen.CrowsAgainstHumility.Twitch.csproj" />
   </ItemGroup>
 
   <ItemGroup>

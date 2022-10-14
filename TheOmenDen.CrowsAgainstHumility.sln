@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheOmenDen.CrowsAgainstHumi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheOmenDen.CrowsAgainstHumility.Services", "TheOmenDen.CrowsAgainstHumility.Services\TheOmenDen.CrowsAgainstHumility.Services.csproj", "{C2518587-896D-4A52-A13B-E09571BFCCA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOmenDen.CrowsAgainstHumility.Twitch", "..\TheOmenDen.CrowsAgainstHumility.Twitch\TheOmenDen.CrowsAgainstHumility.Twitch.csproj", "{B2E8CA15-EC60-4015-9A65-7B8C56DA4C6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheOmenDen.CrowsAgainstHumility.Twitch", "TheOmenDen.CrowsAgainstHumility.Twitch\TheOmenDen.CrowsAgainstHumility.Twitch.csproj", "{FD26882B-2C46-4A2E-8E58-DE6C033478A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +41,10 @@ Global
 		{C2518587-896D-4A52-A13B-E09571BFCCA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2518587-896D-4A52-A13B-E09571BFCCA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2518587-896D-4A52-A13B-E09571BFCCA2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B2E8CA15-EC60-4015-9A65-7B8C56DA4C6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B2E8CA15-EC60-4015-9A65-7B8C56DA4C6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B2E8CA15-EC60-4015-9A65-7B8C56DA4C6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B2E8CA15-EC60-4015-9A65-7B8C56DA4C6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD26882B-2C46-4A2E-8E58-DE6C033478A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD26882B-2C46-4A2E-8E58-DE6C033478A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD26882B-2C46-4A2E-8E58-DE6C033478A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD26882B-2C46-4A2E-8E58-DE6C033478A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

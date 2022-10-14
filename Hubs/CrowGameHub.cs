@@ -1,59 +1,59 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using System.Collections.Concurrent;
 using TheOmenDen.CrowsAgainstHumility.Bootstrapping;
+using TheOmenDen.CrowsAgainstHumility.Core.Requests;
 
 namespace TheOmenDen.CrowsAgainstHumility.Hubs;
 
 
-public class CrowGameHub : Hub<ICrowGame>
+public class CrowGameHub : Hub
 {
     public const string HubUrl = "/games";
 
-    /// <summary>
-    /// Stores the Game name as the key, and the usernames as the value - inspired by ApocDev (2022-10-12)
-    /// </summary>
-    private readonly ConcurrentDictionary<String, HashSet<String>> _currentGames = new(StringComparer.OrdinalIgnoreCase);
+    private static readonly List<GamePlay> GamePlays = new (100);
 
-    public IDictionary<String, HashSet<String>> CurrentGames => _currentGames;  
-
-    public async Task CreateGame(String username, String gameName, CancellationToken cancellationToken = default)
+    public async Task RegisterPlayerAsync(RegisterPlayerRequest registerPlayerRequest)
     {
-        var currentId = Context.ConnectionId;
+        var playerExists = GamePlays.Exists(game => game.HubConnectionId == Context.ConnectionId);
 
-        if (_currentGames.TryAdd(gameName, new HashSet<string> { username }))
+        if (playerExists)
         {
-            await Groups.AddToGroupAsync(currentId, gameName, cancellationToken);
-
-            await Clients.Group(gameName)
-                .CreateGame(GameMessageTemplates.Created, $"{username} created a new game!", cancellationToken);
+            return;
         }
+
+        var gamePlay = new GamePlay
+        {
+            HubConnectionId = Context.ConnectionId,
+            Game = registerPlayerRequest.Game,
+            Player = registerPlayerRequest.Player,
+            PlayedCard = new()
+        };
+
+        GamePlays.Add(gamePlay);
+
+        await Groups.AddToGroupAsync(Context.ConnectionId, registerPlayerRequest.Game.Id.ToString());
+
+        await UpdateGame(gamePlay.Game);
     }
 
-    public async Task JoinGame(String gameName, String username, CancellationToken cancellationToken = default)
+    public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        var currentId = Context.ConnectionId;
+        var gamePlay = GamePlays.FirstOrDefault(game => game.HubConnectionId == Context.ConnectionId);
 
-        if (_currentGames.TryGetValue(gameName, out var gamePopulation)
-            && gamePopulation.Add(username))
+        if (gamePlay is not null)
         {
-            await Groups.AddToGroupAsync(currentId, gameName, cancellationToken);
-            
-            await Clients.Group(gameName)
-                .JoinGame(GameMessageTemplates.Joined, $"{username} joined the game!", cancellationToken);
+            GamePlays.Remove(gamePlay);
+
+            await UpdateGame(gamePlay.Game);
         }
+
+        await base.OnDisconnectedAsync(exception);
     }
 
-    public async Task LeaveGame(String username, String gameName, CancellationToken cancellationToken = default)
+    private async Task UpdateGame(CrowGame game)
     {
-        var currentId = Context.ConnectionId;
+        var gamePlaysForGame = GamePlays.Where(gp => gp.Game.Id == game.Id).ToArray();
 
-        if (_currentGames.TryGetValue(gameName, out var gamePopulation)
-            && gamePopulation.Remove(username))
-        {
-            await Groups.RemoveFromGroupAsync(currentId, gameName, cancellationToken);
-
-            await Clients.Group(gameName)
-                .LeaveGame(GameMessageTemplates.Disconnected, $"{username} has left the group {gameName}.", cancellationToken);
-        }
+        await Clients.Group(game.Name).SendAsync("UpdateGame", gamePlaysForGame);
     }
 }
