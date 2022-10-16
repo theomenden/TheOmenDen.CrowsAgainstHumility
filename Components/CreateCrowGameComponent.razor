@@ -1,12 +1,10 @@
-﻿@page "/createGame"
-@using TheOmenDen.CrowsAgainstHumility.Core.Rules
-
+﻿@using TwitchLib.Api.Helix.Models.Users.GetUsers
 <Container Fluid
-           Background="Background.Dark"
-           Border="Border.Is2.Secondary.OnAll.Rounded"
+           Background="Background.Transparent"
            Padding="Padding.Is4.OnX"
            Margin="Margin.Is5.OnY"
-           Shadow="Shadow.Large">
+           Shadow="Shadow.Large"
+           Display="@(IsVisible ? Display.Always : Display.None)">
     <DisplayHeading TextColor="TextColor.Warning"
                     TextAlignment="TextAlignment.Start"
                     Size="DisplayHeadingSize.Is2"
@@ -58,7 +56,7 @@
                 </Field>
             </Column>
             <Column ColumnSize="ColumnSize.IsAuto">
-                @if (!_playerNames.Any())
+                @if (!_players.Any())
                 {
                     <Paragraph TextColor="TextColor.Light"
                            TextWeight="TextWeight.Light">
@@ -78,11 +76,14 @@
                            Margin="Margin.Is3.OnY"
                            Mode="ListGroupMode.Selectable"
                            @bind-SelectedItem="@_playerName">
-                        <Repeater TItem="String" Items="@_playerNames">
-                            <ListGroupItem Background="Background.Secondary"
+                        <Repeater TItem="User" Items="@_players" CollectionChanged="OnPlayersUpdated">
+                            <ListGroupItem Background="Background.Transparent"
                                        TextColor="TextColor.Light"
-                                       Name="@context">
-                                @context
+                                       Name="@context.Id">
+                                @context.DisplayName <Icon Name="DetermineIconName(context.DisplayName)"
+                                                       TextColor="DetermineIconColor(context.DisplayName)"
+                                                       TextWeight="TextWeight.Bold"
+                                                       IconSize="IconSize.Large" />
                             </ListGroupItem>
                         </Repeater>
                     </ListGroup>
@@ -152,7 +153,8 @@
                       TextColor="TextColor.Light">
                     Estimated Cards: @_totalCardsInPool
                 </Text>
-                <LoadingIndicator @bind-Visible="@_isIndicatorVisible" FadeIn>
+                <LoadingIndicator FadeIn
+                                  @bind-Visible="@_isIndicatorVisible">
                     <ChildContent>
                         <ListGroup Mode="ListGroupMode.Static"
                                    Background="Background.Transparent"
@@ -169,8 +171,8 @@
                     </ChildContent>
                     <IndicatorTemplate>
                         <Animate Animation="Animations.FadeDownRight" Auto Duration="TimeSpan.FromMilliseconds( 700 )">
-                            <Div>
-                                <SpinKit Type="SpinKitType.Wave" Size="100px" Color="#fff" Centered />
+                            <Div Background="Background.Transparent">
+                                <SpinKit Type="SpinKitType.Wave" Size="100px" Color="#9857ff" Centered />
                             </Div>
                         </Animate>
                     </IndicatorTemplate>
@@ -184,13 +186,13 @@
                         Number of Points (Black Cards) Needed to Win
                     </FieldLabel>
                     <FieldBody>
-                        <NumericPicker TValue="Int32" 
-                                       Placeholder="10" 
-                                       Min="2" 
-                                       Max="25" 
-                                       Value="10" 
+                        <NumericPicker TValue="Int32"
+                                       Placeholder="10"
+                                       Min="2"
+                                       Max="25"
+                                       Value="10"
                                        Size="Size.Small"
-                                       Width="Width.Is25"/>
+                                       Width="Width.Is25" />
                     </FieldBody>
                 </Field>
             </Column>
@@ -201,22 +203,21 @@
                             Color="Color.Primary">
                         <Tooltip Text="Use our provided filters"
                                  Placement="TooltipPlacement.TopEnd">
-                        Default Filters (TOS)
+                            Default Filters (TOS)
                         </Tooltip>
                     </Switch>
                     <Switch TValue="bool"
                             Color="Color.Primary">
                         <Tooltip Text="Add your own word filters"
                                  Placement="TooltipPlacement.TopEnd">
-                        Custom Filters
+                            Custom Filters
                         </Tooltip>
                     </Switch>
                     <Switch TValue="bool"
                             Color="Color.Success"
                             Checked="true">
-                        <Tooltip 
-                            Text="Match Players against Discord/Twitch to ensure they aren't stream sniping"
-                            Placement="TooltipPlacement.TopEnd">
+                        <Tooltip Text="Match Players against Discord/Twitch to ensure they aren't stream sniping"
+                                 Placement="TooltipPlacement.TopEnd">
                             Verify Players On Join
                         </Tooltip>
                     </Switch>

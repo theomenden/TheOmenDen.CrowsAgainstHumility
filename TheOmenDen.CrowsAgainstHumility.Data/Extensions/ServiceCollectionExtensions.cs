@@ -16,7 +16,7 @@ public static class ServiceCollectionExtensions
         services.AddPooledDbContextFactory<CrowsAgainstHumilityContext>(options =>
         {
             options.UseSqlServer(connectionString)
-                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTrackingWithIdentityResolution)
+                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
 #if DEBUG
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors()

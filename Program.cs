@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using TheOmenDen.CrowsAgainstHumility.Data.Extensions;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using TheOmenDen.CrowsAgainstHumility.Services;
+using TheOmenDen.CrowsAgainstHumility.Services.Extensions;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
@@ -119,14 +120,19 @@ try
             options.ClientId = discordKeys.Id;
             options.ClientSecret = discordKeys.Secret;
         });
-
+    
     builder.Services.AddHttpClient();
     builder.Services.AddScoped<TokenProvider>();
+
+    builder.Services.AddCorvidTwitchServices(twitchStrings);
+
+    builder.Services.AddCorvidDiscordServices();
 
     var dbConnection = builder.Configuration["ConnectionStrings:UserContextConnection"]
                        ?? builder.Configuration["ConnectionStrings:CrowsAgainstHumilityDb"];
 
     builder.Services.AddCorvidDataServices(dbConnection);
+
 
     builder.Services.AddResponseCompression(options =>
     {

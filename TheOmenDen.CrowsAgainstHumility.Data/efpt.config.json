@@ -8,6 +8,7 @@
    "ModelNamespace": null,
    "OutputContextPath": "Contexts",
    "OutputPath": "Models",
+   "PreserveCasingWithRegex": true,
    "ProjectRootNamespace": "TheOmenDen.CrowsAgainstHumility.Data",
    "Schemas": null,
    "SelectedHandlebarsLanguage": 0,
@@ -24,9 +25,17 @@
       {
          "Name": "[dbo].[WhiteCards]",
          "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[vw_FilteredWhiteCardsByPack]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[fn_MultiFilterWordsForCards]",
+         "ObjectType": 2
       }
    ],
-   "UiHint": "crowsagainsthumility",
+   "UiHint": "DESKTOP-8U2LRVO.CrowsAgainstHumility.Db",
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": true,
    "UseDbContextSplitting": true,
@@ -43,5 +52,6 @@
    "UseNodaTime": false,
    "UseNullableReferences": false,
    "UseSchemaFolders": false,
-   "UseSpatial": false
+   "UseSpatial": false,
+   "UseT4": false
 }

@@ -14,7 +14,8 @@ public sealed class GameCodeGeneratorService
     private const string LowerCaseAlphabet = @"abcdefghijklmnopqrstuvwxyz";
     private const string UpperCaseAlphabet = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private const string Digits = @"1234567890";
-    private static readonly Char[] FullRange = $"{LowerCaseAlphabet}{UpperCaseAlphabet}{Digits}".ToCharArray();
+    private const string Discriminators = @"-_";
+    private static readonly Char[] FullRange = $"{LowerCaseAlphabet}{UpperCaseAlphabet}{Digits}{Discriminators}".ToCharArray();
 
     public GameCodeGeneratorService()
     {

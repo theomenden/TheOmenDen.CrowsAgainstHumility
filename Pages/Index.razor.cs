@@ -7,6 +7,7 @@ using TheOmenDen.CrowsAgainstHumility.Core.Rules;
 using TheOmenDen.CrowsAgainstHumility.Data.Contexts;
 using TheOmenDen.CrowsAgainstHumility.Events;
 using TheOmenDen.CrowsAgainstHumility.Services.CrowGameBuilder;
+using TheOmenDen.CrowsAgainstHumility.Services.Interfaces;
 
 namespace TheOmenDen.CrowsAgainstHumility.Pages;
 public partial class Index : IDisposable, IAsyncDisposable
@@ -30,6 +31,10 @@ public partial class Index : IDisposable, IAsyncDisposable
 
     [Inject]
     public IDbContextFactory<CrowsAgainstHumilityContext> DbContextFactory { get; init; }
+
+    [Inject]
+    public IPlayerVerificationService VerificationService { get; init; }
+
     #endregion
 
     private TrackingCircuitHandler _trackingCircuitHandler;
@@ -60,6 +65,8 @@ public partial class Index : IDisposable, IAsyncDisposable
             .Where(p => p.IsOfficialPack)
             .Select(p => p.Name)
             .ToArrayAsync();
+
+        await VerificationService.CheckTwitchForUser("aluthecrow");
     }
 
     private void OnUserDisconnected(object sender, UserDisconnectEventArgs e)

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TheOmenDen.CrowsAgainstHumility.Core.Models;
+﻿using TheOmenDen.CrowsAgainstHumility.Core.Models;
 
 namespace TheOmenDen.CrowsAgainstHumility.Core.Requests;
 public sealed class RegisterPlayerRequest
