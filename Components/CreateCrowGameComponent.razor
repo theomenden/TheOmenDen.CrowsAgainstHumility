@@ -12,8 +12,8 @@
         Create a Rule Set for your game!
     </DisplayHeading>
     <Form Flex="Flex.Grow.Is0.Shrink.Is1">
-        <Row Flex="Flex.InlineFlex.Row" Margin="Margin.Is1.FromTop">
-            <Column ColumnSize="ColumnSize.Is2">
+        <Row Margin="Margin.Is3.OnY">
+            <Column ColumnSize="ColumnSize.IsQuarter">
                 <Field>
                     <FieldLabel TextColor="TextColor.Warning">
                         Game Rules
@@ -29,7 +29,7 @@
                     </FieldBody>
                 </Field>
             </Column>
-            <Column ColumnSize="ColumnSize.Is10">
+            <Column ColumnSize="ColumnSize.IsThird" TextOverflow="TextOverflow.Wrap">
                 <Paragraph TextWeight="TextWeight.Light"
                            TextColor="TextColor.Light"
                            Italic>
@@ -38,56 +38,21 @@
                     and if he wins the game, all players go home in a state of everlasting shame.
                 </Paragraph>
             </Column>
-        </Row>
-        <Row>
             <Column ColumnSize="ColumnSize.IsQuarter">
-                <Field>
+                <Field Horizontal>
                     <FieldLabel TextColor="TextColor.Warning">
-                        Players to Include
+                        Number of Points (Black Cards) Needed to Win
                     </FieldLabel>
                     <FieldBody>
-                        <TextEdit Placeholder="Twitch User Name..." @bind-Text="@_playerToAdd" />
-                        <Button Color="Color.Success"
-                                Border="Border.Is2.Light.OnAll.Rounded"
-                                Clicked="AddPlayerToList">
-                            Add To List
-                        </Button>
+                        <NumericPicker TValue="Int32"
+                                       Placeholder="10"
+                                       Min="2"
+                                       Max="25"
+                                       Value="10"
+                                       Size="Size.Small"
+                                       Width="Width.Is25" />
                     </FieldBody>
                 </Field>
-            </Column>
-            <Column ColumnSize="ColumnSize.IsAuto">
-                @if (!_players.Any())
-                {
-                    <Paragraph TextColor="TextColor.Light"
-                           TextWeight="TextWeight.Light">
-                        Add players to your game by their Twitch or Discord Handle
-                    </Paragraph>
-                    <Small TextColor="TextColor.Light"
-                       Class="fst-italic">
-                        (If adding by discord, please include the numbers in their handle after the #)
-                    </Small>
-                }
-                else
-                {
-                    <ListGroup Flush
-                           Background="Background.Dark"
-                           Border="Border.Is2.Warning.OnAll.Rounded"
-                           Shadow="Shadow.Small"
-                           Margin="Margin.Is3.OnY"
-                           Mode="ListGroupMode.Selectable"
-                           @bind-SelectedItem="@_playerName">
-                        <Repeater TItem="User" Items="@_players" CollectionChanged="OnPlayersUpdated">
-                            <ListGroupItem Background="Background.Transparent"
-                                       TextColor="TextColor.Light"
-                                       Name="@context.Id">
-                                @context.DisplayName <Icon Name="DetermineIconName(context.DisplayName)"
-                                                       TextColor="DetermineIconColor(context.DisplayName)"
-                                                       TextWeight="TextWeight.Bold"
-                                                       IconSize="IconSize.Large" />
-                            </ListGroupItem>
-                        </Repeater>
-                    </ListGroup>
-                }
             </Column>
         </Row>
         <Row>
@@ -141,6 +106,12 @@
                     </Button>
                     <Button Color="Color.Danger" Border="Border.Is3.Light.OnAll.Rounded"
                             Shadow="Shadow.Default"
+                            Clicked="RemovePack"
+                            Block>
+                        Remove Selected Pack
+                    </Button>
+                    <Button Color="Color.Danger" Border="Border.Is3.Light.OnAll.Rounded"
+                            Shadow="Shadow.Default"
                             Clicked="RemoveAllPacks"
                             Block>
                         Remove All Packs
@@ -156,18 +127,26 @@
                 <LoadingIndicator FadeIn
                                   @bind-Visible="@_isIndicatorVisible">
                     <ChildContent>
-                        <ListGroup Mode="ListGroupMode.Static"
-                                   Background="Background.Transparent"
-                                   Flush
-                                   Border="Border.Is2.Secondary.OnAll.Rounded"
-                                   Shadow="Shadow.Default"
-                                   Class="game-creation-list">
-                            <Repeater TItem="Pack" Items="_packsToChoose.Values">
-                                <ListGroupItem Name="@context.Name" Background="Background.Transparent" TextColor="TextColor.Light">
-                                    @context.Name
-                                </ListGroupItem>
-                            </Repeater>
-                        </ListGroup>
+                        <ListView TItem="Pack"
+                                  Data="@_packsToChoose.Values"
+                                  TextField="(item) => item.Name"
+                                  ValueField="(item) => item.Name"
+                                  Mode="ListGroupMode.Selectable"
+                                  Class="game-creation-list border-2 border-secondary rounded-2 shadow"
+                                  @bind-SelectedItem="@_selectedPack">
+                            <ItemTemplate>
+                                <Div Flex="Flex.InlineFlex.JustifyContent.Between.AlignItems.Center"
+                                     Background="Background.Transparent">
+                                    <Heading TextColor="TextColor.Light"
+                                             Size="HeadingSize.Is4">
+                                        @context.Item.Name
+                                    </Heading>
+                                    <Badge Color="Color.Primary" Pill Margin="Margin.Is2.FromStart">
+                                        @context.Item.WhiteCardsInPack
+                                    </Badge>
+                                </Div>
+                            </ItemTemplate>
+                        </ListView>
                     </ChildContent>
                     <IndicatorTemplate>
                         <Animate Animation="Animations.FadeDownRight" Auto Duration="TimeSpan.FromMilliseconds( 700 )">
@@ -180,22 +159,6 @@
             </Column>
         </Row>
         <Row Margin="Margin.Is2.OnY" Padding="Padding.Is3.FromTop">
-            <Column ColumnSize="ColumnSize.IsAuto" Flex="Flex.InlineFlex">
-                <Field Horizontal>
-                    <FieldLabel TextColor="TextColor.Warning">
-                        Number of Points (Black Cards) Needed to Win
-                    </FieldLabel>
-                    <FieldBody>
-                        <NumericPicker TValue="Int32"
-                                       Placeholder="10"
-                                       Min="2"
-                                       Max="25"
-                                       Value="10"
-                                       Size="Size.Small"
-                                       Width="Width.Is25" />
-                    </FieldBody>
-                </Field>
-            </Column>
             <Column ColumnSize="ColumnSize.IsQuarter">
                 <Div Flex="Flex.Column.JustifyContent.Around.AlignContent.End"
                      TextColor="TextColor.Warning">
@@ -224,5 +187,71 @@
                 </Div>
             </Column>
         </Row>
+        <Row>
+            <Column ColumnSize="ColumnSize.IsQuarter">
+                <Field>
+                    <FieldLabel TextColor="TextColor.Warning">
+                        Players to Include
+                    </FieldLabel>
+                    <FieldBody>
+                        <TextEdit Placeholder="Twitch User Name..." @bind-Text="@_playerToAdd" />
+                        <Button Color="Color.Success"
+                                Border="Border.Is2.Light.OnAll.Rounded"
+                                Clicked="AddPlayerToList">
+                            Add To List
+                        </Button>
+                    </FieldBody>
+                </Field>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                @if (!_players.Any())
+                {
+                    <Paragraph TextColor="TextColor.Light"
+                           TextWeight="TextWeight.Light">
+                        Add players to your game by their Twitch or Discord Handle
+                    </Paragraph>
+                    <Small TextColor="TextColor.Light"
+                       Class="fst-italic">
+                        (If adding by discord, please include the numbers in their handle after the #)
+                    </Small>
+                }
+                else
+                {
+                    <ListGroup Flush
+                           Background="Background.Dark"
+                           Border="Border.Is2.Warning.OnAll.Rounded"
+                           Shadow="Shadow.Small"
+                           Margin="Margin.Is3.OnY"
+                           Mode="ListGroupMode.Selectable"
+                           @bind-SelectedItem="@_playerName">
+                        <Repeater TItem="User" Items="@_players" CollectionChanged="OnPlayersUpdated">
+                            <ListGroupItem Background="Background.Transparent"
+                                       TextColor="TextColor.Light"
+                                       Name="@context.Id">
+                                @context.DisplayName <Icon Name="DetermineIconName(context.DisplayName)"
+                                                       TextColor="DetermineIconColor(context.DisplayName)"
+                                                       TextWeight="TextWeight.Bold"
+                                                       IconSize="IconSize.Large" />
+                            </ListGroupItem>
+                        </Repeater>
+                    </ListGroup>
+                }
+            </Column>
+        </Row>
+    <Buttons Role="ButtonsRole.Toolbar" Margin="Margin.Is3.OnY.Is2.OnX"
+             TextAlignment="TextAlignment.Center">
+            <Button Type="ButtonType.Submit" Color="Color.Success"
+                    Shadow="Shadow.Default"
+                    Border="Border.Is2.Light.OnAll.Rounded"
+                    Margin="Margin.Is2.FromEnd"
+                    PreventDefaultOnSubmit>
+                Create Game
+            </Button>
+            <Button Type="ButtonType.Reset" Color="Color.Secondary"
+                    Shadow="Shadow.Default"
+                    Border="Border.Is2.Light.OnAll.Rounded">
+                Reset
+            </Button>
+        </Buttons>
     </Form>
 </Container>

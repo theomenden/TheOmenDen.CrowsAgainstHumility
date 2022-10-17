@@ -7,17 +7,23 @@
 <Layout Sider>
     <LayoutSider>
         <LayoutSiderContent>
-            <Bar Mode="BarMode.VerticalInline"
+            <Bar @ref="@_sideBar"
+                 Mode="BarMode.VerticalInline"
                  Background="Background.Dark"
                  ThemeContrast="ThemeContrast.Dark"
-                 CollapseMode="BarCollapseMode.Small"
-                 Breakpoint="Breakpoint.FullHD"
-                 NavigationBreakpoint="Breakpoint.Desktop"
+                 CollapseMode="BarCollapseMode.Hide"
+                 Breakpoint="Breakpoint.Desktop"
+                 NavigationBreakpoint="Breakpoint.Tablet"
                  TextOverflow="TextOverflow.Truncate"
                  Shadow="Shadow.Default"
-                 Border="Border.Is2.OnEnd.RoundedEnd.Light.OnEnd">
-                <BarToggler />
-                <BarBrand />
+                 Border="Border.Is2.Secondary.OnEnd.RoundedEnd">
+                <BarBrand Margin="Margin.Is2.FromEnd" Casing="CharacterCasing.Upper">
+                    <BarItem>
+                        <BarLink To="">
+                            <BarIcon IconName="customIcon" Display="Display.InlineBlock" />
+                        </BarLink>
+                    </BarItem>
+                </BarBrand>
                 <BarMenu>
                     <BarStart>
                         <BarItem>
@@ -94,18 +100,6 @@
                                 </sup>
                             </BarLink>
                         </BarItem>
-                        <BarItem>
-                            <BarLink To="@certLink"
-                                     onmouseout="tLTC('tl_popupPOSEV')"
-                                     ondragstart="return false;"
-                                     onmouseover="tLeB(event,'https://secure.trust-provider.com/ttb_searcher/trustlogo?v_querytype=C&v_shortname=POSEV&v_search=https://crowsagainsthumility.app/&x=6&y=5','tl_popupPOSEV')">
-                                <Image Fluid Source="@imagePath"
-                                       Text="EV Cert Provider: https://secure.trust-provider.com/"
-                                       loading="lazy"
-                                       onmousedown="return tLKB(event,'https://secure.trust-provider.com/ttb_searcher/trustlogo?v_querytype=W&v_shortname=POSEV&v_search=https://crowsagainsthumility.app/&x=6&y=5');"
-                                       oncontextmenu="return tLLB(event);" />
-                            </BarLink>
-                        </BarItem>
                     </BarEnd>
                 </BarMenu>
             </Bar>
@@ -113,15 +107,22 @@
     </LayoutSider>
     <Layout>
         <LayoutHeader Fixed>
-            <Bar Breakpoint="Breakpoint.Desktop"
+            <Bar @ref="@_topBar"
+                 Breakpoint="Breakpoint.Desktop"
                  Background="Background.Dark"
                  ThemeContrast="ThemeContrast.Dark"
                  Shadow="Shadow.Default"
-                 Border="Border.Is2.OnBottom.RoundedBottom.Light.OnBottom">
-                <BarBrand Margin="Margin.Is2.FromStart" Casing="CharacterCasing.Upper">
-                    @ApplicationTitle
+                 Border="Border.Is2.OnBottom.RoundedBottom.Light.OnBottom"
+                 @bind-Visible="@_topBarVisible">
+                <BarToggler Bar="@_sideBar" Border="Border.Is0" />
+                <BarBrand>
+                    <BarItem>
+                        <BarLink To="" TextColor="TextColor.Light"
+                                 Class="text-decoration-underline link-primary">
+                            @ApplicationTitle
+                        </BarLink>
+                    </BarItem>
                 </BarBrand>
-                <BarToggler />
                 <BarMenu>
                     <BarStart />
                     <BarEnd Margin="Margin.Is2.FromEnd">
@@ -134,49 +135,13 @@
         </LayoutHeader>
         <LayoutContent Padding="Padding.Is4.OnX">
             <LoadingIndicator FullScreen>
-            @Body
+                @Body
             </LoadingIndicator>
         </LayoutContent>
     </Layout>
 </Layout>
+@code{
 
-@code {
-    private const string imagePath = @"https://www.positivessl.com/images/seals/positivessl_trust_seal_lg_222x54.png";
-    private const string certLink = @"javascript:if(window.open('https://secure.trust-provider.com/ttb_searcher/trustlogo?v_querytype=W&v_shortname=POSEV&v_search=https://crowsagainsthumility.app/&x=6&y=5','tl_wnd_credentials'+(new Date()).getTime(),'toolbar=0,scrollbars=1,location=1,status=1,menubar=1,resizable=1,width=374,height=660,left=60,top=120')){};tLlB(tLTB);";
+    RenderFragment customIcon =@<Image Source="../images/TheOmenDenWithCrow.svg" Text="Small Blazorise logo" Style="width:72px; height: 72px" />;
 
-    private static string AssemblyProductVersion
-    {
-        get
-        {
-            var attributes = Assembly.GetExecutingAssembly()
-                .GetCustomAttributes(typeof(AssemblyFileVersionAttribute), false);
-            return attributes.Length == 0 ?
-                String.Empty :
-                ((AssemblyFileVersionAttribute)attributes[0]).Version;
-        }
-    }
-
-    private static string ApplicationDevelopmentCompany
-    {
-        get
-        {
-            var attributes = Assembly.GetExecutingAssembly()
-                .GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
-            return attributes.Length == 0 ?
-                String.Empty :
-                ((AssemblyCompanyAttribute)attributes[0]).Company;
-        }
-    }
-
-    private static string ApplicationTitle
-    {
-        get
-        {
-            var attributes = Assembly.GetExecutingAssembly()
-            .GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
-            return attributes.Length == 0
-            ? String.Empty
-            : ((AssemblyTitleAttribute)attributes[0]).Title;
-        }
-    }
 }

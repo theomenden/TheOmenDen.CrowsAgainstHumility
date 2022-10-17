@@ -2,7 +2,7 @@
 @inject IJSRuntime JSRunTime
 <PageTitle>Terms of Service</PageTitle>
 
-    <Container Fluid
+<Container Fluid
            Background="Background.Dark"
            TextColor="TextColor.Light"
            Border="Border.Is2.Secondary.OnAll.Rounded"
@@ -10,12 +10,21 @@
            Shadow="Shadow.Large"
            Margin="Margin.Is3.OnY"
            Padding="Padding.Is2.OnX" />
+<Blazorise.Link To="@CertLink"
+                onmouseout="tLTC('tl_popupPOSEV')"
+                ondragstart="return false;"
+                onmouseover="tLeB(event,'https://secure.trust-provider.com/ttb_searcher/trustlogo?v_querytype=C&v_shortname=POSEV&v_search=https://crowsagainsthumility.app/&x=6&y=5','tl_popupPOSEV')">
+    <Image Source="@ImagePath"
+           Text="EV Cert Provider: https://secure.trust-provider.com/"
+           loading="lazy"
+           onmousedown="return tLKB(event,'https://secure.trust-provider.com/ttb_searcher/trustlogo?v_querytype=W&v_shortname=POSEV&v_search=https://crowsagainsthumility.app/&x=6&y=5');"
+           oncontextmenu="return tLLB(event);" />
+</Blazorise.Link>
 @code {
-
+    private const string ImagePath = @"https://www.positivessl.com/images/seals/positivessl_trust_seal_lg_222x54.png";
+    private const string CertLink = @"javascript:if(window.open('https://secure.trust-provider.com/ttb_searcher/trustlogo?v_querytype=W&v_shortname=POSEV&v_search=https://crowsagainsthumility.app/&x=6&y=5','tl_wnd_credentials'+(new Date()).getTime(),'toolbar=0,scrollbars=1,location=1,status=1,menubar=1,resizable=1,width=374,height=660,left=60,top=120')){};tLlB(tLTB);";
     private const string termsScriptUrl = @"https://stores.enzuzo.com/__enzuzo-privacy-app.js?mode=tos&apiHost=https://stores.enzuzo.com&buttonStyle=%0A%7B%0A%20%20%22buttonWidget%22%3A%20%7B%0A%20%20%20%20%22backgroundColor%22%3A%20%22%23ffffff%22%2C%0A%20%20%20%20%22color%22%3A%20%22%23000000%22%2C%0A%20%20%20%20%22%26%3Ahover%22%3A%20%7B%0A%20%20%20%20%20%20%22backgroundColor%22%3A%20%22%23a4a4a4%22%2C%0A%20%20%20%20%20%20%22color%22%3A%20%22%23000000%22%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A&qt=1631040568795&referral=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJDdXN0b21lcklEIjoxNjY3LCJDdXN0b21lck5hbWUiOiJzaG9waWZ5LXRoZS1vbWVuLWRlbi5teXNob3BpZnkuY29tIiwiQ3VzdG9tZXJMb2dvVVJMIjoiIiwiUm9sZXMiOlsicmVmZXJyYWwiXSwiUHJvZHVjdCI6InNob3BpZnkiLCJpc3MiOiJFbnp1em8gSW5jLiIsIm5iZiI6MTYzMTA0MDU3MX0.y1ZFIrEeQOrgwoA-VyhSIwMOVEI0RkmYkwczTlvpQMs";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await JSRunTime.InvokeVoidAsync("loadJs", termsScriptUrl);
-    }
+    => await JSRunTime.InvokeVoidAsync("loadJs", termsScriptUrl);
 }

@@ -2,15 +2,14 @@
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.JSInterop;
+using System.Runtime.InteropServices;
 using TheOmenDen.CrowsAgainstHumility.Circuits;
-using TheOmenDen.CrowsAgainstHumility.Core.Rules;
 using TheOmenDen.CrowsAgainstHumility.Data.Contexts;
 using TheOmenDen.CrowsAgainstHumility.Events;
-using TheOmenDen.CrowsAgainstHumility.Services.CrowGameBuilder;
 using TheOmenDen.CrowsAgainstHumility.Services.Interfaces;
 
 namespace TheOmenDen.CrowsAgainstHumility.Pages;
-public partial class Index : IDisposable, IAsyncDisposable
+public partial class Index : ComponentBase, IDisposable, IAsyncDisposable
 {
     #region Parameters
     [CascadingParameter]
@@ -28,20 +27,13 @@ public partial class Index : IDisposable, IAsyncDisposable
 
     [Inject]
     public CircuitHandler CircuitHandler { get; init; }
-
-    [Inject]
-    public IDbContextFactory<CrowsAgainstHumilityContext> DbContextFactory { get; init; }
-
-    [Inject]
-    public IPlayerVerificationService VerificationService { get; init; }
-
     #endregion
 
     private TrackingCircuitHandler _trackingCircuitHandler;
 
     private string _sessionCircuitMessage = String.Empty;
 
-    private IEnumerable<String> _packNames = Enumerable.Empty<String>();
+    private bool _isDisposed;
 
     protected override async Task OnInitializedAsync()
     {
@@ -58,15 +50,6 @@ public partial class Index : IDisposable, IAsyncDisposable
             SessionDetails.CircuitsChanged += OnCircuitsChanged;
             SessionDetails.UserDisconnect += OnUserDisconnected;
         }
-
-        await using var context = await DbContextFactory.CreateDbContextAsync();
-
-        _packNames = await context.Packs
-            .Where(p => p.IsOfficialPack)
-            .Select(p => p.Name)
-            .ToArrayAsync();
-
-        await VerificationService.CheckTwitchForUser("aluthecrow");
     }
 
     private void OnUserDisconnected(object sender, UserDisconnectEventArgs e)
@@ -87,18 +70,37 @@ public partial class Index : IDisposable, IAsyncDisposable
         }
     }
 
-    public void Dispose()
-    {
-        SessionDetails.CircuitsChanged -= OnCircuitsChanged;
-        SessionDetails.UserDisconnect -= OnUserDisconnected;
-        GC.SuppressFinalize(this);
-    }
 
     public ValueTask DisposeAsync()
     {
         SessionDetails.CircuitsChanged -= OnCircuitsChanged;
         SessionDetails.UserDisconnect -= OnUserDisconnected;
+        AuthenticationStateTask.Dispose();
         GC.SuppressFinalize(this);
         return ValueTask.CompletedTask;
+    }
+
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_isDisposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            SessionDetails.CircuitsChanged -= OnCircuitsChanged;
+            SessionDetails.UserDisconnect -= OnUserDisconnected;
+        }
+
+        AuthenticationStateTask.Dispose();
+        _isDisposed = true;
     }
 }

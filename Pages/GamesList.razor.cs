@@ -1,5 +1,5 @@
 ﻿using TheOmenDen.CrowsAgainstHumility.Services;
-using TheOmenDen.CrowsAgainstHumility.Twitch.Services;
+using TheOmenDen.CrowsAgainstHumility.Services.Authentication;
 using TheOmenDen.Shared.Extensions;
 
 namespace TheOmenDen.CrowsAgainstHumility.Pages;
@@ -29,16 +29,16 @@ public partial class GamesList : ComponentBase, IAsyncDisposable
 
     private string GenerateGameCode()
     {
-        if (!StringBuilderPoolFactory<GameCodeGeneratorService>.Exists(nameof(GameCodeGeneratorService)))
+        if (!StringBuilderPoolFactory<GameCodeGenerator>.Exists(nameof(GameCodeGenerator)))
         {
-            return GameCodeGeneratorService.GenerateGameCode();
+            return GameCodeGenerator.GenerateGameCode();
         }
 
-        var sb =  StringBuilderPoolFactory<GameCodeGeneratorService>.Get(nameof(GameCodeGeneratorService));
+        var sb =  StringBuilderPoolFactory<GameCodeGenerator>.Get(nameof(GameCodeGenerator));
 
         sb!.Clear();
 
-        return GameCodeGeneratorService.GenerateGameCode();
+        return GameCodeGenerator.GenerateGameCode();
     }
 
     private bool ShowCreateCrowGame() => !String.IsNullOrWhiteSpace(_gameName) && _gameName?.Length > 3;
@@ -48,9 +48,9 @@ public partial class GamesList : ComponentBase, IAsyncDisposable
         _gameName = String.Empty;
         _gameCode = String.Empty;
 
-        if (StringBuilderPoolFactory<GameCodeGeneratorService>.Exists(nameof(GameCodeGeneratorService)))
+        if (StringBuilderPoolFactory<GameCodeGenerator>.Exists(nameof(GameCodeGenerator)))
         {
-            StringBuilderPoolFactory<GameCodeGeneratorService>.Remove(nameof(GameCodeGeneratorService));
+            StringBuilderPoolFactory<GameCodeGenerator>.Remove(nameof(GameCodeGenerator));
         }
 
         return ValueTask.CompletedTask;

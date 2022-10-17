@@ -20,7 +20,7 @@ public partial class BlackCard: IComparable<BlackCard>, IEquatable<BlackCard>
            && PackId == other.PackId
            && Message.Equals(other.Message, StringComparison.OrdinalIgnoreCase);
 
-    public override bool Equals(object? obj)
+    public override bool Equals(object obj)
     {
         if (obj is null)
         {

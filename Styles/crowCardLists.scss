@@ -4,4 +4,16 @@
     max-height: calc(250px - 2.85em);
     overflow-x: hidden;
     overflow-y: scroll;
+    background-color: transparent;
+
+    .list-group-item {
+        background-color: transparent;
+        border-width: 2px;
+        border-top-style: inset;
+        border-top-color: black;
+    }
+}
+
+:is(.active) .list-group-item-action {
+    background-color: blueviolet;
 }

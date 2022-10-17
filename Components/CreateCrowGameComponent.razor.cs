@@ -6,23 +6,20 @@ using TheOmenDen.CrowsAgainstHumility.Data.Contexts;
 using TheOmenDen.CrowsAgainstHumility.Services.Interfaces;
 using TheOmenDen.Shared.Utilities;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
-
+#nullable disable
 namespace TheOmenDen.CrowsAgainstHumility.Components;
 
 public partial class CreateCrowGameComponent : ComponentBase
 {
-    private static string ModalTitle = "Player Does Not Exist"; 
+    private const string ModalTitle = "Player Does Not Exist";
 
-    [Parameter] public Boolean IsVisible { get; init; } = false;
+    [Parameter] public Boolean IsVisible { get; init; }
 
-    [Inject]
-    public IDbContextFactory<CrowsAgainstHumilityContext> DbContextFactory { get; init; }
+    [Inject] public IDbContextFactory<CrowsAgainstHumilityContext> DbContextFactory { get; init; }
 
-    [Inject]
-    public IPlayerVerificationService PlayerVerificationService { get; init; }
+    [Inject] public IPlayerVerificationService PlayerVerificationService { get; init; }
 
-    [Inject]
-    public IMessageService MessageService { get; init; }
+    [Inject] public IMessageService MessageService { get; init; }
 
     private Int32 _totalCardsInPool = 0;
 
@@ -42,16 +39,15 @@ public partial class CreateCrowGameComponent : ComponentBase
 
     private bool _isIndicatorVisible;
 
+    private Pack _selectedPack;
+
     private async Task OnHandleReadData(AutocompleteReadDataEventArgs autocompleteReadDataEventArgs)
     {
         if (!autocompleteReadDataEventArgs.CancellationToken.IsCancellationRequested)
         {
             await using var context = await DbContextFactory.CreateDbContextAsync(autocompleteReadDataEventArgs.CancellationToken);
 
-            var packsQuery = context.Packs
-                .Include(p => p.WhiteCards)
-                .Include(p => p.BlackCards)
-                .AsQueryable();
+            var packsQuery = context.Packs.AsQueryable();
 
             if (!String.IsNullOrWhiteSpace(autocompleteReadDataEventArgs.SearchValue))
             {
@@ -59,7 +55,17 @@ public partial class CreateCrowGameComponent : ComponentBase
                     .Where(p => p.Name.StartsWith(autocompleteReadDataEventArgs.SearchValue));
             }
 
-            _packs = await packsQuery.ToListAsync(autocompleteReadDataEventArgs.CancellationToken);
+            _packs = await packsQuery
+                .TagWith("Search Results Query")
+                .Select(pack => new Pack
+                {
+                    Id = pack.Id,
+                    Name = pack.Name,
+                    IsOfficialPack = pack.IsOfficialPack,
+                    WhiteCardsInPack = pack.WhiteCards.Count,
+                    BlackCardsInPack = pack.BlackCards.Count
+                })
+                .ToListAsync(autocompleteReadDataEventArgs.CancellationToken);
         }
     }
 
@@ -97,11 +103,9 @@ public partial class CreateCrowGameComponent : ComponentBase
             ? TextColor.Danger
             : TextColor.Success;
 
-    private async Task OnPlayersUpdated(NotifyCollectionChangedEventArgs args)
-    {
-        
-        await InvokeAsync(StateHasChanged);
-    }
+    private Task OnPlayersUpdated(NotifyCollectionChangedEventArgs args)
+    => InvokeAsync(StateHasChanged);
+
 
     private async Task AddOfficialPacks()
     {
@@ -110,15 +114,21 @@ public partial class CreateCrowGameComponent : ComponentBase
         _isIndicatorVisible = true;
 
         await foreach (var pack in context.Packs
-                     .Where(p => p.IsOfficialPack)
-                     .Include(p => p.BlackCards)
-                     .Include(p => p.WhiteCards)
+                           .TagWith("All Official Packs Query")
+                           .Where(p => p.IsOfficialPack)
+                     .Select(pack => new Pack
+                     {
+                         Id = pack.Id,
+                         Name = pack.Name,
+                         IsOfficialPack = pack.IsOfficialPack,
+                         WhiteCardsInPack = pack.WhiteCards.Count,
+                         BlackCardsInPack = pack.BlackCards.Count
+                     })
                      .AsAsyncEnumerable())
         {
             if (_packsToChoose.TryAdd(pack.Id, pack))
             {
-                pack.WhiteCards.TryGetNonEnumeratedCount(out var whiteCardCount);
-                _totalCardsInPool += whiteCardCount;
+                _totalCardsInPool += pack.WhiteCardsInPack;
             }
             await InvokeAsync(StateHasChanged);
         }
@@ -133,9 +143,7 @@ public partial class CreateCrowGameComponent : ComponentBase
         {
             if (_packsToChoose.TryAdd(pack.Id, pack))
             {
-                pack.WhiteCards.TryGetNonEnumeratedCount(out var whiteCardCount);
-
-                _totalCardsInPool += whiteCardCount;
+                _totalCardsInPool += pack.WhiteCardsInPack;
             }
             await InvokeAsync(StateHasChanged);
         }
@@ -152,21 +160,47 @@ public partial class CreateCrowGameComponent : ComponentBase
         var rowsToTake = ThreadSafeRandom.Global.Next(5, 10);
 
         await foreach (var pack in context.Packs
-                     .Skip(skippedRows)
+                           .TagWith("Random Packs Query")
+                           .Skip(skippedRows)
                      .Take(rowsToTake)
-                     .Include(p => p.BlackCards)
-                     .Include(p => p.WhiteCards)
+                     .Select(pack => new Pack
+                     {
+                         Id = pack.Id,
+                         Name = pack.Name,
+                         IsOfficialPack = pack.IsOfficialPack,
+                         WhiteCardsInPack = pack.WhiteCards.Count,
+                         BlackCardsInPack = pack.BlackCards.Count
+                     })
                      .AsAsyncEnumerable())
         {
             if (_packsToChoose.TryAdd(pack.Id, pack))
             {
-                pack.WhiteCards.TryGetNonEnumeratedCount(out var whiteCardCount);
-                _totalCardsInPool += whiteCardCount;
+                _totalCardsInPool += pack.WhiteCardsInPack;
             }
             await InvokeAsync(StateHasChanged);
         }
 
         _isIndicatorVisible = false;
+    }
+
+    private Task RemovePack()
+    {
+        _isIndicatorVisible = true;
+
+        if (_selectedPack is null)
+        {
+            _isIndicatorVisible = false;
+            return Task.CompletedTask;
+        }
+
+        _packsToChoose.Remove(_selectedPack.Id);
+        _chosenPacks.Remove(_selectedPack);
+        _chosenPackTexts.Remove(_selectedPack.Name);
+        _totalCardsInPool -= _selectedPack.WhiteCardsInPack;
+        
+        _isIndicatorVisible = false;
+
+        return Task.CompletedTask;
     }
 
     private Task RemoveAllPacks()
