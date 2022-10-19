@@ -1,0 +1,101 @@
+﻿@page "/login"
+<Row Height="Height.Is100">
+    <Column Height="Height.Is100" ColumnSize="ColumnSize.Is10.OnTablet.Is8.OnDesktop.Is6.OnWidescreen"
+            Margin="Margin.IsAuto.OnX"
+            Display="Display.Table">
+        <Div Display="Display.Table"
+             VerticalAlignment="VerticalAlignment.Middle">
+            <Text TextAlignment="TextAlignment.Center" Margin="Margin.Is4.FromTop">
+                <Heading Size="HeadingSize.Is2" TextAlignment="TextAlignment.Center">
+                    Welcome Back
+                </Heading>
+                <Paragraph TextAlignment="TextAlignment.Center">
+                    Sign in to your account to continue
+                </Paragraph>
+            </Text>
+            <Card Shadow="Shadow.Default" 
+                  Background="Background.Dark"
+                  Border="Border.Is2.Secondary.OnAll.Rounded">
+                <CardBody Background="Background.Transparent"
+                          TextColor="TextColor.Light">
+                    <Div Margin="Margin.Is4.OnTablet">
+                        <Form>
+                            <Validations @ref="@_validationsRef" Model="@Input" Mode="ValidationMode.Manual">
+                                <Validation>
+                                    <Field>
+                                        <FieldLabel>Email</FieldLabel>
+                                        <TextEdit @bind-Text="@Input.Email"
+                                                  Role="TextRole.Email"
+                                                  Placeholder="Enter your email">
+                                            <Feedback>
+                                                <ValidationError />
+                                            </Feedback>
+                                        </TextEdit>
+                                    </Field>
+                                </Validation>
+                                <Validation>
+                                    <Field>
+                                        <FieldLabel>Password</FieldLabel>
+                                        <FieldBody>
+                                            <TextEdit @bind-Text="@Input.Password"
+                                                      Role="TextRole.Password"
+                                                      Placeholder="Enter your password">
+                                                <Feedback>
+                                                    <ValidationError />
+                                                </Feedback>
+                                            </TextEdit>
+                                        </FieldBody>
+                                    </Field>
+                                </Validation>
+                                <Field>
+                                    <Row>
+                                        <Column>
+                                            <Check TValue="bool" @bind-Checked="@Input.IsRemembered">Remember Me?</Check>
+                                        </Column>
+                                        <Column TextAlignment="TextAlignment.End">
+                                            <Blazorise.Link To="forgotPassword">Forgot Password?</Blazorise.Link>
+                                        </Column>
+                                    </Row>
+                                </Field>
+                                <Field>
+                                    <Button Type="ButtonType.Submit"
+                                            PreventDefaultOnSubmit Color="Color.Primary"
+                                            Block
+                                            Clicked="@OnLogin">
+                                        <Icon Name="IconName.UserCheck" />
+                                        Login
+                                    </Button>
+                                </Field>
+                            </Validations>
+                            <input type="hidden" name="__RequestVerificationToken" value="@TokenProvider.XSRFToken" />
+                        </Form>
+                    </Div>
+                </CardBody>
+            </Card>
+            @if (HasErrors)
+            {
+                <Row Margin="Margin.Is3.FromTop">
+                    <Column ColumnSize="ColumnSize.Is12">
+                        <Alert Color="Color.Danger" Margin="Margin.Is3.FromTop" Visible>
+                            <AlertMessage>Invalid Email or Password</AlertMessage>
+                        </Alert>
+                    </Column>
+                </Row>
+            }
+            <Row Margin="Margin.Is3.FromTop"
+                 Background="Background.Dark"
+                 TextColor="TextColor.Light"
+                 Border="Border.Is2.Secondary.OnAll.Rounded"
+                 Shadow="Shadow.Small">
+                <Column ColumnSize="ColumnSize.Is12">
+                    <Paragraph TextColor="TextColor.Muted" TextAlignment="TextAlignment.Center">
+                        Don't have an account?
+                        <Blazorise.Link To="register" 
+                                        TextColor="TextColor.Warning"
+                                         Class="text-decoration-underline">Register</Blazorise.Link>
+                    </Paragraph>
+                </Column>
+            </Row>
+        </Div>
+    </Column>
+</Row>

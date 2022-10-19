@@ -110,6 +110,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="6.0.10" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.2" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.8.4">
@@ -150,6 +151,8 @@
 	</ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Email\TheOmenDen.CrowsAgainstHumility.Email.csproj" />
+    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Identity\TheOmenDen.CrowsAgainstHumility.Identity.csproj" />
     <ProjectReference Include="TheOmenDen.CrowsAgainstHumility.Core\TheOmenDen.CrowsAgainstHumility.Core.csproj" />
     <ProjectReference Include="TheOmenDen.CrowsAgainstHumility.Data\TheOmenDen.CrowsAgainstHumility.Data.csproj" />
     <ProjectReference Include="TheOmenDen.CrowsAgainstHumility.Mediator\TheOmenDen.CrowsAgainstHumility.Mediator.csproj" />

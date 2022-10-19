@@ -19,8 +19,11 @@ using Fluxor;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using TheOmenDen.CrowsAgainstHumility.Data.Extensions;
 using Microsoft.Extensions.Logging.ApplicationInsights;
+using TheOmenDen.CrowsAgainstHumility.Email.Extensions;
 using TheOmenDen.CrowsAgainstHumility.Services;
 using TheOmenDen.CrowsAgainstHumility.Services.Extensions;
+using TheOmenDen.CrowsAgainstHumility.Identity.Contexts;
+using TheOmenDen.CrowsAgainstHumility.Identity.Extensions;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
@@ -132,13 +135,19 @@ try
                        ?? builder.Configuration["ConnectionStrings:CrowsAgainstHumilityDb"];
 
     builder.Services.AddCorvidDataServices(dbConnection);
-
-
+    
     builder.Services.AddResponseCompression(options =>
     {
         options.MimeTypes = new[] { MediaTypeNames.Application.Octet };
     });
+
     var connectionString = builder.Configuration.GetConnectionString("UserContextConnection") ?? throw new InvalidOperationException("Connection string 'UserContextConnection' not found.");
+
+    builder.Services.AddCorvidIdentityServices(connectionString);
+
+    var apiKey = builder.Configuration["SendGridApiKey"] ?? String.Empty;
+
+    builder.Services.AddCorvidEmailServices(apiKey);
 
     var currentAssembly = typeof(Program).Assembly;
 
@@ -165,13 +174,7 @@ try
     builder.Services.AddSingleton<ISessionDetails, SessionDetails>();
 
     builder.Services.AddScoped<CircuitHandler, TrackingCircuitHandler>(sp => new TrackingCircuitHandler(sp.GetRequiredService<ISessionDetails>()));
-
-    builder.Services.AddDbContext<UserContext>(options =>
-        options.UseSqlite(connectionString));
-
-    builder.Services.AddDefaultIdentity<CAHUser>(options => options.SignIn.RequireConfirmedAccount = true)
-        .AddEntityFrameworkStores<UserContext>();
-
+    
     builder.Services.AddResponseCaching();
 
     builder.Services.AddSignalR(options => options.MaximumReceiveMessageSize = 104_857_600);

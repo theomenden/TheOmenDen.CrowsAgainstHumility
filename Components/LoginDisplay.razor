@@ -1,0 +1,25 @@
+﻿<AuthorizeView>
+    <Authorized>
+        <BarDropdown RightAligned>
+            <BarDropdownToggle>@context.User.Identity.Name</BarDropdownToggle>
+            <BarDropdownMenu>
+                @if (context.User.IsInRole("Administrator"))
+                {
+                    <BarDropdownItem To="admin/manage">
+                        Admin Actions
+                    </BarDropdownItem>
+                }
+                <BarDropdownItem To="user/manage">
+                    Account
+                </BarDropdownItem>
+                <BarDropdownDivider />
+                <Form>
+                    <Button Type="ButtonType.Submit" Class="dropdown-item">Log out</Button>
+                </Form>
+            </BarDropdownMenu>
+        </BarDropdown>
+    </Authorized>
+    <NotAuthorized>
+        <BarLink To="login">Log in</BarLink>
+    </NotAuthorized>
+</AuthorizeView>

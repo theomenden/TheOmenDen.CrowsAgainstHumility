@@ -6,14 +6,9 @@ namespace TheOmenDen.CrowsAgainstHumility.Extensions
 {
     public static class EnvironmentLoggerConfigurationExtensions
     {
-        public static LoggerConfiguration WithEventType(this LoggerEnrichmentConfiguration enrichmentConfiguration)
-        {
-            if(enrichmentConfiguration is null)
-            {
-                throw new ArgumentNullException(nameof(enrichmentConfiguration));
-            }
-
-            return enrichmentConfiguration.With<EventTypeEnricher>();
-        }
+        public static LoggerConfiguration WithEventType(this LoggerEnrichmentConfiguration enrichmentConfiguration) =>
+            enrichmentConfiguration is null
+                ? throw new ArgumentNullException(nameof(enrichmentConfiguration))
+                : enrichmentConfiguration.With<EventTypeEnricher>();
     }
 }
