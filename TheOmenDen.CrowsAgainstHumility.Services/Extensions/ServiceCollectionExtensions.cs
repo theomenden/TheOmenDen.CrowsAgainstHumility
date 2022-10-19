@@ -3,15 +3,23 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
 using Discord;
+using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 using TheOmenDen.CrowsAgainstHumility.Core.Models;
 using TheOmenDen.CrowsAgainstHumility.Services.Authentication;
 using TheOmenDen.CrowsAgainstHumility.Services.Interfaces;
 using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
+using TheOmenDen.CrowsAgainstHumility.Services.CardPoolBuilding;
 
 namespace TheOmenDen.CrowsAgainstHumility.Services.Extensions;
 public static class ServiceCollectionExtensions
 {
+    public static IServiceCollection AddCorvidCardsServices(this IServiceCollection services)
+    {
+        services.AddScoped<ICardPoolBuildingService, CardPoolBuildingService>();
+        return services;
+    }
+
     public static IServiceCollection AddCorvidDiscordServices(this IServiceCollection services)
     {
         services.AddSingleton(new DiscordSocketConfig

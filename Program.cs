@@ -6,8 +6,6 @@ using Serilog.Events;
 using System.Net.Mime;
 using TheOmenDen.CrowsAgainstHumility.Extensions;
 using TheOmenDen.Shared.Logging.Serilog;
-using Microsoft.EntityFrameworkCore;
-using TheOmenDen.CrowsAgainstHumility.Areas.Identity.Data;
 using TheOmenDen.CrowsAgainstHumility.Hubs;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using TheOmenDen.CrowsAgainstHumility.Circuits;
@@ -127,6 +125,13 @@ try
     builder.Services.AddHttpClient();
     builder.Services.AddScoped<TokenProvider>();
 
+    var cacheConnectionString = builder.Configuration["CacheConnection"];
+
+    builder.Services.AddStackExchangeRedisCache(options =>
+    {
+        options.Configuration = cacheConnectionString ?? String.Empty;
+    });
+
     builder.Services.AddCorvidTwitchServices(twitchStrings);
 
     builder.Services.AddCorvidDiscordServices();
@@ -148,7 +153,7 @@ try
     var apiKey = builder.Configuration["SendGridApiKey"] ?? String.Empty;
 
     builder.Services.AddCorvidEmailServices(apiKey);
-
+    
     var currentAssembly = typeof(Program).Assembly;
 
     builder.Services.AddFluxor(options => options
@@ -168,6 +173,8 @@ try
 #endif
         .UseRouting()
         .AddMiddleware<StoreLoggingMiddleware>());
+
+    builder.Services.AddCorvidCardsServices();
 
     builder.Services.AddSingleton<CrowGameService>();
 

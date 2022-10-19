@@ -1,7 +1,9 @@
 ﻿using Blazorise;
 using Blazorise.Components;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using System.Collections.Specialized;
+using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 using TheOmenDen.CrowsAgainstHumility.Data.Contexts;
 using TheOmenDen.CrowsAgainstHumility.Services.Interfaces;
 using TheOmenDen.Shared.Utilities;
@@ -17,6 +19,8 @@ public partial class CreateCrowGameComponent : ComponentBase
 
     [Inject] public IDbContextFactory<CrowsAgainstHumilityContext> DbContextFactory { get; init; }
 
+    [Inject] public ICardPoolBuildingService CardPoolService { get; init; }
+
     [Inject] public IPlayerVerificationService PlayerVerificationService { get; init; }
 
     [Inject] public IMessageService MessageService { get; init; }
@@ -29,7 +33,7 @@ public partial class CreateCrowGameComponent : ComponentBase
 
     private readonly List<User> _players = new(10);
 
-    private List<Pack> _packs = new(300);
+    private List<Pack> _packs = new (300);
 
     private readonly Dictionary<Guid, Pack> _packsToChoose = new(10);
 
@@ -45,27 +49,8 @@ public partial class CreateCrowGameComponent : ComponentBase
     {
         if (!autocompleteReadDataEventArgs.CancellationToken.IsCancellationRequested)
         {
-            await using var context = await DbContextFactory.CreateDbContextAsync(autocompleteReadDataEventArgs.CancellationToken);
-
-            var packsQuery = context.Packs.AsQueryable();
-
-            if (!String.IsNullOrWhiteSpace(autocompleteReadDataEventArgs.SearchValue))
-            {
-                packsQuery = packsQuery
-                    .Where(p => p.Name.StartsWith(autocompleteReadDataEventArgs.SearchValue));
-            }
-
-            _packs = await packsQuery
-                .TagWith("Search Results Query")
-                .Select(pack => new Pack
-                {
-                    Id = pack.Id,
-                    Name = pack.Name,
-                    IsOfficialPack = pack.IsOfficialPack,
-                    WhiteCardsInPack = pack.WhiteCards.Count,
-                    BlackCardsInPack = pack.BlackCards.Count
-                })
-                .ToListAsync(autocompleteReadDataEventArgs.CancellationToken);
+            _packs = await CardPoolService.GetPacksBySearchValueAsync(autocompleteReadDataEventArgs.SearchValue, autocompleteReadDataEventArgs.CancellationToken)
+                .ToListAsync();
         }
     }
 
@@ -109,22 +94,11 @@ public partial class CreateCrowGameComponent : ComponentBase
 
     private async Task AddOfficialPacks()
     {
-        await using var context = await DbContextFactory.CreateDbContextAsync();
-
         _isIndicatorVisible = true;
 
-        await foreach (var pack in context.Packs
-                           .TagWith("All Official Packs Query")
-                           .Where(p => p.IsOfficialPack)
-                     .Select(pack => new Pack
-                     {
-                         Id = pack.Id,
-                         Name = pack.Name,
-                         IsOfficialPack = pack.IsOfficialPack,
-                         WhiteCardsInPack = pack.WhiteCards.Count,
-                         BlackCardsInPack = pack.BlackCards.Count
-                     })
-                     .AsAsyncEnumerable())
+        var packs = await CardPoolService.GetOfficialPacksAsync();
+
+        foreach (var pack in packs)
         {
             if (_packsToChoose.TryAdd(pack.Id, pack))
             {
@@ -152,31 +126,16 @@ public partial class CreateCrowGameComponent : ComponentBase
 
     private async Task AddRandomPacks()
     {
-        await using var context = await DbContextFactory.CreateDbContextAsync();
-
         _isIndicatorVisible = true;
-
-        var skippedRows = ThreadSafeRandom.Global.Next(0, 130);
-        var rowsToTake = ThreadSafeRandom.Global.Next(5, 10);
-
-        await foreach (var pack in context.Packs
-                           .TagWith("Random Packs Query")
-                           .Skip(skippedRows)
-                     .Take(rowsToTake)
-                     .Select(pack => new Pack
-                     {
-                         Id = pack.Id,
-                         Name = pack.Name,
-                         IsOfficialPack = pack.IsOfficialPack,
-                         WhiteCardsInPack = pack.WhiteCards.Count,
-                         BlackCardsInPack = pack.BlackCards.Count
-                     })
-                     .AsAsyncEnumerable())
+        
+        foreach (var pack in await CardPoolService.GetRandomPacksAsync()
+                           .ToArrayAsync())
         {
             if (_packsToChoose.TryAdd(pack.Id, pack))
             {
                 _totalCardsInPool += pack.WhiteCardsInPack;
             }
+
             await InvokeAsync(StateHasChanged);
         }
 

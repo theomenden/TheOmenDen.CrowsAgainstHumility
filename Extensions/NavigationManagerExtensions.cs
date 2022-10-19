@@ -59,9 +59,9 @@ public static class NavigationManagerExtensions
         return new(false, default);
     }
 
-    public static (bool isSuccessful, TValue result) EnumTryParse<TValue>(string? input, Type conversionType)
+    public static (bool isSuccessful, TValue result) EnumTryParse<TValue>(string input, Type conversionType)
     {
-        if (input is null || !Enum.GetNames(conversionType)
+        if (String.IsNullOrWhiteSpace(input) || !Enum.GetNames(conversionType)
                 .Any(en => en.Equals(input, StringComparison.InvariantCultureIgnoreCase)))
         {
             return new(false, default);
