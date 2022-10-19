@@ -80,15 +80,15 @@
     <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="6.0.12" />
     <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
     <PackageReference Include="Azure.Identity" Version="1.7.0" />
-    <PackageReference Include="Blazorise" Version="1.1.1" />
-    <PackageReference Include="Blazorise.Animate" Version="1.1.1" />
-    <PackageReference Include="Blazorise.Bootstrap5" Version="1.1.1" />
-    <PackageReference Include="Blazorise.Components" Version="1.1.1" />
-    <PackageReference Include="Blazorise.Icons.Bootstrap" Version="1.1.1" />
-    <PackageReference Include="Blazorise.LoadingIndicator" Version="1.1.1" />
-    <PackageReference Include="Blazorise.Markdown" Version="1.1.1" />
-    <PackageReference Include="Blazorise.QRCode" Version="1.1.1" />
-    <PackageReference Include="Blazorise.SpinKit" Version="1.1.1" />
+    <PackageReference Include="Blazorise" Version="1.1.2" />
+    <PackageReference Include="Blazorise.Animate" Version="1.1.2" />
+    <PackageReference Include="Blazorise.Bootstrap5" Version="1.1.2" />
+    <PackageReference Include="Blazorise.Components" Version="1.1.2" />
+    <PackageReference Include="Blazorise.Icons.Bootstrap" Version="1.1.2" />
+    <PackageReference Include="Blazorise.LoadingIndicator" Version="1.1.2" />
+    <PackageReference Include="Blazorise.Markdown" Version="1.1.2" />
+    <PackageReference Include="Blazorise.QRCode" Version="1.1.2" />
+    <PackageReference Include="Blazorise.SpinKit" Version="1.1.2" />
     <PackageReference Include="Discord.Net" Version="3.8.1" />
     <PackageReference Include="Fluxor" Version="5.5.0" />
     <PackageReference Include="Fluxor.Blazor.Web" Version="5.5.0" />
@@ -108,6 +108,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="6.0.10" />
