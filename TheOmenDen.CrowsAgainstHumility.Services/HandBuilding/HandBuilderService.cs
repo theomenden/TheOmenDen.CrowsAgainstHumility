@@ -23,9 +23,5 @@ internal sealed class HandBuilderService
     public async Task GetInitialCardsForGame(CrowGame game, CancellationToken cancellationToken = default)
     {
         await using var context = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
-
-        var initialWhiteCardPool = context.WhiteCards
-            .Where(wc => game.UsedPacks.Contains(wc.Pack))
-            .Take(game.Players.Count() * 100);
     }
 }

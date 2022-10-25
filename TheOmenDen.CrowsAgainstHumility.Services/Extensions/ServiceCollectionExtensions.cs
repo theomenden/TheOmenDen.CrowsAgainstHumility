@@ -1,22 +1,21 @@
 ﻿using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
-using System.Runtime.CompilerServices;
-using System.Xml.Serialization;
 using Discord;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 using TheOmenDen.CrowsAgainstHumility.Core.Models;
 using TheOmenDen.CrowsAgainstHumility.Services.Authentication;
-using TheOmenDen.CrowsAgainstHumility.Services.Interfaces;
 using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
 using TheOmenDen.CrowsAgainstHumility.Services.CardPoolBuilding;
+using TheOmenDen.CrowsAgainstHumility.Services.CrowGameBuilder;
 
 namespace TheOmenDen.CrowsAgainstHumility.Services.Extensions;
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddCorvidCardsServices(this IServiceCollection services)
+    public static IServiceCollection AddCorvidGamesServices(this IServiceCollection services)
     {
-        services.AddScoped<ICardPoolBuildingService, CardPoolBuildingService>();
+        services.AddScoped<ICardPoolBuildingService, CardPoolBuildingService>()
+            .AddScoped<ICrowGameService, CrowGameService>();
         return services;
     }
 
@@ -44,14 +43,14 @@ public static class ServiceCollectionExtensions
 
     private static TwitchAPI InitializeTwitchApi(TwitchStrings twitchStrings)
     {
-        var scopes = new List<TwitchLib.Api.Core.Enums.AuthScopes>()
+        var scopes = new List<AuthScopes>()
         {
             AuthScopes.Channel_Read,
             AuthScopes.User_Read,
             AuthScopes.Helix_User_Read_Email
         };
 
-        return new TwitchAPI()
+        return new ()
         {
             Settings =
             {

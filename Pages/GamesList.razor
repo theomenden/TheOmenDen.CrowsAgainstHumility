@@ -1,36 +1,48 @@
 ﻿@page "/game-list"
 
-<Container Fluid
-           Background="Background.Dark"
+<Jumbotron Background="Background.Dark"
            TextColor="TextColor.Light"
            Padding="Padding.Is3.OnY"
-           Margin="Margin.Is2.FromTop"
+           Margin="Margin.Is2.OnY.OnDesktop.Is5.OnY.OnTablet"
            Border="Border.Is2.Secondary.OnAll.Rounded"
            Shadow="Shadow.Default">
-    <Card Background="Background.Transparent" TextColor="TextColor.Light"
-          Border="Border.Is0">
-        <CardHeader Background="Background.Secondary" TextColor="TextColor.Light">
-            Create A Game!
-        </CardHeader>
-        <CardBody Background="Background.Transparent" TextColor="TextColor.Light">
-            <Form Background="Background.Transparent" TextColor="TextColor.Light">
-                <Field>
-                    <FieldLabel>
-                        Game Name
-                    </FieldLabel>
-                    <FieldBody>
-                        <TextEdit @bind-Text="@_gameName" Placeholder="Pick Your Game's Name"/>
-                    </FieldBody>
-                    <FieldLabel>
-                        Room Code
-                    </FieldLabel>
-                    <TextEdit Plaintext 
-                              TextColor="TextColor.Light"
-                              Text="@GenerateGameCode()"
-                              @bind="@_gameCode" />
-                </Field>
-                <CreateCrowGameComponent IsVisible="@ShowCreateCrowGame()" />
-            </Form>
-        </CardBody>
-    </Card>
-</Container>
+    <JumbotronTitle>Games in Progress</JumbotronTitle>
+    <JumbotronSubtitle>You can try to join games by code too</JumbotronSubtitle>
+    <Span Display="Display.InlineFlex"
+          TextColor="TextColor.Light"
+          VerticalAlignment="VerticalAlignment.Middle">
+        Don't see your game listed? <Button Background="Background.Warning"
+                                            Border="Border.Is2.Secondary.OnAll.Rounded"
+                                            Shadow="Shadow.Default"
+                                            TextColor="TextColor.Dark"
+                                            Margin="Margin.Is2.FromStart.OnWidescreen.Is3.FromStart.OnTablet"
+                                            Clicked="InstantiateModalAsync">
+            Create a game! <Icon Name="IconName.Gamepad" />
+        </Button>
+    </Span>
+</Jumbotron>
+
+<Row>
+    <Column ColumnSize="ColumnSize.Is10.OnDesktop.Is8.OnTablet.IsHalf.OnWidescreen">
+        <ListView TItem="CrowGameDto"
+                  Data="@_games"
+                  TextField="item => item.Name"
+                  ValueField="item => item.LobbyCode"
+                  Mode="ListGroupMode.Static"
+                  MaxHeight="500px">
+            <ItemTemplate>
+                <Div Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
+                    <Heading Margin="Margin.Is2.FromBottom">
+                        @context.Item.Name
+                    </Heading>
+                    <Small>@context.Item.LobbyCode</Small>
+                    
+                    <Button Color="Color.Primary">Join Game</Button>
+                </Div>
+                <Badge Color="Color.Secondary">
+                    @context.Item.Players.Count() / 10
+                </Badge>
+            </ItemTemplate>
+        </ListView>
+    </Column>
+</Row>

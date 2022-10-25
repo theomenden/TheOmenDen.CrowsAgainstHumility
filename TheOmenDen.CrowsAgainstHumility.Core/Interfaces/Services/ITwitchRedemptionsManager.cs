@@ -1,4 +1,4 @@
-﻿namespace TheOmenDen.CrowsAgainstHumility.Twitch.Interfaces;
+﻿namespace TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 public interface ITwitchRedemptionsManager : IDisposable, IAsyncDisposable
 {
     /// <summary>
@@ -11,18 +11,6 @@ public interface ITwitchRedemptionsManager : IDisposable, IAsyncDisposable
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task ConnectToChannelAsync(String channel, String oauthToken, String username, String clientId, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Verifies that we're connected to twitch
-    /// </summary>
-    /// <returns><see langword="true"/> when connected; <see langword="false"/> otherwise</returns>
-    Boolean IsConnectedToTwitch();
-
-    /// <summary>
-    /// Sends a message to the twitch channel we're connected to.
-    /// </summary>
-    /// <param name="message">The message we want to send out</param>
-    void SendMessage(String message);
 
     /// <summary>
     /// The username that's connecting to the channel

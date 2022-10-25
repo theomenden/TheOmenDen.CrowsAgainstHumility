@@ -6,9 +6,6 @@ using Microsoft.Extensions.Caching.Distributed;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 using TheOmenDen.CrowsAgainstHumility.Services.Helpers;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore.Internal;
 using TheOmenDen.Shared.Utilities;
 
 namespace TheOmenDen.CrowsAgainstHumility.Services.CardPoolBuilding;

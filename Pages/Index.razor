@@ -1,19 +1,48 @@
 ﻿@page "/"
 <PageTitle>Crows Against Humility</PageTitle>
-<Container Fluid>
-    <Row Flex="Flex.JustifyContent.Between"
-         Margin="Margin.Is3.OnY">
-        <Column ColumnSize="ColumnSize.Is2" 
-                Padding="Padding.Is3.OnY">
-            <CAHBlack />
-        </Column>
-        <Column ColumnSize="ColumnSize.Is10"
-                Flex="Flex.InlineFlex.Row.AlignContent.Center.JustifyContent.Between.Grow.Is1">
-            <CAHPlayArea />
-        </Column>
-    </Row>
-    <Row Margin="Margin.Is4.OnY">
-        <Column>
-        </Column>
-    </Row>
-</Container>
+<AuthorizeView>
+    <Authorized>
+        <Row Display="Display.Flex">
+            <Column ColumnSize="ColumnSize.IsHalf.OnWidescreen.Is8.OnTablet.IsFull.OnMobile">
+                <Container Fluid
+                           VerticalAlignment="VerticalAlignment.Middle"
+                           TextAlignment="TextAlignment.Center">
+                    <Row Flex="Flex.JustifyContent.Between"
+                         Margin="Margin.Is3.OnY">
+                        <Column ColumnSize="ColumnSize.Is2"
+                                Padding="Padding.Is3.OnY">
+                            <CAHBlack />
+                        </Column>
+                        <Column ColumnSize="ColumnSize.Is10"
+                                Flex="Flex.InlineFlex.Row.AlignContent.Center.JustifyContent.Between.Grow.Is1">
+                            <CAHPlayArea />
+                        </Column>
+                    </Row>
+                    <Row Margin="Margin.Is4.OnY">
+                        <Column>
+                        </Column>
+                    </Row>
+                </Container>
+            </Column>
+        </Row>
+    </Authorized>
+    <NotAuthorized>
+        <Row>
+            <Column ColumnSize="ColumnSize.IsHalf.OnWidescreen.Is8.OnTablet.IsFull.OnMobile">
+                <Container Fluid Margin="Margin.Is2.OnY.Is2.OnX.OnDesktop.Is4.OnX.OnTablet.Is5.OnX.OnMobile"
+                           Padding="Padding.Is2.OnY.OnDesktop.Is4.OnY.OnMobile">
+                    <Card Background="Background.Dark"
+                          Border="Border.Is2.Secondary.OnAll.Rounded"
+                          TextAlignment="TextAlignment.Center"
+                          TextColor="TextColor.Light">
+                        <CardBody>
+                            <Paragraph TextWeight="TextWeight.Bold" Italic>
+                                Log In to see more options, and create a game!
+                            </Paragraph>
+                        </CardBody>
+                    </Card>
+                </Container>
+            </Column>
+        </Row>
+    </NotAuthorized>
+</AuthorizeView>

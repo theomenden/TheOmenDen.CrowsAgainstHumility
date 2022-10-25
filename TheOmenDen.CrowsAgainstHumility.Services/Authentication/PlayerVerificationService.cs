@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using Discord.WebSocket;
 using TheOmenDen.CrowsAgainstHumility.Core.Models;
-using TheOmenDen.CrowsAgainstHumility.Services.Interfaces;
+using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 using TwitchLib.Api;
 using TwitchLib.Api.Core;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
@@ -17,9 +17,9 @@ namespace TheOmenDen.CrowsAgainstHumility.Services.Authentication;
 /// </summary>
 internal sealed class PlayerVerificationService : IPlayerVerificationService
 {
-    private readonly TwitchAPI? _twitchAPI;
+    private readonly TwitchAPI? _twitchApi;
 
-    private readonly  DiscordSocketClient _discord;
+    private readonly DiscordSocketClient _discord;
 
     private readonly ILogger<PlayerVerificationService> _logger;
 
@@ -27,7 +27,7 @@ internal sealed class PlayerVerificationService : IPlayerVerificationService
     {
         _logger = logger;
         _discord = discord;
-        _twitchAPI = twitchApi;
+        _twitchApi = twitchApi;
     }
 
     public Boolean IsPlayerInGameList(IEnumerable<String> playersInGame, String playerToVerify)
@@ -36,7 +36,7 @@ internal sealed class PlayerVerificationService : IPlayerVerificationService
     public Task<SocketUser?> CheckDiscordForUser(String username, String discriminator)
     {
         var socketUser = _discord.GetUser(username, discriminator);
-        
+
         return Task.FromResult(socketUser ?? default);
     }
 
@@ -48,7 +48,7 @@ internal sealed class PlayerVerificationService : IPlayerVerificationService
 
         try
         {
-            var userResponse = await _twitchAPI!.Helix.Users.GetUsersAsync(null, new() { username });
+            var userResponse = await _twitchApi!.Helix.Users.GetUsersAsync(null, new() { username });
 
             user = userResponse.Users[0];
         }
@@ -70,7 +70,7 @@ internal sealed class PlayerVerificationService : IPlayerVerificationService
 
         await GenerateAccessTokenAsync();
 
-        var userResponse = await _twitchAPI!.Helix.Users.GetUsersAsync(null, usernames.ToList());
+        var userResponse = await _twitchApi!.Helix.Users.GetUsersAsync(null, usernames.ToList());
 
         foreach (var user in userResponse.Users)
         {
@@ -85,15 +85,13 @@ internal sealed class PlayerVerificationService : IPlayerVerificationService
 
     private async Task GenerateAccessTokenAsync()
     {
-        if (!String.IsNullOrWhiteSpace(_twitchAPI!.Settings.AccessToken))
+        if (!String.IsNullOrWhiteSpace(_twitchApi!.Settings.AccessToken))
         {
             return;
         }
 
-        var accessToken = await _twitchAPI!.Auth.GetAccessTokenAsync();
+        var accessToken = await _twitchApi!.Auth.GetAccessTokenAsync();
 
-        var verifiedResponse = await _twitchAPI.Auth.ValidateAccessTokenAsync(accessToken);
-
-        _twitchAPI.Settings.AccessToken = accessToken;
+        _twitchApi.Settings.AccessToken = accessToken;
     }
 }

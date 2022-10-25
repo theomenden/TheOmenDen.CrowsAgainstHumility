@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.Circuits;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.JSInterop;
-using System.Runtime.InteropServices;
 using TheOmenDen.CrowsAgainstHumility.Circuits;
-using TheOmenDen.CrowsAgainstHumility.Data.Contexts;
 using TheOmenDen.CrowsAgainstHumility.Events;
-using TheOmenDen.CrowsAgainstHumility.Services.Interfaces;
 
 namespace TheOmenDen.CrowsAgainstHumility.Pages;
 public partial class Index : ComponentBase, IDisposable, IAsyncDisposable

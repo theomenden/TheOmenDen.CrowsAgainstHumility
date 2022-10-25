@@ -1,9 +1,5 @@
 {
   "dependencies": {
-    "identityapp1": {
-      "type": "identityapp",
-      "connectionId": null
-    },
     "secrets1": {
       "type": "secrets",
       "dynamicId": null
@@ -29,6 +25,14 @@
     "redis1": {
       "type": "redis",
       "connectionId": "CacheConnection"
+    },
+    "mssql2": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:CrowsAgainstAuthority"
+    },
+    "identityapp1": {
+      "type": "identityapp",
+      "connectionId": null
     }
   }
 }

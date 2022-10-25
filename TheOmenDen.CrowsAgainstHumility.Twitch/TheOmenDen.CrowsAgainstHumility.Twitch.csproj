@@ -15,4 +15,8 @@
     <PackageReference Include="TwitchLib.Client" Version="3.2.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Core\TheOmenDen.CrowsAgainstHumility.Core.csproj" />
+  </ItemGroup>
+
 </Project>

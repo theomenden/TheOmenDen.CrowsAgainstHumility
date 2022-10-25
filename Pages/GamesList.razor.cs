@@ -1,58 +1,38 @@
-﻿using TheOmenDen.CrowsAgainstHumility.Services;
-using TheOmenDen.CrowsAgainstHumility.Services.Authentication;
-using TheOmenDen.Shared.Extensions;
+﻿using Blazorise;
+using TheOmenDen.CrowsAgainstHumility.Components;
+using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Repositories;
+using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 
 namespace TheOmenDen.CrowsAgainstHumility.Pages;
 
-public partial class GamesList : ComponentBase, IAsyncDisposable
+public partial class GamesList : ComponentBase
 {
     [Inject] public NavigationManager Navigation { get; init; }
 
-    [Inject] public CrowGameService StateManager { get; init; }
+    [Inject] private IModalService ModalService { get; init; }
 
-    private string _gameName;
+    [Inject] private ICrowGameService CrowGameService { get; init; }
 
-    private string _gameCode;
-    
-    private void InitializeNewGame()
-    {
-        StateManager.Game = new CrowGame()
-        {
-            Name = _gameName
-        };
-    }
+    private IEnumerable<CrowGameDto> _games = Enumerable.Empty<CrowGameDto>();
 
     private void Start()
     {
         Navigation.NavigateTo("/play");
     }
 
-    private string GenerateGameCode()
+    protected override async Task OnInitializedAsync()
     {
-        if (!StringBuilderPoolFactory<GameCodeGenerator>.Exists(nameof(GameCodeGenerator)))
-        {
-            return GameCodeGenerator.GenerateGameCode();
-        }
+        _games = Enumerable.Empty<CrowGameDto>();
 
-        var sb =  StringBuilderPoolFactory<GameCodeGenerator>.Get(nameof(GameCodeGenerator));
-
-        sb!.Clear();
-
-        return GameCodeGenerator.GenerateGameCode();
+        await base.OnInitializedAsync();
     }
 
-    private bool ShowCreateCrowGame() => !String.IsNullOrWhiteSpace(_gameName) && _gameName?.Length > 3;
 
-    public ValueTask DisposeAsync()
-    {
-        _gameName = String.Empty;
-        _gameCode = String.Empty;
-
-        if (StringBuilderPoolFactory<GameCodeGenerator>.Exists(nameof(GameCodeGenerator)))
+    private Task InstantiateModalAsync()
+        => ModalService.Show<CreateCrowGameComponent>(String.Empty, new ModalInstanceOptions()
         {
-            StringBuilderPoolFactory<GameCodeGenerator>.Remove(nameof(GameCodeGenerator));
-        }
-
-        return ValueTask.CompletedTask;
-    }
+            Scrollable=true,
+            Size= ModalSize.ExtraLarge,
+            UseModalStructure=false
+        });
 }

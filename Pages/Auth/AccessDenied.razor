@@ -1,5 +1,34 @@
-﻿<h3>AccessDenied</h3>
+﻿@page "/access-denied"
+<Row Height="Height.Is100">
+    <Column Height="Height.Is100"
+            ColumnSize="ColumnSize.Is10.OnTablet.Is8.OnDesktop.IsHalf.OnWidescreen"
+            Margin="Margin.IsAuto.OnX"
+            Display="Display.Table">
+        <Div Display="Display.TableCell" 
+             VerticalAlignment="VerticalAlignment.Middle">
+            <Card Shadow="Shadow.Default"
+                  Background="Background.Dark"
+                  TextColor="TextColor.Light"
+                  Border="Border.Is2.Secondary.OnAll.Rounded">
+                <CardBody Background="Background.Transparent">
+                    <Text TextAlignment="TextAlignment.Center">
+                        <Heading Size="HeadingSize.Is2" 
+                                 TextAlignment="TextAlignment.Center"
+                                 Flex="Flex.JustifyContent.Center.AlignItems.Center">
+                            Access denied!
+                        </Heading>
+                    </Text>
+                    <Paragraph Class="lead"
+                               TextAlignment="TextAlignment.Center">
+                        You do not have access to this resource.
+                    </Paragraph>
+                    <Paragraph Class="lead"
+                               TextAlignment="TextAlignment.Center">
+                        Try confirming your account by clicking on the link in the email we sent you.
+                    </Paragraph>
+                </CardBody>
+            </Card>
+        </Div>
 
-@code {
-
-}
+    </Column>
+</Row>

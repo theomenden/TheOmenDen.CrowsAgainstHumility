@@ -1,4 +1,5 @@
-﻿using TheOmenDen.CrowsAgainstHumility.Middleware;
+﻿using Microsoft.AspNetCore.Builder;
+using TheOmenDen.CrowsAgainstHumility.Middleware;
 
 namespace TheOmenDen.CrowsAgainstHumility.Extensions;
 public static class ApplicationBuilderExtensions
@@ -10,7 +11,7 @@ public static class ApplicationBuilderExtensions
         if (env.IsDevelopmentOrStaging())
         {
             app.UseDeveloperExceptionPage();
-
+            app.UseMigrationsEndPoint();
             return app;
         }
 

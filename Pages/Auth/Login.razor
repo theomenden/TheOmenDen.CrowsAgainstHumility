@@ -1,23 +1,27 @@
 ﻿@page "/login"
+@using Microsoft.AspNetCore.Authentication
 <Row Height="Height.Is100">
-    <Column Height="Height.Is100" ColumnSize="ColumnSize.Is10.OnTablet.Is8.OnDesktop.Is6.OnWidescreen"
+    <Column Height="Height.Is100" 
+            ColumnSize="ColumnSize.Is8.OnTablet.IsHalf.OnDesktop.IsThird.OnWidescreen"
             Margin="Margin.IsAuto.OnX"
             Display="Display.Table">
         <Div Display="Display.Table"
-             VerticalAlignment="VerticalAlignment.Middle">
-            <Text TextAlignment="TextAlignment.Center" Margin="Margin.Is4.FromTop">
-                <Heading Size="HeadingSize.Is2" TextAlignment="TextAlignment.Center">
-                    Welcome Back
-                </Heading>
-                <Paragraph TextAlignment="TextAlignment.Center">
-                    Sign in to your account to continue
-                </Paragraph>
-            </Text>
-            <Card Shadow="Shadow.Default" 
+             VerticalAlignment="VerticalAlignment.Middle"
+             Margin="Margin.Is2.OnY.OnDesktop.Is3.OnY.OnTablet.Is4.OnY.OnMobile"
+             Padding="Padding.Is2.OnY.Is3.OnX">
+            <Card Shadow="Shadow.Default"
                   Background="Background.Dark"
                   Border="Border.Is2.Secondary.OnAll.Rounded">
                 <CardBody Background="Background.Transparent"
                           TextColor="TextColor.Light">
+                    <Text TextAlignment="TextAlignment.Center" Margin="Margin.Is4.FromTop">
+                        <Heading Size="HeadingSize.Is2" TextAlignment="TextAlignment.Center">
+                            Welcome Back
+                        </Heading>
+                        <Paragraph TextAlignment="TextAlignment.Center">
+                            Sign in to your account to continue
+                        </Paragraph>
+                    </Text>
                     <Div Margin="Margin.Is4.OnTablet">
                         <Form>
                             <Validations @ref="@_validationsRef" Model="@Input" Mode="ValidationMode.Manual">
@@ -28,7 +32,7 @@
                                                   Role="TextRole.Email"
                                                   Placeholder="Enter your email">
                                             <Feedback>
-                                                <ValidationError />
+                                                <ValidationError/>
                                             </Feedback>
                                         </TextEdit>
                                     </Field>
@@ -41,7 +45,7 @@
                                                       Role="TextRole.Password"
                                                       Placeholder="Enter your password">
                                                 <Feedback>
-                                                    <ValidationError />
+                                                    <ValidationError/>
                                                 </Feedback>
                                             </TextEdit>
                                         </FieldBody>
@@ -62,12 +66,12 @@
                                             PreventDefaultOnSubmit Color="Color.Primary"
                                             Block
                                             Clicked="@OnLogin">
-                                        <Icon Name="IconName.UserCheck" />
+                                        <Icon Name="IconName.UserCheck"/>
                                         Login
                                     </Button>
                                 </Field>
                             </Validations>
-                            <input type="hidden" name="__RequestVerificationToken" value="@TokenProvider.XSRFToken" />
+                            <input type="hidden" name="__RequestVerificationToken" value="@TokenProvider.XSRFToken"/>
                         </Form>
                     </Div>
                 </CardBody>
@@ -90,12 +94,74 @@
                 <Column ColumnSize="ColumnSize.Is12">
                     <Paragraph TextColor="TextColor.Muted" TextAlignment="TextAlignment.Center">
                         Don't have an account?
-                        <Blazorise.Link To="register" 
+                        <Blazorise.Link To="register"
                                         TextColor="TextColor.Warning"
-                                         Class="text-decoration-underline">Register</Blazorise.Link>
+                                        Class="text-decoration-underline">Register</Blazorise.Link>
                     </Paragraph>
                 </Column>
             </Row>
+        </Div>
+    </Column>
+    <Column Height="Height.Is100" 
+            ColumnSize="ColumnSize.IsThird.OnTablet.IsHalf.OnDesktop.Is8.OnWidescreen"
+            Margin="Margin.IsAuto.OnX"
+            Display="Display.Table">
+        <Div Display="Display.Table"
+             VerticalAlignment="VerticalAlignment.Middle"
+             Margin="Margin.Is2.OnY.OnDesktop.Is3.OnY.OnTablet.Is4.OnY.OnMobile"
+             Padding="Padding.Is2.OnY.Is3.OnX">
+            <Card Shadow="Shadow.Default"
+                  Background="Background.Dark"
+                  Border="Border.Is2.Secondary.OnAll.Rounded">
+                <CardBody Background="Background.Transparent"
+                          TextColor="TextColor.Light">
+                    <Text TextAlignment="TextAlignment.Center" Margin="Margin.Is4.FromTop">
+                        <Heading Size="HeadingSize.Is2" TextAlignment="TextAlignment.Center">
+                        </Heading>
+                        Sign in with another one of our supported providers
+                    </Text>
+                    <Div Margin="Margin.Is4.OnTablet">
+                        @if (_externalProviders.Any())
+                        {
+                            <Buttons ElementId="#btn-animate">
+                                <Repeater TItem="AuthenticationScheme" Items="_externalProviders">
+                                    <Animate Anchor="#btn-animate"
+                                             Auto
+                                             Animation="Animations.FlipUp"
+                                             DelayMilliseconds="500">
+                                        <Button Color="Color.Primary"
+                                                Border="Border.Rounded"
+                                                Shadow="Shadow.Default"
+                                                Margin="Margin.Is2.OnX"
+                                                Padding="Padding.Is4.OnX"
+                                                Outline
+                                                Clicked="@(async () => await OnExternalLoginAsync(context))">
+                                            <Span Class="visually-hidden">
+                                                @context.DisplayName
+                                            </Span>
+                                            <Small>
+                                                Log in using your @context.DisplayName account
+                                            </Small>
+                                            @switch (context.DisplayName)
+                                            {
+                                                case var pn when String.Equals(pn, "twitch", StringComparison.OrdinalIgnoreCase):
+                                                    <Icon Name="@("bi bi-twitch")" Class="text-light display-3"/>
+                                                    break;
+                                                case var pn when String.Equals(pn, "twitter", StringComparison.OrdinalIgnoreCase):
+                                                    <Icon Name="@("bi bi-twitter")" Class="text-light display-3"/>
+                                                    break;
+                                                case var pn when String.Equals(pn, "discord", StringComparison.OrdinalIgnoreCase):
+                                                    <Icon Name="@("bi bi-discord")" Class="text-light display-3"/>
+                                                    break;
+                                            }
+                                        </Button>
+                                    </Animate>
+                                </Repeater>
+                            </Buttons>
+                        }
+                    </Div>
+                </CardBody>
+            </Card>
         </Div>
     </Column>
 </Row>

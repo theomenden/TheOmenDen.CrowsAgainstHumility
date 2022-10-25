@@ -31,6 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\TheOmenDen.CrowsAgainstHumility.Identity\TheOmenDen.CrowsAgainstHumility.Identity.csproj" />
     <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Core\TheOmenDen.CrowsAgainstHumility.Core.csproj" />
     <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Data\TheOmenDen.CrowsAgainstHumility.Data.csproj" />
   </ItemGroup>

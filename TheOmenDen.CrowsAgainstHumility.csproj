@@ -80,6 +80,7 @@
     <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="6.0.12" />
     <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
     <PackageReference Include="Azure.Identity" Version="1.7.0" />
+    <PackageReference Include="Blazored.SessionStorage" Version="2.2.0" />
     <PackageReference Include="Blazorise" Version="1.1.2" />
     <PackageReference Include="Blazorise.Animate" Version="1.1.2" />
     <PackageReference Include="Blazorise.Bootstrap5" Version="1.1.2" />
@@ -92,7 +93,9 @@
     <PackageReference Include="Discord.Net" Version="3.8.1" />
     <PackageReference Include="Fluxor" Version="5.5.0" />
     <PackageReference Include="Fluxor.Blazor.Web" Version="5.5.0" />
+    <PackageReference Include="HtmlSanitizer" Version="8.0.601" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
     <PackageReference Include="Microsoft.AspNetCore.Antiforgery" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="6.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.10" />
@@ -101,6 +104,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="6.0.10" />
     <PackageReference Include="Microsoft.Azure.SignalR" Version="1.18.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.10" />
@@ -114,6 +118,8 @@
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="6.0.10" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.2" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="1.25.3" />
+    <PackageReference Include="Microsoft.Identity.Web.UI" Version="1.25.3" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.8.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

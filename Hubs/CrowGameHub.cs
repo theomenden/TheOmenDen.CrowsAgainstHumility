@@ -1,59 +1,49 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using System.Collections.Concurrent;
-using TheOmenDen.CrowsAgainstHumility.Bootstrapping;
-using TheOmenDen.CrowsAgainstHumility.Core.Requests;
 
 namespace TheOmenDen.CrowsAgainstHumility.Hubs;
-
 
 public class CrowGameHub : Hub
 {
     public const string HubUrl = "/games";
 
-    private static readonly List<GamePlay> GamePlays = new (100);
+    private static readonly Dictionary<string, HashSet<string>> Games= new (100, StringComparer.OrdinalIgnoreCase);
 
-    public async Task RegisterPlayerAsync(RegisterPlayerRequest registerPlayerRequest)
+    public Task CreateGame(String gameName)
     {
-        var playerExists = GamePlays.Exists(game => game.HubConnectionId == Context.ConnectionId);
+        var currentConnection = Context.ConnectionId;
 
-        if (playerExists)
-        {
-            return;
-        }
+        var players = new HashSet<String> { currentConnection };
 
-        var gamePlay = new GamePlay
-        {
-            HubConnectionId = Context.ConnectionId,
-            Game = registerPlayerRequest.Game,
-            Player = registerPlayerRequest.Player,
-            PlayedCard = new()
-        };
+        Games.Add(gameName, players);
 
-        GamePlays.Add(gamePlay);
+        Groups.AddToGroupAsync(gameName, currentConnection);
 
-        await Groups.AddToGroupAsync(Context.ConnectionId, registerPlayerRequest.Game.Id.ToString());
-
-        await UpdateGame(gamePlay.Game);
+        return Clients.Group(gameName).SendAsync("Send", $"{currentConnection} has created the game {gameName}");
     }
 
-    public override async Task OnDisconnectedAsync(Exception? exception)
+    public Task JoinGame(String gameName)
     {
-        var gamePlay = GamePlays.FirstOrDefault(game => game.HubConnectionId == Context.ConnectionId);
+        var currentConnection = Context.ConnectionId;
 
-        if (gamePlay is not null)
+        if (!Games.TryGetValue(gameName, out var players))
         {
-            GamePlays.Remove(gamePlay);
-
-            await UpdateGame(gamePlay.Game);
+            Games.Add(gameName, new HashSet<string>{ currentConnection });
         }
+        
+        players!.Add(currentConnection);
 
-        await base.OnDisconnectedAsync(exception);
+        return Groups.AddToGroupAsync(currentConnection, gameName);
     }
 
-    private async Task UpdateGame(CrowGame game)
+    public Task LeaveGame(String gameName)
     {
-        var gamePlaysForGame = GamePlays.Where(gp => gp.Game.Id == game.Id).ToArray();
+        var currentConnection = Context.ConnectionId;
 
-        await Clients.Group(game.Name).SendAsync("UpdateGame", gamePlaysForGame);
+        if (!Games.TryGetValue(gameName, out var players))
+        {
+            players?.Remove(currentConnection);
+        }
+
+        return Groups.RemoveFromGroupAsync(currentConnection, gameName);
     }
 }

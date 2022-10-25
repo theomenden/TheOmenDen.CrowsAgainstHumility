@@ -1,12 +1,11 @@
 ﻿using Blazorise;
 using Blazorise.Components;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
-using System.Collections.Specialized;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 using TheOmenDen.CrowsAgainstHumility.Data.Contexts;
-using TheOmenDen.CrowsAgainstHumility.Services.Interfaces;
-using TheOmenDen.Shared.Utilities;
+using TheOmenDen.CrowsAgainstHumility.Services;
+using TheOmenDen.CrowsAgainstHumility.Services.Authentication;
+using TheOmenDen.Shared.Extensions;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 #nullable disable
 namespace TheOmenDen.CrowsAgainstHumility.Components;
@@ -14,17 +13,21 @@ namespace TheOmenDen.CrowsAgainstHumility.Components;
 public partial class CreateCrowGameComponent : ComponentBase
 {
     private const string ModalTitle = "Player Does Not Exist";
+    
+    [Inject] private IDbContextFactory<CrowsAgainstHumilityContext> DbContextFactory { get; init; }
 
-    [Parameter] public Boolean IsVisible { get; init; }
+    [Inject] private ICardPoolBuildingService CardPoolService { get; init; }
 
-    [Inject] public IDbContextFactory<CrowsAgainstHumilityContext> DbContextFactory { get; init; }
+    [Inject] private IPlayerVerificationService PlayerVerificationService { get; init; }
 
-    [Inject] public ICardPoolBuildingService CardPoolService { get; init; }
+    [Inject] private IMessageService MessageService { get; init; }
 
-    [Inject] public IPlayerVerificationService PlayerVerificationService { get; init; }
+    [Inject] private IModalService ModalService { get; init; }
 
-    [Inject] public IMessageService MessageService { get; init; }
+    [Inject] private CrowGameService StateManager { get; init; }
 
+    private Steps _stepsRef;
+    private string _selectedStep = "1";
     private Int32 _totalCardsInPool = 0;
 
     private string _playerName = String.Empty;
@@ -33,7 +36,7 @@ public partial class CreateCrowGameComponent : ComponentBase
 
     private readonly List<User> _players = new(10);
 
-    private List<Pack> _packs = new (300);
+    private List<Pack> _packs = new(300);
 
     private readonly Dictionary<Guid, Pack> _packsToChoose = new(10);
 
@@ -45,11 +48,24 @@ public partial class CreateCrowGameComponent : ComponentBase
 
     private Pack _selectedPack;
 
+    private string _gameName;
+
+    private string _gameCode = String.Empty;
+
+    private void InitializeNewGame()
+    {
+        StateManager.Game = new CrowGame()
+        {
+            Name = _gameName
+        };
+    }
+
     private async Task OnHandleReadData(AutocompleteReadDataEventArgs autocompleteReadDataEventArgs)
     {
         if (!autocompleteReadDataEventArgs.CancellationToken.IsCancellationRequested)
         {
-            _packs = await CardPoolService.GetPacksBySearchValueAsync(autocompleteReadDataEventArgs.SearchValue, autocompleteReadDataEventArgs.CancellationToken)
+            _packs = await CardPoolService
+                .GetPacksBySearchValueAsync(autocompleteReadDataEventArgs.SearchValue, autocompleteReadDataEventArgs.CancellationToken)
                 .ToListAsync();
         }
     }
@@ -88,10 +104,6 @@ public partial class CreateCrowGameComponent : ComponentBase
             ? TextColor.Danger
             : TextColor.Success;
 
-    private Task OnPlayersUpdated(NotifyCollectionChangedEventArgs args)
-    => InvokeAsync(StateHasChanged);
-
-
     private async Task AddOfficialPacks()
     {
         _isIndicatorVisible = true;
@@ -113,6 +125,7 @@ public partial class CreateCrowGameComponent : ComponentBase
     private async Task AddSearchedPacks()
     {
         _isIndicatorVisible = true;
+
         foreach (var pack in _chosenPacks)
         {
             if (_packsToChoose.TryAdd(pack.Id, pack))
@@ -121,13 +134,14 @@ public partial class CreateCrowGameComponent : ComponentBase
             }
             await InvokeAsync(StateHasChanged);
         }
+
         _isIndicatorVisible = false;
     }
 
     private async Task AddRandomPacks()
     {
         _isIndicatorVisible = true;
-        
+
         foreach (var pack in await CardPoolService.GetRandomPacksAsync()
                            .ToArrayAsync())
         {
@@ -156,7 +170,7 @@ public partial class CreateCrowGameComponent : ComponentBase
         _chosenPacks.Remove(_selectedPack);
         _chosenPackTexts.Remove(_selectedPack.Name);
         _totalCardsInPool -= _selectedPack.WhiteCardsInPack;
-        
+
         _isIndicatorVisible = false;
 
         return Task.CompletedTask;
@@ -175,4 +189,36 @@ public partial class CreateCrowGameComponent : ComponentBase
 
         return Task.CompletedTask;
     }
+
+    private string GenerateGameCode()
+    {
+        _gameCode = GameCodeGenerator.GenerateGameCode();
+
+        if (!StringBuilderPoolFactory<GameCodeGenerator>.Exists(nameof(GameCodeGenerator)))
+        {
+            return _gameCode;
+        }
+
+        var sb = StringBuilderPoolFactory<GameCodeGenerator>.Get(nameof(GameCodeGenerator));
+
+        sb!.Clear();
+
+        return GameCodeGenerator.GenerateGameCode();
+    }
+
+    private bool IsNavigationAllowed(StepNavigationContext context)
+    {
+        if (context.CurrentStepIndex is 4
+            && context.NextStepIndex is 5
+            && !_packsToChoose.Any()
+            && _players.Count < 10)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private Task OnCancelClicked()
+    => ModalService.Hide();
 }

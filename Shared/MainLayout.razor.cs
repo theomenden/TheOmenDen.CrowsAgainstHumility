@@ -12,10 +12,6 @@ public partial class MainLayout: LayoutComponentBase
 {
     [Inject] private ILogger<MainLayout> Logger { get; init; }
 
-    [Inject] private UserManager<ApplicationUser> UserManager { get; init; }
-
-    [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; init; }
-
     [Inject] private IUserInformationService UserInfo { get; set; }
 
     [Inject] private IUserService UserService { get; init; }

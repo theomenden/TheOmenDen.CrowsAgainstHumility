@@ -1,8 +1,6 @@
-﻿using System.Runtime.CompilerServices;
-using TwitchLib.Api.Helix.Models.Users.GetUsers;
+﻿using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
-namespace TheOmenDen.CrowsAgainstHumility.Services.Interfaces;
-
+namespace TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 public interface IPlayerVerificationService
 {
     Boolean IsPlayerInGameList(IEnumerable<String> playersInGame, String playerToVerify);

@@ -1,6 +1,4 @@
-﻿@layout RootLayout
-@using System.Reflection
-@inject IJSRuntime JSRunTime
+@layout RootLayout
 @inherits LayoutComponentBase
 <PageTitle>@ApplicationTitle</PageTitle>
 
@@ -16,7 +14,7 @@
                  NavigationBreakpoint="Breakpoint.Tablet"
                  TextOverflow="TextOverflow.Truncate"
                  Shadow="Shadow.Default"
-                 Border="Border.Is2.Secondary.OnEnd.RoundedEnd">
+                 Border="Border.Is2.Light.OnEnd.RoundedEnd">
                 <BarBrand Margin="Margin.Is2.FromEnd" Casing="CharacterCasing.Upper">
                     <BarItem>
                         <BarLink To="">
@@ -141,7 +139,5 @@
     </Layout>
 </Layout>
 @code{
-
     RenderFragment customIcon =@<Image Source="../images/TheOmenDenWithCrow.svg" Text="Small Blazorise logo" Style="width:72px; height: 72px" />;
-
 }

@@ -1,11 +1,5 @@
 {
   "dependencies": {
-    "identityapp1": {
-      "secretStore": null,
-      "resourceId": null,
-      "type": "identityapp.default",
-      "connectionId": null
-    },
     "secrets1": {
       "type": "secrets.user",
       "dynamicId": null
@@ -41,6 +35,18 @@
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Cache/Redis/crowsagainsthumility",
       "type": "redis.azure",
       "connectionId": "CacheConnection"
+    },
+    "mssql2": {
+      "secretStore": "AzureKeyVault",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/theomenden/databases/CrowsAgainstAuthority",
+      "type": "mssql.azure",
+      "connectionId": "ConnectionStrings:CrowsAgainstAuthority"
+    },
+    "identityapp1": {
+      "secretStore": null,
+      "resourceId": null,
+      "type": "identityapp.default",
+      "connectionId": null
     }
   }
 }

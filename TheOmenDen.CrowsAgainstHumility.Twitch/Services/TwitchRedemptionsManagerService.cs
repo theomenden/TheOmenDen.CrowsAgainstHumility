@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using TheOmenDen.CrowsAgainstHumility.Twitch.Interfaces;
+using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 using TheOmenDen.Shared.Guards;
 using TwitchLib.Api;
 using TwitchLib.Client;
@@ -15,20 +15,14 @@ internal sealed class TwitchRedemptionsManagerService: ITwitchRedemptionsManager
 {
     #region Fields
     private readonly ILogger<TwitchRedemptionsManagerService> _logger;
-    private TwitchClient? _twitchClient;
-    private TwitchAPI? _twitchAPI;
+    private TwitchAPI? _twitchApi;
     private TwitchPubSub? _twitchPubSub;
-
-    private String _channelToInteractWith = String.Empty;
-    private Boolean disposedValue;
+    private Boolean _disposedValue;
     #endregion
     public TwitchRedemptionsManagerService(ILogger<TwitchRedemptionsManagerService> logger) => _logger = logger;
     public String Username { get; private set; } = String.Empty;
     #region Event Handlers
-    public event EventHandler<OnMessageReceivedArgs>? OnMessageReveived;
     public event EventHandler<OnChannelPointsRewardRedeemedArgs>? OnRewardRedeemed;
-    public event EventHandler<OnJoinedChannelArgs>? OnConnected;
-    public event EventHandler<OnDisconnectedEventArgs>? OnDisconnected;
     #endregion
     #region Connection Methods
     public async Task ConnectToChannelAsync(String channel, String oauthToken, String username, String clientId, CancellationToken cancellationToken = new())
@@ -36,8 +30,6 @@ internal sealed class TwitchRedemptionsManagerService: ITwitchRedemptionsManager
         InitializeChannelConnections(channel, oauthToken, username, clientId);
 
         var channelId = await ConfigureApi(oauthToken, clientId, channel, cancellationToken);
-        
-        ConfigureClient(username,oauthToken, channel);
         
         ConfigurePubSub(channelId, oauthToken);
     }
@@ -49,71 +41,43 @@ internal sealed class TwitchRedemptionsManagerService: ITwitchRedemptionsManager
         Guard.FromNullOrWhitespace(channel, nameof(channel));
         Guard.FromNullOrWhitespace(oauthToken, nameof(oauthToken));
         Guard.FromNullOrWhitespace(username, nameof(username));
-
-        _channelToInteractWith = channel;
+        
         Username = username;
-
-        _twitchAPI    ??= new();
-        _twitchClient ??= new();
+        _twitchApi    ??= new();
         _twitchPubSub ??= new();
     }
     #endregion
-    public Boolean IsConnectedToTwitch() => _twitchClient is not null && _twitchClient.IsConnected;
-
-    public void SendMessage(String message)
-    {
-        if (!IsConnectedToTwitch())
-        {
-            _logger.LogWarning("[Twitch Client] is not connected");
-            return;
-        }
-
-        _twitchClient?.SendMessage(_channelToInteractWith, message);
-    }
-
     #region Resource Cleanup
     public void DisconnectFromTwitch()
     {
 
         _logger.LogDebug("Disconnecting from Twitch");
-
-        if (_twitchClient is not null)
-        {
-            _twitchClient.Disconnect();
-            _twitchClient = null;
-        }
-
+        
         if (_twitchPubSub is not null)
         {
             _twitchPubSub.Disconnect();
             _twitchPubSub = null;
         }
 
-        if (_twitchAPI is not null)
+        if (_twitchApi is not null)
         {
-            _twitchAPI = null;
+            _twitchApi = null;
         }
     }
 
     public ValueTask DisconnectFromTwitchAsync()
     {
         _logger.LogDebug("Disconnecting from Twitch");
-
-        if (_twitchClient is not null)
-        {
-            _twitchClient.Disconnect();
-            _twitchClient = null;
-        }
-
+        
         if (_twitchPubSub is not null)
         {
             _twitchPubSub.Disconnect();
             _twitchPubSub = null;
         }
 
-        if (_twitchAPI is not null)
+        if (_twitchApi is not null)
         {
-            _twitchAPI = null;
+            _twitchApi = null;
         }
 
         return ValueTask.CompletedTask;
@@ -121,15 +85,17 @@ internal sealed class TwitchRedemptionsManagerService: ITwitchRedemptionsManager
 
     private void Dispose(Boolean disposing)
     {
-        if (!disposedValue)
+        if (_disposedValue)
         {
-            if (disposing)
-            {
-                DisconnectFromTwitch();
-            }
-
-            disposedValue = true;
+            return;
         }
+
+        if (disposing)
+        {
+            DisconnectFromTwitch();
+        }
+
+        _disposedValue = true;
     }
 
     public void Dispose()
@@ -144,29 +110,27 @@ internal sealed class TwitchRedemptionsManagerService: ITwitchRedemptionsManager
     #region Initializing Methods
     private async Task<String> ConfigureApi(String oauthToken, String clientId, String channel, CancellationToken cancellationToken = default)
     {
-        _twitchAPI ??= new();
+        _twitchApi ??= new();
 
         var twitchApiOauthToken = String.Empty;
 
         if (oauthToken.StartsWith("oath:"))
         {
-            twitchApiOauthToken = oauthToken.Substring("oauth:".Length);
+            twitchApiOauthToken = oauthToken["oauth:".Length..];
         }
 
-        _twitchAPI.Settings.AccessToken = twitchApiOauthToken;
-        _twitchAPI.Settings.ClientId = clientId;
-
-        String channelId;
+        _twitchApi.Settings.AccessToken = twitchApiOauthToken;
+        _twitchApi.Settings.ClientId = clientId;
 
         try
         {
             _logger.LogDebug("[Twitch API] Trying to find channel ID...");
 
-            var response = await _twitchAPI.Helix.Users.GetUsersAsync(null, new() { channel });
+            var response = await _twitchApi.Helix.Users.GetUsersAsync(null, new() { channel });
 
             if (response.Users.Length is 1)
             {
-                channelId = response.Users[0].Id;
+                var channelId = response.Users[0].Id;
                 _logger.LogDebug("[Twitch API] Channel ID for {Channel} is {ChannelId}", channel, channelId);
 
                 return channelId;
@@ -183,27 +147,6 @@ internal sealed class TwitchRedemptionsManagerService: ITwitchRedemptionsManager
             _logger.LogError("@{Ex}", ex);
             throw;
         }
-    }
-
-    private void ConfigureClient(String username, String twitchOAuth, String channel)
-    {
-        _logger.LogDebug("[Twitch Client] Creating...");
-
-        var credentials = new ConnectionCredentials(username, twitchOAuth);
-
-        _twitchClient ??= new();
-
-        _twitchClient.Initialize(credentials, channel);
-
-        _twitchClient.OnLog += OnClientLog;
-        _twitchClient.OnJoinedChannel += OnConnected;
-        _twitchClient.OnMessageReceived += OnMessageReveived;
-        _twitchClient.OnConnected += OnConnectedClient;
-        _twitchClient.OnDisconnected += OnDisconnected;
-
-        _logger.LogDebug("[Twitch Client] Connecting...");
-
-        _twitchClient.Connect();
     }
 
     private void ConfigurePubSub(String channelId, String twitchApiOAuthToken)
@@ -229,11 +172,6 @@ internal sealed class TwitchRedemptionsManagerService: ITwitchRedemptionsManager
     }
     #endregion
     #region Event Registrations
-    private void OnConnectedClient(object? sender, OnConnectedArgs e)
-    {
-        _logger.LogInformation("[Twitch Client] Connected to Twitch with username {Username}", e.BotUsername);
-    }
-
     private void OnPubSubLog(object? sender, TwitchLib.PubSub.Events.OnLogArgs e)
     => _logger.LogDebug("[Twitch PubSub] {Data}", e.Data);
 
@@ -252,11 +190,6 @@ internal sealed class TwitchRedemptionsManagerService: ITwitchRedemptionsManager
         }
 
         _logger.LogInformation("[Twitch PubSub] Listening to {Topic} - {Response}", e.Topic, e.Response);
-    }
-
-    private void OnClientLog(object? sender, TwitchLib.Client.Events.OnLogArgs e)
-    {
-        _logger.LogDebug("[TwitchClient] {LoggedOn}: {Username} - {Data}", e.DateTime, e.BotUsername, e.Data);
     }
     #endregion
 }

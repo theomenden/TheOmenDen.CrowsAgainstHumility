@@ -12,12 +12,14 @@ public sealed class RevalidatingIdentityAuthenticationStateProvider<TUser> :
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly IdentityOptions _identityOptions;
+    private readonly ILoggerFactory _loggerFactory;
 
     public RevalidatingIdentityAuthenticationStateProvider(ILoggerFactory loggerFactory,
         IServiceScopeFactory serviceScopeFactory,
         IOptions<IdentityOptions> optionsAccessor)
     :base(loggerFactory)
     {
+        _loggerFactory = loggerFactory; 
         _serviceScopeFactory = serviceScopeFactory;
         _identityOptions = optionsAccessor.Value;
     }
@@ -26,7 +28,7 @@ public sealed class RevalidatingIdentityAuthenticationStateProvider<TUser> :
 
     protected override async Task<Boolean> ValidateAuthenticationStateAsync(AuthenticationState authenticationState, CancellationToken cancellationToken)
     {
-        using var scope = _serviceScopeFactory.CreateScope();
+        await using var scope = _serviceScopeFactory.CreateAsyncScope();
 
         try
         {
@@ -34,15 +36,19 @@ public sealed class RevalidatingIdentityAuthenticationStateProvider<TUser> :
 
             return await ValidateSecurityStampAsync(userManager, authenticationState.User, cancellationToken);
         }
+        catch (Exception ex)
+        {
+            var logger = _loggerFactory.CreateLogger<RevalidatingIdentityAuthenticationStateProvider<TUser>>();
+
+            logger.LogError("Exception Occurred @{Ex}", ex);
+
+            return false;
+        }
         finally
         {
             if(scope is IAsyncDisposable asyncDisposable)
             {
                 await asyncDisposable.DisposeAsync();
-            }
-            else
-            {
-                scope?.Dispose();
             }
         }
     }

@@ -9,7 +9,7 @@ using TheOmenDen.Shared.Responses;
 using TheOmenDen.CrowsAgainstHumility.Bootstrapping;
 
 namespace TheOmenDen.CrowsAgainstHumility.Middleware;
-public class ExceptionLogger
+public sealed class ExceptionLogger
 {
     private readonly RequestDelegate _next;
 

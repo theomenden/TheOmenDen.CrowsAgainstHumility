@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
 
 namespace TheOmenDen.CrowsAgainstHumility.Core.Models;
-public sealed class ApplicationUser: IdentityUser<Guid>
+public class ApplicationUser: IdentityUser<Guid>
 {
     [Required]
     public DateTime CreatedDate { get; set; }
@@ -36,4 +36,6 @@ public sealed class ApplicationUser: IdentityUser<Guid>
     public String GetUIImageUrl => String.IsNullOrWhiteSpace(ImageUrl)
         ? @"img\avatars\avatar-00.png"
         : ImageUrl;
+    
+    public virtual ICollection<CrowGamePlayer> CrowGamePlayers { get; set; } = new HashSet<CrowGamePlayer>();
 }

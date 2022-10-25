@@ -1,3 +1,4 @@
+#region Usings
 using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.Bootstrap;
@@ -14,15 +15,22 @@ using Azure.Identity;
 using System.Text.Json;
 using Blazorise.LoadingIndicator;
 using Fluxor;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Ganss.Xss;
 using TheOmenDen.CrowsAgainstHumility.Data.Extensions;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using TheOmenDen.CrowsAgainstHumility.Email.Extensions;
 using TheOmenDen.CrowsAgainstHumility.Services;
 using TheOmenDen.CrowsAgainstHumility.Services.Extensions;
-using TheOmenDen.CrowsAgainstHumility.Identity.Contexts;
 using TheOmenDen.CrowsAgainstHumility.Identity.Extensions;
-
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Components.Authorization;
+using TheOmenDen.CrowsAgainstHumility.Areas.Models;
+using Blazored.SessionStorage;
+using System.Text.Json.Serialization;
+using AspNet.Security.OAuth.Twitch;
+using Microsoft.AspNetCore.Authentication.Cookies;
+#endregion
+#region Bootstrap Logger
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
     .Enrich.FromLogContext()
@@ -37,7 +45,7 @@ Log.Logger = new LoggerConfiguration()
         a.Console();
     })
     .CreateBootstrapLogger();
-
+#endregion
 try
 {
     var builder = WebApplication.CreateBuilder(args);
@@ -86,16 +94,18 @@ try
         .AddBootstrapIcons()
         .AddLoadingIndicator();
     
-    builder.Services.AddApplicationInsightsTelemetry(
-        options => options.ConnectionString = appInsightsConnectionString);
+    builder.Services.AddApplicationInsightsTelemetry(options => options.ConnectionString = appInsightsConnectionString);
 
-    var twitchStrings = new TwitchStrings(
-        builder.Configuration["twitch-key"],
-        builder.Configuration["twitch-clientId"]);
+    var twitchStrings = new TwitchStrings(builder.Configuration["twitch-key"], builder.Configuration["twitch-clientId"]);
 
     builder.Services.AddSingleton(twitchStrings);
-
-    builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+    
+    builder.Services
+        .AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme; 
+            options.DefaultChallengeScheme    = TwitchAuthenticationDefaults.AuthenticationScheme;
+        })
         .AddTwitter(options =>
         {
             var twitterKeys = new TwitterStrings(
@@ -121,10 +131,21 @@ try
             options.ClientId = discordKeys.Id;
             options.ClientSecret = discordKeys.Secret;
         });
+
+    builder.Services.ConfigureApplicationCookie(options =>
+    {
+        options.Cookie.HttpOnly = true;
+        options.ExpireTimeSpan = TimeSpan.FromDays(5);
+
+        options.LoginPath = "/Identity/Account/Login";
+        options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+
+        options.SlidingExpiration = true;
+    });
     
     builder.Services.AddHttpClient();
     builder.Services.AddScoped<TokenProvider>();
-
+    builder.Services.AddScoped<TokenStateService>();
     var cacheConnectionString = builder.Configuration["CacheConnection"];
 
     builder.Services.AddStackExchangeRedisCache(options =>
@@ -146,7 +167,8 @@ try
         options.MimeTypes = new[] { MediaTypeNames.Application.Octet };
     });
 
-    var connectionString = builder.Configuration.GetConnectionString("UserContextConnection") ?? throw new InvalidOperationException("Connection string 'UserContextConnection' not found.");
+    var connectionString = builder.Configuration.GetConnectionString("CrowsAgainstAuthority") 
+                           ?? throw new InvalidOperationException("Connection string 'UserContextConnection' not found.");
 
     builder.Services.AddCorvidIdentityServices(connectionString);
 
@@ -174,7 +196,7 @@ try
         .UseRouting()
         .AddMiddleware<StoreLoggingMiddleware>());
 
-    builder.Services.AddCorvidCardsServices();
+    builder.Services.AddCorvidGamesServices();
 
     builder.Services.AddSingleton<CrowGameService>();
 
@@ -184,19 +206,51 @@ try
     
     builder.Services.AddResponseCaching();
 
-    builder.Services.AddSignalR(options => options.MaximumReceiveMessageSize = 104_857_600);
+    builder.Services.AddSignalR(options => options.MaximumReceiveMessageSize = 104_857_600)
+        .AddMessagePackProtocol();
 
+    builder.Services.AddBlazoredSessionStorage(options =>
+    {
+        options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+        options.JsonSerializerOptions.IgnoreReadOnlyProperties = true;
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.ReadCommentHandling = JsonCommentHandling.Skip;
+        options.JsonSerializerOptions.WriteIndented = false;
+    });
     builder.Services.AddRazorPages();
+    builder.Services.AddControllers();
+    builder.Services.AddSingleton<HttpClient>();
+    builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+    {
+        options.TokenLifespan = TimeSpan.FromDays(2);
+    });
+
+    builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+    builder.Services.AddScoped<IHtmlSanitizer, HtmlSanitizer>(options =>
+    {
+        var sanitizer = new HtmlSanitizer();
+        sanitizer.AllowedAttributes.Add("class");
+
+        return sanitizer;
+    });
+
     builder.Services.AddServerSideBlazor()
+#if DEBUG
+        .AddCircuitOptions(options => options.DetailedErrors = true)
+#endif
         .AddHubOptions(options =>
         {
             options.MaximumReceiveMessageSize = 104_857_600;
         });
 
+    builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApplicationUser>>();
+    
     await using var app = builder.Build();
 
     app.UseResponseCompression();
-
     // Configure the HTTP request pipeline.
     app.UseEnvironmentMiddleware(app.Environment);
     app.UseSerilogRequestLogging(options => options.EnrichDiagnosticContext = RequestLoggingConfigurer.EnrichFromRequest);
@@ -216,9 +270,10 @@ try
 
     app.UseAuthentication();
     app.UseAuthorization();
-
+    
     app.UseEndpoints(endpoints =>
     {
+        endpoints.MapControllers();
         endpoints.MapRazorPages();
         endpoints.MapBlazorHub();
         endpoints.MapHub<CawHub>(CawHub.HubUrl);

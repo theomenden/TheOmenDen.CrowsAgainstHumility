@@ -1,5 +1,5 @@
-﻿@inject SignInManager<CAHUser> SignInManager
-@inject UserManager<CAHUser> UserManager
+﻿@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))

@@ -1,257 +1,307 @@
 ﻿@using TwitchLib.Api.Helix.Models.Users.GetUsers
-<Container Fluid
-           Background="Background.Transparent"
-           Padding="Padding.Is4.OnX"
-           Margin="Margin.Is5.OnY"
-           Shadow="Shadow.Large"
-           Display="@(IsVisible ? Display.Always : Display.None)">
-    <DisplayHeading TextColor="TextColor.Warning"
-                    TextAlignment="TextAlignment.Start"
-                    Size="DisplayHeadingSize.Is2"
-                    Margin="Margin.Is2.OnY">
-        Create a Rule Set for your game!
-    </DisplayHeading>
-    <Form Flex="Flex.Grow.Is0.Shrink.Is1">
-        <Row Margin="Margin.Is3.OnY">
-            <Column ColumnSize="ColumnSize.IsQuarter">
-                <Field>
-                    <FieldLabel TextColor="TextColor.Warning">
-                        Game Rules
-                    </FieldLabel>
-                    <FieldBody>
-                        <Select TValue="Int32">
-                            <Repeater TItem="GameTypes" Items="GameTypes.ReadOnlyEnumerationList">
-                                <SelectItem Value="@context.Value">
-                                    @context.Name
-                                </SelectItem>
-                            </Repeater>
-                        </Select>
-                    </FieldBody>
-                </Field>
-            </Column>
-            <Column ColumnSize="ColumnSize.IsThird" TextOverflow="TextOverflow.Wrap">
-                <Paragraph TextWeight="TextWeight.Light"
-                           TextColor="TextColor.Light"
-                           Italic>
-                    Every round, pick one random white card from the pile and place it into play.
-                    This card belongs to an imaginary player named Rando Cardrissian,
-                    and if he wins the game, all players go home in a state of everlasting shame.
-                </Paragraph>
-            </Column>
-            <Column ColumnSize="ColumnSize.IsQuarter">
-                <Field Horizontal>
-                    <FieldLabel TextColor="TextColor.Warning">
-                        Number of Points (Black Cards) Needed to Win
-                    </FieldLabel>
-                    <FieldBody>
-                        <NumericPicker TValue="Int32"
-                                       Placeholder="10"
-                                       Min="2"
-                                       Max="25"
-                                       Value="10"
-                                       Size="Size.Small"
-                                       Width="Width.Is25" />
-                    </FieldBody>
-                </Field>
-            </Column>
-        </Row>
-        <Row>
-            <Column ColumnSize="ColumnSize.IsThird">
-                <Autocomplete TItem="Pack"
-                              TValue="Pack"
-                              Data="@_packs"
-                              ReadData="OnHandleReadData"
-                              TextField="@(item => item.Name)"
-                              ValueField="@(item => item)"
-                              Placeholder="Search..."
-                              SelectionMode="AutocompleteSelectionMode.Multiple"
-                              FreeTyping
-                              @bind-SelectedValues="_chosenPacks"
-                              @bind-SelectedTexts="_chosenPackTexts">
-                    <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
-                    <ItemContent>
-                        <Div Flex="Flex.JustifyContent.Between.AlignContent.Center">
-                            <Paragraph>
-                                @context.Text
-                            </Paragraph>
-                            <Badge Color="Color.Primary"
-                                   Display="@(context.Item.IsOfficialPack ? Display.Always : Display.None)">
-                                @context.Item.OfficialPack
-                            </Badge>
-                        </Div>
-                    </ItemContent>
-                </Autocomplete>
-            </Column>
-            <Column ColumnSize="ColumnSize.IsThird">
-                Pack Options
-                <Buttons Role="ButtonsRole.Toolbar"
-                         Flex="Flex.Column.Shrink.Is1">
-                    <Button Color="Color.Success" Border="Border.Is3.Light.OnAll.Rounded"
-                            Shadow="Shadow.Default"
-                            Clicked="AddSearchedPacks"
-                            Block>
-                        Add packs from Search
-                    </Button>
-                    <Button Color="Color.Primary" Border="Border.Is3.Light.OnAll.Rounded"
-                            Shadow="Shadow.Default"
-                            Clicked="AddOfficialPacks"
-                            Block>
-                        Add All Official Packs
-                    </Button>
-                    <Button Color="Color.Primary" Border="Border.Is3.Light.OnAll.Rounded"
-                            Shadow="Shadow.Default"
-                            Clicked="AddRandomPacks"
-                            Block>
-                        Add Random Packs!
-                    </Button>
-                    <Button Color="Color.Danger" Border="Border.Is3.Light.OnAll.Rounded"
-                            Shadow="Shadow.Default"
-                            Clicked="RemovePack"
-                            Block>
-                        Remove Selected Pack
-                    </Button>
-                    <Button Color="Color.Danger" Border="Border.Is3.Light.OnAll.Rounded"
-                            Shadow="Shadow.Default"
-                            Clicked="RemoveAllPacks"
-                            Block>
-                        Remove All Packs
-                    </Button>
-                </Buttons>
-            </Column>
-            <Column ColumnSize="ColumnSize.IsThird"
-                    Overflow="Overflow.Hidden">
-                <Text TextAlignment="TextAlignment.Start"
-                      TextColor="TextColor.Light">
-                    Estimated Cards: @_totalCardsInPool
-                </Text>
-                <LoadingIndicator FadeIn
-                                  @bind-Visible="@_isIndicatorVisible">
-                    <ChildContent>
-                        <ListView TItem="Pack"
-                                  Data="@_packsToChoose.Values"
-                                  TextField="(item) => item.Name"
-                                  ValueField="(item) => item.Name"
-                                  Mode="ListGroupMode.Selectable"
-                                  Class="game-creation-list border-2 border-secondary rounded-2 shadow"
-                                  @bind-SelectedItem="@_selectedPack">
-                            <ItemTemplate>
-                                <Div Flex="Flex.InlineFlex.JustifyContent.Between.AlignItems.Center"
-                                     Background="Background.Transparent">
-                                    <Heading TextColor="TextColor.Light"
-                                             Size="HeadingSize.Is4">
-                                        @context.Item.Name
-                                    </Heading>
-                                    <Badge Color="Color.Primary" Pill Margin="Margin.Is2.FromStart">
-                                        @context.Item.WhiteCardsInPack
-                                    </Badge>
+<ModalHeader Background="Background.Dark" TextColor="TextColor.Light">
+    <ModalTitle>Create your Game</ModalTitle>
+    <CloseButton />
+</ModalHeader>
+<ModalBody Background="Background.Dark"
+           TextColor="TextColor.Light"
+           MaxHeight="70"
+           Width="Width.Is100">
+    <Form Background="Background.Transparent" TextColor="TextColor.Light">
+        <Steps @ref="_stepsRef" @bind-SelectedStep="@_selectedStep" NavigationAllowed="IsNavigationAllowed">
+            <Items>
+                <Step Name="1">Game Name</Step>
+                <Step Name="2">Base Rules</Step>
+                <Step Name="3">Add Cards</Step>
+                <Step Name="4">Add Players</Step>
+                <Step Name="5">Confirm/Create</Step>
+            </Items>
+            <Content>
+                <StepPanel Name="1">
+                    <Field>
+                        <FieldLabel>
+                            Game Name
+                        </FieldLabel>
+                        <FieldBody>
+                            <TextEdit @bind-Text="@_gameName" Placeholder="Pick Your Game's Name" />
+                        </FieldBody>
+                    </Field>
+                </StepPanel>
+                <StepPanel Name="2">
+                    <Field>
+                        <FieldLabel TextColor="TextColor.Warning">
+                            Game Rules
+                        </FieldLabel>
+                        <FieldBody>
+                            <Select TValue="Int32">
+                                <Repeater TItem="GameTypes" Items="GameTypes.ReadOnlyEnumerationList">
+                                    <SelectItem Value="@context.Value">
+                                        @context.Name
+                                    </SelectItem>
+                                </Repeater>
+                            </Select>
+                        </FieldBody>
+                    </Field>
+                    <Field>
+                        <Paragraph TextWeight="TextWeight.Light"
+                                   TextColor="TextColor.Light"
+                                   Italic>
+                            Every round, pick one random white card from the pile and place it into play.
+                            This card belongs to an imaginary player named Rando Cardrissian,
+                            and if he wins the game, all players go home in a state of everlasting shame.
+                        </Paragraph>
+                    </Field>
+                    <Field Horizontal>
+                        <FieldLabel TextColor="TextColor.Warning">
+                            Number of Points (Black Cards) Needed to Win
+                        </FieldLabel>
+                        <FieldBody>
+                            <NumericPicker TValue="Int32"
+                                           Placeholder="10"
+                                           Min="2"
+                                           Max="25"
+                                           Value="10"
+                                           Size="Size.Small"
+                                           Width="Width.Is25" />
+                        </FieldBody>
+                    </Field>
+                </StepPanel>
+                <StepPanel Name="3">
+                    <Row>
+                        <Column ColumnSize="ColumnSize.IsThird">
+                            <Autocomplete TItem="Pack"
+                                          TValue="Pack"
+                                          Data="@_packs"
+                                          ReadData="OnHandleReadData"
+                                          TextField="@(item => item.Name)"
+                                          ValueField="@(item => item)"
+                                          Placeholder="Search..."
+                                          SelectionMode="AutocompleteSelectionMode.Multiple"
+                                          FreeTyping
+                                          @bind-SelectedValues="_chosenPacks"
+                                          @bind-SelectedTexts="_chosenPackTexts">
+                                <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
+                                <ItemContent>
+                                    <Div Flex="Flex.JustifyContent.Between.AlignContent.Center">
+                                        <Paragraph>
+                                            @context.Text
+                                        </Paragraph>
+                                        <Badge Color="Color.Primary"
+                                               Display="@(context.Item.IsOfficialPack ? Display.Always : Display.None)">
+                                            @context.Item.OfficialPack
+                                        </Badge>
+                                    </Div>
+                                </ItemContent>
+                            </Autocomplete>
+                        </Column>
+                        <Column ColumnSize="ColumnSize.IsThird">
+                            Pack Options
+                            <Buttons Role="ButtonsRole.Toolbar"
+                                     Flex="Flex.Column.Shrink.Is1">
+                                <Button Color="Color.Success" Border="Border.Is3.Light.OnAll.Rounded"
+                                        Shadow="Shadow.Default"
+                                        Clicked="AddSearchedPacks"
+                                        Block>
+                                    Add packs from Search
+                                </Button>
+                                <Button Color="Color.Primary" Border="Border.Is3.Light.OnAll.Rounded"
+                                        Shadow="Shadow.Default"
+                                        Clicked="AddOfficialPacks"
+                                        Block>
+                                    Add All Official Packs
+                                </Button>
+                                <Button Color="Color.Primary" Border="Border.Is3.Light.OnAll.Rounded"
+                                        Shadow="Shadow.Default"
+                                        Clicked="AddRandomPacks"
+                                        Block>
+                                    Add Random Packs!
+                                </Button>
+                                <Button Color="Color.Danger" Border="Border.Is3.Light.OnAll.Rounded"
+                                        Shadow="Shadow.Default"
+                                        Clicked="RemovePack"
+                                        Block>
+                                    Remove Selected Pack
+                                </Button>
+                                <Button Color="Color.Danger" Border="Border.Is3.Light.OnAll.Rounded"
+                                        Shadow="Shadow.Default"
+                                        Clicked="RemoveAllPacks"
+                                        Block>
+                                    Remove All Packs
+                                </Button>
+                            </Buttons>
+                        </Column>
+                        <Column ColumnSize="ColumnSize.IsThird"
+                                Overflow="Overflow.Hidden">
+                            <Text TextAlignment="TextAlignment.Start"
+                                  TextColor="TextColor.Light">
+                                Estimated Cards: @_totalCardsInPool
+                            </Text>
+                            <LoadingIndicator FadeIn
+                                              @bind-Visible="@_isIndicatorVisible">
+                                <ChildContent>
+                                    <ListView TItem="Pack"
+                                              Data="@_packsToChoose.Values"
+                                              TextField="(item) => item.Name"
+                                              ValueField="(item) => item.Name"
+                                              Mode="ListGroupMode.Selectable"
+                                              Class="game-creation-list border-2 border-secondary rounded-2 shadow"
+                                              @bind-SelectedItem="@_selectedPack">
+                                        <ItemTemplate>
+                                            <Div Flex="Flex.InlineFlex.JustifyContent.Between.AlignItems.Center"
+                                                 Background="Background.Transparent">
+                                                <Heading TextColor="TextColor.Light"
+                                                         Size="HeadingSize.Is4">
+                                                    @context.Item.Name
+                                                </Heading>
+                                                <Badge Color="Color.Primary" Pill Margin="Margin.Is2.FromStart">
+                                                    @context.Item.WhiteCardsInPack
+                                                </Badge>
+                                            </Div>
+                                        </ItemTemplate>
+                                    </ListView>
+                                </ChildContent>
+                                <IndicatorTemplate>
+                                    <Animate Animation="Animations.FadeDownRight" Auto Duration="TimeSpan.FromMilliseconds(700)">
+                                        <Div Background="Background.Transparent">
+                                            <SpinKit Type="SpinKitType.Wave" Size="100px" Color="#9857ff" Centered />
+                                        </Div>
+                                    </Animate>
+                                </IndicatorTemplate>
+                            </LoadingIndicator>
+                        </Column>
+                    </Row>
+                </StepPanel>
+                <StepPanel Name="4">
+                    <Row>
+                        <Column ColumnSize="ColumnSize.IsQuarter">
+                            <Field>
+                                <FieldLabel TextColor="TextColor.Warning">
+                                    Players to Include
+                                </FieldLabel>
+                                <FieldBody>
+                                    <TextEdit Placeholder="Twitch User Name..." @bind-Text="@_playerToAdd" />
+                                    <Button Color="Color.Success"
+                                            Border="Border.Is2.Light.OnAll.Rounded"
+                                            Clicked="AddPlayerToList">
+                                        Add To List
+                                    </Button>
+                                </FieldBody>
+                            </Field>
+                        </Column>
+                        <Column ColumnSize="ColumnSize.Is9" Height="Height.Is100">
+                            @if (!_players.Any())
+                            {
+                                <Paragraph TextColor="TextColor.Light"
+                                       TextWeight="TextWeight.Light">
+                                    Add players to your game by their Twitch or Discord Handle
+                                </Paragraph>
+                                <Small TextColor="TextColor.Light"
+                                   Class="fst-italic">
+                                    (If adding by discord, please include the numbers in their handle after the #)
+                                </Small>
+                            }
+                            else
+                            {
+                                <Div ElementId="#list-group-animate-div">
+                                    <CardDeck ColumnSize="ColumnSize.IsFull">
+                                        <Repeater TItem="User" Items="_players">
+                                            <Animate Anchor="#list-group-animate-div"
+                                                 Animation="Animations.FadeUp"
+                                                 Auto
+                                                 DelayMilliseconds="500">
+                                                <Card Background="Background.Transparent"
+                                                  Margin="Margin.Is2.OnX.Is3.OnY"
+                                                  TextColor="TextColor.Light"
+                                                  Shadow="Shadow.Default"
+                                                  Border="Border.Is1.Secondary.OnAll.Rounded">
+                                                    <CardBody Background="Background.Transparent"
+                                                          TextColor="TextColor.Light">
+                                                        <CardTitle>
+                                                            <Image Text="@context.DisplayName"
+                                                               Source="@context.ProfileImageUrl"
+                                                               loading="lazy"
+                                                               Border="Border.Is2.Secondary.OnAll.Rounded"
+                                                               Style="height: 48px; max-height: fit-content; width: 48px; max-width: fit-content;" />
+                                                            @context.DisplayName
+                                                            <Icon Name="DetermineIconName(context.DisplayName)"
+                                                              TextColor="DetermineIconColor(context.DisplayName)"
+                                                              TextWeight="TextWeight.Bold"
+                                                              IconSize="IconSize.Large" />
+                                                        </CardTitle>
+                                                    </CardBody>
+                                                </Card>
+                                            </Animate>
+                                        </Repeater>
+                                    </CardDeck>
                                 </Div>
-                            </ItemTemplate>
-                        </ListView>
-                    </ChildContent>
-                    <IndicatorTemplate>
-                        <Animate Animation="Animations.FadeDownRight" Auto Duration="TimeSpan.FromMilliseconds( 700 )">
-                            <Div Background="Background.Transparent">
-                                <SpinKit Type="SpinKitType.Wave" Size="100px" Color="#9857ff" Centered />
-                            </Div>
-                        </Animate>
-                    </IndicatorTemplate>
-                </LoadingIndicator>
-            </Column>
-        </Row>
-        <Row Margin="Margin.Is2.OnY" Padding="Padding.Is3.FromTop">
-            <Column ColumnSize="ColumnSize.IsQuarter">
-                <Div Flex="Flex.Column.JustifyContent.Around.AlignContent.End"
-                     TextColor="TextColor.Warning">
-                    <Switch TValue="bool"
-                            Color="Color.Primary">
-                        <Tooltip Text="Use our provided filters"
-                                 Placement="TooltipPlacement.TopEnd">
-                            Default Filters (TOS)
-                        </Tooltip>
-                    </Switch>
-                    <Switch TValue="bool"
-                            Color="Color.Primary">
-                        <Tooltip Text="Add your own word filters"
-                                 Placement="TooltipPlacement.TopEnd">
-                            Custom Filters
-                        </Tooltip>
-                    </Switch>
-                    <Switch TValue="bool"
-                            Color="Color.Success"
-                            Checked="true">
-                        <Tooltip Text="Match Players against Discord/Twitch to ensure they aren't stream sniping"
-                                 Placement="TooltipPlacement.TopEnd">
-                            Verify Players On Join
-                        </Tooltip>
-                    </Switch>
-                </Div>
-            </Column>
-        </Row>
-        <Row>
-            <Column ColumnSize="ColumnSize.IsQuarter">
-                <Field>
-                    <FieldLabel TextColor="TextColor.Warning">
-                        Players to Include
-                    </FieldLabel>
-                    <FieldBody>
-                        <TextEdit Placeholder="Twitch User Name..." @bind-Text="@_playerToAdd" />
-                        <Button Color="Color.Success"
+                            }
+                        </Column>
+                    </Row>
+                </StepPanel>
+                <StepPanel Name="5">
+                    <Card Background="Background.Transparent"
+                          TextColor="TextColor.Light">
+                        <CardBody>
+                            <CardTitle Size="5">
+                                Game Name: @_gameName
+                            </CardTitle>
+                            <CardText>
+                                <FieldLabel>
+                                    Room Code
+                                </FieldLabel>
+                                <TextEdit Plaintext
+                                          TextColor="TextColor.Light"
+                                          @bind-Text="@_gameCode" />
+                            </CardText>
+                        </CardBody>
+                    </Card>
+                    <Buttons Role="ButtonsRole.Toolbar" Margin="Margin.Is3.OnY.Is2.OnX"
+                             TextAlignment="TextAlignment.Center">
+                        <Button Type="ButtonType.Submit" Color="Color.Success"
+                                Shadow="Shadow.Default"
                                 Border="Border.Is2.Light.OnAll.Rounded"
-                                Clicked="AddPlayerToList">
-                            Add To List
+                                Margin="Margin.Is2.FromEnd"
+                                PreventDefaultOnSubmit>
+                            Create Game
                         </Button>
-                    </FieldBody>
-                </Field>
-            </Column>
-            <Column ColumnSize="ColumnSize.IsAuto">
-                @if (!_players.Any())
-                {
-                    <Paragraph TextColor="TextColor.Light"
-                           TextWeight="TextWeight.Light">
-                        Add players to your game by their Twitch or Discord Handle
-                    </Paragraph>
-                    <Small TextColor="TextColor.Light"
-                       Class="fst-italic">
-                        (If adding by discord, please include the numbers in their handle after the #)
-                    </Small>
-                }
-                else
-                {
-                    <ListGroup Flush
-                           Background="Background.Dark"
-                           Border="Border.Is2.Warning.OnAll.Rounded"
-                           Shadow="Shadow.Small"
-                           Margin="Margin.Is3.OnY"
-                           Mode="ListGroupMode.Selectable"
-                           @bind-SelectedItem="@_playerName">
-                        <Repeater TItem="User" Items="@_players" CollectionChanged="OnPlayersUpdated">
-                            <ListGroupItem Background="Background.Transparent"
-                                       TextColor="TextColor.Light"
-                                       Name="@context.Id">
-                                @context.DisplayName <Icon Name="DetermineIconName(context.DisplayName)"
-                                                       TextColor="DetermineIconColor(context.DisplayName)"
-                                                       TextWeight="TextWeight.Bold"
-                                                       IconSize="IconSize.Large" />
-                            </ListGroupItem>
-                        </Repeater>
-                    </ListGroup>
-                }
-            </Column>
-        </Row>
-    <Buttons Role="ButtonsRole.Toolbar" Margin="Margin.Is3.OnY.Is2.OnX"
-             TextAlignment="TextAlignment.Center">
-            <Button Type="ButtonType.Submit" Color="Color.Success"
-                    Shadow="Shadow.Default"
-                    Border="Border.Is2.Light.OnAll.Rounded"
-                    Margin="Margin.Is2.FromEnd"
-                    PreventDefaultOnSubmit>
-                Create Game
-            </Button>
-            <Button Type="ButtonType.Reset" Color="Color.Secondary"
-                    Shadow="Shadow.Default"
-                    Border="Border.Is2.Light.OnAll.Rounded">
-                Reset
-            </Button>
-        </Buttons>
+                        <Button Type="ButtonType.Reset" Color="Color.Secondary"
+                                Shadow="Shadow.Default"
+                                Border="Border.Is2.Light.OnAll.Rounded">
+                            Reset
+                        </Button>
+                    </Buttons>
+                </StepPanel>
+            </Content>
+        </Steps>
     </Form>
-</Container>
+</ModalBody>
+<ModalFooter Background="Background.Dark" TextColor="TextColor.Light">
+    <Div Display="Display.Flex" Flex="Flex.Column">
+        <Buttons Role="ButtonsRole.Toolbar">
+            <Buttons>
+                <Button Color="Color.Secondary"
+                        Margin="Margin.Is2.FromEnd"
+                        Border="Border.Is2.Light.OnAll.Rounded"
+                        Clicked="() => _stepsRef.PreviousStep()"
+                        Disabled="@_stepsRef.SelectedStep.Equals("1")">
+                    <Icon Name="IconName.ChevronLeft" IconSize="IconSize.Default" TextColor="TextColor.Light" />Previous
+                </Button>
+                <Button Color="Color.Primary"
+                        Border="Border.Is2.Light.OnAll.Rounded"
+                        Clicked="() => _stepsRef.NextStep()"
+                        Disabled="@_stepsRef.SelectedStep.Equals("4")">
+                    Next
+                    <Icon Name="IconName.ChevronRight" IconSize="IconSize.Default" TextColor="TextColor.Light" />
+                </Button>
+            </Buttons>
+            <Buttons>
+                <Button Color="Color.Secondary"
+                        Clicked="OnCancelClicked"
+                        Border="Border.Is2.Light.OnAll.Rounded"
+                        Margin="Margin.Is2.FromStart">
+                    Cancel
+                </Button>
+            </Buttons>
+        </Buttons>
+    </Div>
+</ModalFooter>
