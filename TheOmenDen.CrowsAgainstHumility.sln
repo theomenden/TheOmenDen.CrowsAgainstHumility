@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheOmenDen.CrowsAgainstHumi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheOmenDen.CrowsAgainstHumility.Email", "..\TheOmenDen.CrowsAgainstHumility.Email\TheOmenDen.CrowsAgainstHumility.Email.csproj", "{76CA7483-C196-4DDA-9385-2FD324681793}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheOmenDen.CrowsAgainstHumility.Discord", "..\TheOmenDen.CrowsAgainstHumility.Discord\TheOmenDen.CrowsAgainstHumility.Discord.csproj", "{9514A6FF-417F-4746-89AE-C51899D1ED83}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{76CA7483-C196-4DDA-9385-2FD324681793}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76CA7483-C196-4DDA-9385-2FD324681793}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76CA7483-C196-4DDA-9385-2FD324681793}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9514A6FF-417F-4746-89AE-C51899D1ED83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9514A6FF-417F-4746-89AE-C51899D1ED83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9514A6FF-417F-4746-89AE-C51899D1ED83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9514A6FF-417F-4746-89AE-C51899D1ED83}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

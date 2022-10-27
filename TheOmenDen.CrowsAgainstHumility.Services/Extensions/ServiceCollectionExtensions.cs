@@ -15,6 +15,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddCorvidGamesServices(this IServiceCollection services)
     {
         services.AddScoped<ICardPoolBuildingService, CardPoolBuildingService>()
+            .AddScoped<ICardPoolFilteringService, CardPoolFilteringService>()
             .AddScoped<ICrowGameService, CrowGameService>();
         return services;
     }

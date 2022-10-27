@@ -1,0 +1,51 @@
+﻿@if (IsCustomFilteringEnabled)
+{
+    <Card Background="Background.Dark"
+          TextColor="TextColor.Light"
+          Border="Border.Is3.OnAll.Rounded"
+          Shadow="Shadow.Default">
+        <CardBody Flex="Flex.Column.JustifyContent.Center.AlignItems.Center">
+            <CardTitle>
+                <Heading Size="HeadingSize.Is2"
+                         TextAlignment="TextAlignment.Center"
+                         TextColor="TextColor.Light"
+                         Shadow="Shadow.None">
+                    Add your own custom filters on cards!
+                </Heading>
+            </CardTitle>
+            <CardSubtitle>
+                <Small TextAlignment="TextAlignment.Center"
+                       TextWeight="TextWeight.Light"
+                       TextColor="TextColor.Muted"
+                       Shadow="Shadow.None">
+                    Note: Default Filters are ALWAYS on
+                </Small>
+            </CardSubtitle>
+            <Form Margin="Margin.Is3.FromTop.OnDesktop.IsAuto.FromTop.OnMobile">
+                <Field>
+                    <FieldLabel>
+                        <Text TextColor="TextColor.Primary"
+                              TextWeight="TextWeight.Light"
+                              TextAlignment="TextAlignment.Start">
+                            Enter a word or a comma (,) separated list of words to filter out
+                        </Text>
+                        <TextEdit Autofocus Text="@_filterText" 
+                                  TextChanged="OnTextChangedAsync" 
+                                  Immediate="false" 
+                                  Debounce="true" 
+                                  DebounceInterval="25"/>
+                    </FieldLabel>
+                </Field>
+                <Button Type="ButtonType.Submit"
+                        PreventDefaultOnSubmit
+                        Border="Border.Is2.Light.OnAll.Rounded"
+                        Color="Color.Primary"
+                        Block
+                        Shadow="Shadow.Default"
+                        Clicked="OnSubmitFilters">
+                    Filter Cards Down
+                </Button>
+            </Form>
+        </CardBody>
+    </Card>
+}

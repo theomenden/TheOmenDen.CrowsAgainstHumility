@@ -46,4 +46,17 @@ public class CrowGameHub : Hub
 
         return Groups.RemoveFromGroupAsync(currentConnection, gameName);
     }
+
+    public override Task OnDisconnectedAsync(Exception? exception)
+    {
+        //var currentConnection = Context.ConnectionId;
+        return base.OnDisconnectedAsync(exception);
+    }
+
+    public override Task OnConnectedAsync()
+    {
+        var currentConnection = Context.ConnectionId;
+
+        return base.OnConnectedAsync();
+    }
 }

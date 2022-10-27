@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using TheOmenDen.CrowsAgainstHumility.Core.Models;
 using TheOmenDen.CrowsAgainstHumility.Data.Contexts;
@@ -12,12 +13,15 @@ internal sealed class HandBuilderService
 
     private readonly IDbContextFactory<CrowsAgainstHumilityContext> _dbContextFactory;
 
+    private readonly IDistributedCache _distributedCache;
+
     private readonly ILogger<HandBuilderService> _logger;
 
-    public HandBuilderService(IDbContextFactory<CrowsAgainstHumilityContext> dbContextFactory, ILogger<HandBuilderService> logger)
+    public HandBuilderService(IDbContextFactory<CrowsAgainstHumilityContext> dbContextFactory, ILogger<HandBuilderService> logger, IDistributedCache distributedCache)
     {
         _dbContextFactory = dbContextFactory;
         _logger = logger;
+        _distributedCache = distributedCache;
     }
 
     public async Task GetInitialCardsForGame(CrowGame game, CancellationToken cancellationToken = default)

@@ -1,0 +1,29 @@
+﻿@page "/login-2fa"
+@inject NavigationManager Navigationmanager
+<Row Height="Height.Is100">
+    <Column Height="Height.Is100"
+            ColumnSize="ColumnSize.Is10.OnTablet.Is8.OnDesktop.IsHalf.OnWidescreen"
+            Margin="Margin.IsAuto.OnX"
+            Display="Display.Table">
+        <Card Shadow="Shadow.Default"
+              Border="Border.Is2.Light.OnAll.Rounded"
+              Background="Background.Dark"
+              TextColor="TextColor.Light">
+            <CardBody>
+                <Text TextAlignment="TextAlignment.Center">
+                    <Heading Size="HeadingSize.Is2" TextAlignment="TextAlignment.Center"
+                             Flex="Flex.JustifyContent.Center.AlignItems.Center">
+                        <Icon Name="IconName.Times"
+                              TextColor="TextColor.Warning"
+                              IconSize="IconSize.x2"
+                              Padding="Padding.Is4.FromEnd" />
+                        Two-Factor Authentication
+                    </Heading>
+                </Text>
+                <Paragraph Class="lead" TextAlignment="TextAlignment.Center">
+                    Coming soon to a nest near you!
+                </Paragraph>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>

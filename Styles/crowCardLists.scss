@@ -17,3 +17,15 @@
 :is(.active) .list-group-item-action {
     background-color: blueviolet;
 }
+
+
+.crow-game-player-list {
+    width: fit-content;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    background-color: transparent;
+
+    .list-group-item {
+        background-color: transparent !important;
+    }
+}

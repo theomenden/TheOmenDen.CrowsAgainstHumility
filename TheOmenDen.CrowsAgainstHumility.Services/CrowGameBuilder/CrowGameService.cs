@@ -61,7 +61,8 @@ internal sealed class CrowGameService : ICrowGameService
             .Include(p => p.BlackCards)
             .ToArrayAsync(cancellationToken);
 
-        var playersInGame = crowGame.Players.Select(player => new Player
+        var playersInGame = crowGame.Players
+            .Select(player => new Player
         {
             Username = player.Player.UserName,
             IsCardCzar = false,
@@ -84,10 +85,6 @@ internal sealed class CrowGameService : ICrowGameService
     
     public async Task CreateCrowGameAsync(CrowGameCreator crowGameCreator, CancellationToken cancellationToken = default)
     {
-        await _crowGameRepository.CreateRoomAsync(crowGameCreator.RoomCode,
-            crowGameCreator.GameName,
-            crowGameCreator.CreatorUserId,
-            crowGameCreator.Packs,
-            cancellationToken);
+        await _crowGameRepository.CreateRoomAsync(crowGameCreator);
     }
 }

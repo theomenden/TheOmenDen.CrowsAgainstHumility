@@ -23,26 +23,48 @@
 </Jumbotron>
 
 <Row>
-    <Column ColumnSize="ColumnSize.Is10.OnDesktop.Is8.OnTablet.IsHalf.OnWidescreen">
-        <ListView TItem="CrowGameDto"
-                  Data="@_games"
-                  TextField="item => item.Name"
-                  ValueField="item => item.LobbyCode"
-                  Mode="ListGroupMode.Static"
-                  MaxHeight="500px">
-            <ItemTemplate>
-                <Div Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
-                    <Heading Margin="Margin.Is2.FromBottom">
-                        @context.Item.Name
-                    </Heading>
-                    <Small>@context.Item.LobbyCode</Small>
-                    
-                    <Button Color="Color.Primary">Join Game</Button>
-                </Div>
-                <Badge Color="Color.Secondary">
-                    @context.Item.Players.Count() / 10
-                </Badge>
-            </ItemTemplate>
-        </ListView>
+    <Column ColumnSize="ColumnSize.IsFull">
+        <Div Display="Display.Flex" 
+             Width="Width.Is100" 
+             Height="Height.Is50"
+             Padding="Padding.Is4.OnY">
+        <ListGroup Flush
+                   Margin="Margin.Is2.FromTop.OnDesktop.Is4.FromTop.OnMobile"
+                   ElementId="#crowGameList"
+                   Width="Width.Is100">
+            <Repeater TItem="CrowGameDto" Items="_games">
+                <Animate Anchor="#crowGameList"
+                         Auto
+                         Animation="Animations.FadeUpLeft">
+                    <ListGroupItem Background="Background.Dark"
+                                   TextColor="TextColor.Light"
+                                   Border="Border.Is3.Secondary.OnBottom.Rounded"
+                                   Shadow="Shadow.Default"
+                                   Margin="Margin.Is2.OnWidescreen.Is4.OnMobile"
+                                   Width="Width.Is100">
+                        <Div Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100"
+                             Background="Background.Dark">
+                            <Heading Margin="Margin.Is2.FromBottom.Is2.FromEnd.OnTablet.Is4.FromEnd.OnMobile"
+                                     Size="HeadingSize.Is3"
+                                     TextWeight="TextWeight.Light">
+                                @context.Name
+                            </Heading>
+                            <Small TextColor="TextColor.Muted" TextWeight="TextWeight.Bold">@context.LobbyCode</Small>
+                            <Button Color="Color.Primary"
+                                    Border="Border.Is3.Light.OnAll.Rounded"
+                                    Margin="Margin.Is2.OnX.OnWidescreen.Is4.FromStart.OnTablet.Is5.FromStart.OnMobile">
+                                Join Game
+                                <sup>
+                                    <Badge Color="Color.Secondary" Pill>
+                                        @context.Players.Count() / 10
+                                    </Badge>
+                                </sup>
+                            </Button>
+                        </Div>
+                    </ListGroupItem>
+                </Animate>
+            </Repeater>
+        </ListGroup>
+        </Div>
     </Column>
 </Row>

@@ -1,5 +1,7 @@
 ﻿using Blazorise;
 using Blazorise.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 using TheOmenDen.CrowsAgainstHumility.Data.Contexts;
@@ -10,15 +12,19 @@ using TwitchLib.Api.Helix.Models.Users.GetUsers;
 #nullable disable
 namespace TheOmenDen.CrowsAgainstHumility.Components;
 
-public partial class CreateCrowGameComponent : ComponentBase
+public partial class CreateCrowGameComponent : ComponentBase, IDisposable, IAsyncDisposable
 {
     private const string ModalTitle = "Player Does Not Exist";
-    
+
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
     [Inject] private IDbContextFactory<CrowsAgainstHumilityContext> DbContextFactory { get; init; }
 
     [Inject] private ICardPoolBuildingService CardPoolService { get; init; }
 
     [Inject] private IPlayerVerificationService PlayerVerificationService { get; init; }
+
+    [Inject] private ICrowGameService CrowGameService { get; init; }
 
     [Inject] private IMessageService MessageService { get; init; }
 
@@ -26,11 +32,13 @@ public partial class CreateCrowGameComponent : ComponentBase
 
     [Inject] private CrowGameService StateManager { get; init; }
 
+    [Inject] private UserManager<ApplicationUser> UserManager { get; init; }
+
     private Steps _stepsRef;
     private string _selectedStep = "1";
     private Int32 _totalCardsInPool = 0;
 
-    private string _playerName = String.Empty;
+    private User _selectedPlayer;
 
     private string _playerToAdd = String.Empty;
 
@@ -51,6 +59,12 @@ public partial class CreateCrowGameComponent : ComponentBase
     private string _gameName;
 
     private string _gameCode = String.Empty;
+
+    private bool _enabledCustomFilters = false;
+    protected override void OnInitialized()
+    {
+        _gameCode = GameCodeGenerator.GenerateGameCodeFromComponent(nameof(CreateCrowGameComponent)); ;
+    }
 
     private void InitializeNewGame()
     {
@@ -190,20 +204,16 @@ public partial class CreateCrowGameComponent : ComponentBase
         return Task.CompletedTask;
     }
 
-    private string GenerateGameCode()
+    private Task RemovePlayer(String playerId)
     {
-        _gameCode = GameCodeGenerator.GenerateGameCode();
+        _selectedPlayer = _players.FirstOrDefault(p => p.Id == playerId);
 
-        if (!StringBuilderPoolFactory<GameCodeGenerator>.Exists(nameof(GameCodeGenerator)))
+        if (_selectedPlayer is not null && _players.Any(p => p.Email == _selectedPlayer.Email))
         {
-            return _gameCode;
+            _players.Remove(_selectedPlayer);
         }
 
-        var sb = StringBuilderPoolFactory<GameCodeGenerator>.Get(nameof(GameCodeGenerator));
-
-        sb!.Clear();
-
-        return GameCodeGenerator.GenerateGameCode();
+        return Task.CompletedTask;
     }
 
     private bool IsNavigationAllowed(StepNavigationContext context)
@@ -219,6 +229,42 @@ public partial class CreateCrowGameComponent : ComponentBase
         return true;
     }
 
+    private async Task CreateCrowGameAsync()
+    {
+        var authState = await AuthenticationStateTask;
+
+        var currentUser = await UserManager.GetUserAsync(authState.User);
+
+        var playerNames = _players.Select(p => p.DisplayName).ToArray();
+
+        var newCrowGame = new CrowGameCreator(_packs, currentUser.Id, playerNames , _gameName, _gameCode);
+
+        await CrowGameService.CreateCrowGameAsync(newCrowGame);
+    }
+
+    private Task OnResetClicked()
+    {
+        _players.Clear();
+        _packsToChoose.Clear();
+        _gameName = String.Empty;
+        _gameCode = String.Empty;
+        _totalCardsInPool = 0;
+        return Task.CompletedTask;
+    }
+
     private Task OnCancelClicked()
     => ModalService.Hide();
+
+    public void Dispose()
+    {
+        StringBuilderPoolFactory<GameCodeGenerator>.Remove(nameof(CreateCrowGameComponent));
+        GC.SuppressFinalize(this);
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        StringBuilderPoolFactory<GameCodeGenerator>.Remove(nameof(CreateCrowGameComponent));
+        GC.SuppressFinalize(this);
+        return ValueTask.CompletedTask;
+    }
 }

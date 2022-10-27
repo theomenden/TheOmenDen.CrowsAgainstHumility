@@ -1,7 +1,10 @@
 ﻿using Blazorise;
+using System.Linq;
 using TheOmenDen.CrowsAgainstHumility.Components;
-using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Repositories;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
+using TheOmenDen.CrowsAgainstHumility.Services.Authentication;
+using TheOmenDen.Shared.Extensions;
+using TheOmenDen.Shared.Utilities;
 
 namespace TheOmenDen.CrowsAgainstHumility.Pages;
 
@@ -13,7 +16,7 @@ public partial class GamesList : ComponentBase
 
     [Inject] private ICrowGameService CrowGameService { get; init; }
 
-    private IEnumerable<CrowGameDto> _games = Enumerable.Empty<CrowGameDto>();
+    private List<CrowGameDto> _games = new (52);
 
     private void Start()
     {
@@ -22,11 +25,13 @@ public partial class GamesList : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        _games = Enumerable.Empty<CrowGameDto>();
+        await foreach (var game in CreateTestGames())
+        {
+            _games.Add(game);
+        }
 
         await base.OnInitializedAsync();
     }
-
 
     private Task InstantiateModalAsync()
         => ModalService.Show<CreateCrowGameComponent>(String.Empty, new ModalInstanceOptions()
@@ -35,4 +40,17 @@ public partial class GamesList : ComponentBase
             Size= ModalSize.ExtraLarge,
             UseModalStructure=false
         });
+
+    private static async IAsyncEnumerable<CrowGameDto> CreateTestGames()
+    {
+        for (var i = 0; i < ThreadSafeRandom.Global.Next(10,50); i++)
+        {
+            yield return new CrowGameDto(Enumerable.Empty<Pack>(),
+                Enumerable.Empty<Player>()
+                , $"test-room-{i}", GameCodeGenerator.GenerateGameCode(),
+                Guid.NewGuid());
+
+            StringBuilderPoolFactory<GameCodeGenerator>.Remove(nameof(GameCodeGenerator));
+        }
+    }
 }

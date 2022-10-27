@@ -1,7 +1,7 @@
 ﻿@using TwitchLib.Api.Helix.Models.Users.GetUsers
 <ModalHeader Background="Background.Dark" TextColor="TextColor.Light">
     <ModalTitle>Create your Game</ModalTitle>
-    <CloseButton />
+    <CloseButton TextColor="TextColor.Light" />
 </ModalHeader>
 <ModalBody Background="Background.Dark"
            TextColor="TextColor.Light"
@@ -18,14 +18,16 @@
             </Items>
             <Content>
                 <StepPanel Name="1">
-                    <Field>
-                        <FieldLabel>
-                            Game Name
-                        </FieldLabel>
-                        <FieldBody>
-                            <TextEdit @bind-Text="@_gameName" Placeholder="Pick Your Game's Name" />
-                        </FieldBody>
-                    </Field>
+                    <FocusTrap Active>
+                        <Field>
+                            <FieldLabel>
+                                Game Name
+                            </FieldLabel>
+                            <FieldBody>
+                                <TextEdit @bind-Text="@_gameName" Placeholder="Pick Your Game's Name" />
+                            </FieldBody>
+                        </Field>
+                    </FocusTrap>
                 </StepPanel>
                 <StepPanel Name="2">
                     <Field>
@@ -67,8 +69,8 @@
                     </Field>
                 </StepPanel>
                 <StepPanel Name="3">
-                    <Row>
-                        <Column ColumnSize="ColumnSize.IsThird">
+                    <Row Height="Height.Is100" Margin="Margin.Is4.FromBottom">
+                        <Column Height="Height.Is100" ColumnSize="ColumnSize.IsThird">
                             <Autocomplete TItem="Pack"
                                           TValue="Pack"
                                           Data="@_packs"
@@ -94,7 +96,7 @@
                                 </ItemContent>
                             </Autocomplete>
                         </Column>
-                        <Column ColumnSize="ColumnSize.IsThird">
+                        <Column Height="Height.Is100" ColumnSize="ColumnSize.IsThird">
                             Pack Options
                             <Buttons Role="ButtonsRole.Toolbar"
                                      Flex="Flex.Column.Shrink.Is1">
@@ -130,7 +132,7 @@
                                 </Button>
                             </Buttons>
                         </Column>
-                        <Column ColumnSize="ColumnSize.IsThird"
+                        <Column Height="Height.Is100" ColumnSize="ColumnSize.IsThird"
                                 Overflow="Overflow.Hidden">
                             <Text TextAlignment="TextAlignment.Start"
                                   TextColor="TextColor.Light">
@@ -170,10 +172,23 @@
                             </LoadingIndicator>
                         </Column>
                     </Row>
+                    <Divider Background="Background.Secondary" Width="Width.Is100" />
+                    <Row Height="Height.Is100" Margin="Margin.Is2.OnY.OnDesktop.Is4.OnY.OnTablet">
+                        <Column ColumnSize="ColumnSize.IsThird">
+                            <Switch ReadOnly Disabled Checked="true">Default Filters</Switch>
+                            <Switch @bind-Checked="@_enabledCustomFilters">Apply Custom Filters</Switch>
+                        </Column>
+                        <Column ColumnSize="ColumnSize.Is8" ElementId="#filterComponentColumn">
+                            <Animate Anchor="#filterComponentColumn" 
+                                     Animation="Animations.SlideUp" DelayMilliseconds="250">
+                                <FilterCardsForCrowGameComponent IsCustomFilteringEnabled="@_enabledCustomFilters" PacksToFilter="_packsToChoose.Values"/>
+                            </Animate>
+                        </Column>
+                    </Row>
                 </StepPanel>
                 <StepPanel Name="4">
                     <Row>
-                        <Column ColumnSize="ColumnSize.IsQuarter">
+                        <Column ColumnSize="ColumnSize.IsThird.OnTablet.IsQuarter.OnDesktop.Is2.OnWidescreen">
                             <Field>
                                 <FieldLabel TextColor="TextColor.Warning">
                                     Players to Include
@@ -182,13 +197,14 @@
                                     <TextEdit Placeholder="Twitch User Name..." @bind-Text="@_playerToAdd" />
                                     <Button Color="Color.Success"
                                             Border="Border.Is2.Light.OnAll.Rounded"
+                                            Margin="Margin.Is2.FromTop.OnDesktop.Is4.FromTop.OnMobile"
                                             Clicked="AddPlayerToList">
                                         Add To List
                                     </Button>
                                 </FieldBody>
                             </Field>
                         </Column>
-                        <Column ColumnSize="ColumnSize.Is9" Height="Height.Is100">
+                        <Column ColumnSize="ColumnSize.Is8.OnTablet.Is9.OnDesktop.Is10.OnWidescreen" Height="Height.Is100">
                             @if (!_players.Any())
                             {
                                 <Paragraph TextColor="TextColor.Light"
@@ -197,7 +213,7 @@
                                 </Paragraph>
                                 <Small TextColor="TextColor.Light"
                                    Class="fst-italic">
-                                    (If adding by discord, please include the numbers in their handle after the #)
+                                    (If adding by discord, please include the numbers in their handle after the # - a.k.a. Discriminator Value)
                                 </Small>
                             }
                             else
@@ -213,21 +229,41 @@
                                                   Margin="Margin.Is2.OnX.Is3.OnY"
                                                   TextColor="TextColor.Light"
                                                   Shadow="Shadow.Default"
-                                                  Border="Border.Is1.Secondary.OnAll.Rounded">
+                                                  Border="Border.Is3.Secondary.OnAll.Rounded">
+                                                    <Div Background="Background.Transparent"
+                                                     Flex="Flex.AlignItems.End.JustifyContent.End.Shrink.Is1"
+                                                     Border="Border.Is0.OnAll"
+                                                     Height="Height.Is25"
+                                                     Margin="Margin.Is2.OnX.Is1.FromTop">
+                                                        <Tooltip Text="@($"This will remove {context.DisplayName} from the list of players")"
+                                                             Placement="TooltipPlacement.TopEnd">
+                                                            <Icon Name="IconName.Times" Height="Height.Is100"
+                                                              Clicked="async ()=> await RemovePlayer(context.Id)"
+                                                              Background="Background.Danger"
+                                                              TextColor="TextColor.White"
+                                                              Border="Border.Is1.Light.OnAll.RoundedPill"
+                                                              IconSize="IconSize.Small" />
+                                                        </Tooltip>
+                                                    </Div>
                                                     <CardBody Background="Background.Transparent"
                                                           TextColor="TextColor.Light">
-                                                        <CardTitle>
-                                                            <Image Text="@context.DisplayName"
-                                                               Source="@context.ProfileImageUrl"
-                                                               loading="lazy"
-                                                               Border="Border.Is2.Secondary.OnAll.Rounded"
-                                                               Style="height: 48px; max-height: fit-content; width: 48px; max-width: fit-content;" />
-                                                            @context.DisplayName
-                                                            <Icon Name="DetermineIconName(context.DisplayName)"
-                                                              TextColor="DetermineIconColor(context.DisplayName)"
-                                                              TextWeight="TextWeight.Bold"
-                                                              IconSize="IconSize.Large" />
-                                                        </CardTitle>
+                                                        <Div Flex="Flex.Column">
+                                                            <Text Display="Display.InlineFlex"
+                                                              Margin="Margin.Is2.FromBottom.OnDesktop.Is4.FromBottom.OnMobile">
+                                                                <Image Text="@context.DisplayName"
+                                                                   Source="@context.ProfileImageUrl"
+                                                                   loading="lazy"
+                                                                   Border="Border.Is2.Light.OnAll.Rounded"
+                                                                   Margin="Margin.Is2.FromEnd.OnDesktop.Is4.FromEnd.OnMobile"
+                                                                   Style="height: 48px; max-height: fit-content; width: 48px; max-width: fit-content;" />
+
+                                                                @context.DisplayName
+                                                                <Icon Name="DetermineIconName(context.DisplayName)"
+                                                                  TextColor="DetermineIconColor(context.DisplayName)"
+                                                                  TextWeight="TextWeight.Bold"
+                                                                  IconSize="IconSize.Large" />
+                                                            </Text>
+                                                        </Div>
                                                     </CardBody>
                                                 </Card>
                                             </Animate>
@@ -246,28 +282,44 @@
                                 Game Name: @_gameName
                             </CardTitle>
                             <CardText>
-                                <FieldLabel>
+                                <FieldLabel TextWeight="TextWeight.Bold">
                                     Room Code
+                                    <TextEdit Plaintext
+                                              TextWeight="TextWeight.Light"
+                                              TextColor="TextColor.Light"
+                                              @bind-Text="@_gameCode" />
                                 </FieldLabel>
-                                <TextEdit Plaintext
-                                          TextColor="TextColor.Light"
-                                          @bind-Text="@_gameCode" />
                             </CardText>
+                            <Div Display="Display.Table">
+                                <Text TextColor="TextColor.Light" Display="Display.TableRow">
+                                    <Paragraph Display="Display.TableCell">
+                                        Card Packs: @(String.Join(", ", _packsToChoose.Values.Select(p => p.Name).ToArray()))
+                                    </Paragraph>
+                                </Text>
+                                <Text TextColor="TextColor.Light" Display="Display.TableRow"
+                                      Padding="Padding.Is2.FromTop.OnDesktop.Is4.FromTop.OnTablet">
+                                    <Paragraph Display="Display.TableCell">
+                                        Players: @(String.Join(", ", _players.Select(p => p.DisplayName).ToArray()))
+                                    </Paragraph>
+                                </Text>
+                            </Div>
                         </CardBody>
                     </Card>
                     <Buttons Role="ButtonsRole.Toolbar" Margin="Margin.Is3.OnY.Is2.OnX"
                              TextAlignment="TextAlignment.Center">
+                        <Button Type="ButtonType.Reset" Color="Color.Secondary"
+                                Shadow="Shadow.Default"
+                                Border="Border.Is2.Light.OnAll.Rounded"
+                                Clicked="OnResetClicked">
+                            Reset
+                        </Button>
                         <Button Type="ButtonType.Submit" Color="Color.Success"
                                 Shadow="Shadow.Default"
                                 Border="Border.Is2.Light.OnAll.Rounded"
                                 Margin="Margin.Is2.FromEnd"
+                                Clicked="CreateCrowGameAsync"
                                 PreventDefaultOnSubmit>
                             Create Game
-                        </Button>
-                        <Button Type="ButtonType.Reset" Color="Color.Secondary"
-                                Shadow="Shadow.Default"
-                                Border="Border.Is2.Light.OnAll.Rounded">
-                            Reset
                         </Button>
                     </Buttons>
                 </StepPanel>
@@ -279,29 +331,30 @@
     <Div Display="Display.Flex" Flex="Flex.Column">
         <Buttons Role="ButtonsRole.Toolbar">
             <Buttons>
+                <Buttons>
+                    <Button Color="Color.Secondary"
+                            Clicked="OnCancelClicked"
+                            Border="Border.Is2.Light.OnAll.Rounded"
+                            Margin="Margin.Is2.FromEnd">
+                        Cancel
+                    </Button>
+                </Buttons>
                 <Button Color="Color.Secondary"
                         Margin="Margin.Is2.FromEnd"
                         Border="Border.Is2.Light.OnAll.Rounded"
                         Clicked="() => _stepsRef.PreviousStep()"
                         Disabled="@_stepsRef.SelectedStep.Equals("1")">
-                    <Icon Name="IconName.ChevronLeft" IconSize="IconSize.Default" TextColor="TextColor.Light" />Previous
+                    <Icon Name="IconName.ChevronLeft" IconSize="IconSize.Default" TextColor="TextColor.Light"/>Previous
                 </Button>
                 <Button Color="Color.Primary"
                         Border="Border.Is2.Light.OnAll.Rounded"
                         Clicked="() => _stepsRef.NextStep()"
                         Disabled="@_stepsRef.SelectedStep.Equals("4")">
                     Next
-                    <Icon Name="IconName.ChevronRight" IconSize="IconSize.Default" TextColor="TextColor.Light" />
+                    <Icon Name="IconName.ChevronRight" IconSize="IconSize.Default" TextColor="TextColor.Light"/>
                 </Button>
             </Buttons>
-            <Buttons>
-                <Button Color="Color.Secondary"
-                        Clicked="OnCancelClicked"
-                        Border="Border.Is2.Light.OnAll.Rounded"
-                        Margin="Margin.Is2.FromStart">
-                    Cancel
-                </Button>
-            </Buttons>
+            
         </Buttons>
     </Div>
 </ModalFooter>

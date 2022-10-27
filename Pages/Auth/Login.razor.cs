@@ -1,6 +1,5 @@
 ﻿using Blazorise;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using TheOmenDen.CrowsAgainstHumility.Core.Auth.InputModels;

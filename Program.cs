@@ -172,7 +172,7 @@ try
 
     builder.Services.AddCorvidIdentityServices(connectionString);
 
-    var apiKey = builder.Configuration["SendGridApiKey"] ?? String.Empty;
+    var apiKey = builder.Configuration["crowsagainstemails"] ?? String.Empty;
 
     builder.Services.AddCorvidEmailServices(apiKey);
     
