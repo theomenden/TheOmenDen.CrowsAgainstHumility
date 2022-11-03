@@ -15,7 +15,7 @@
     <PackageReference Include="TwitchLib.Api.Core" Version="3.8.0" />
     <PackageReference Include="TwitchLib.Api.Core.Interfaces" Version="3.8.0" />
     <PackageReference Include="TwitchLib.Api.Helix" Version="3.8.0" />
-    <PackageReference Include="TwitchLib.PubSub" Version="3.2.5" />
+    <PackageReference Include="TwitchLib.PubSub" Version="3.2.6" />
   </ItemGroup>
 
 </Project>

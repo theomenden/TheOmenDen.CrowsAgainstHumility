@@ -150,7 +150,7 @@
     <PackageReference Include="TwitchLib" Version="3.4.1" />
     <PackageReference Include="TwitchLib.Api" Version="3.8.0" />
     <PackageReference Include="TwitchLib.Client" Version="3.2.6" />
-    <PackageReference Include="TwitchLib.PubSub" Version="3.2.5" />
+    <PackageReference Include="TwitchLib.PubSub" Version="3.2.6" />
   </ItemGroup>
 
 	<ItemGroup Condition="$(Configuration)=='Debug'">
