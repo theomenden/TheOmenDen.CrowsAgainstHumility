@@ -77,7 +77,7 @@
   <ItemGroup>
     <PackageReference Include="AspNet.Security.OAuth.Discord" Version="6.0.14" />
     <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="6.0.14" />
-    <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="6.0.14" />
+    <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="7.0.0" />
     <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
     <PackageReference Include="Azure.Identity" Version="1.7.0" />
     <PackageReference Include="Blazored.SessionStorage" Version="2.2.0" />
