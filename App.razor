@@ -67,63 +67,51 @@
 </CascadingAuthenticationState>
 @code {
 
-    private Theme _theme = new ()
+    private readonly Theme _theme = new ()
         {
             IsGradient = true,
             LuminanceThreshold = 170,
             ColorOptions = new ThemeColorOptions
             {
-                Primary = "#619806",
-                Secondary = "#3d0698",
-                Dark = "#2c2e3a",
-                Light = "#c4cee2",
+                Primary = "#7A04AB",
+                Secondary = "#FF00A0",
+                Dark = "#120458",
+                Light = "#FE75FE",
                 Link = "#cfe2f3",
-                Warning = "e2c709"
+                Warning = "#E2C709"
             },
             BackgroundOptions = new ThemeBackgroundOptions
             {
-                Primary = "#619806",
-                Secondary = "#3d0698",
-                Dark = "#2c2e3a",
-                Light = "#c4cee2",
-                Warning = "#e7d23a"
-            },
-            TextColorOptions = new ThemeTextColorOptions
-            {
-                Primary = "#619806",
-                Secondary = "#e3e3e3",
-                Dark = "#2c2e3a",
-                Light = "#f6f6f6",
-                Warning = "#e2c709"
-            },
-            PaginationOptions = new ThemePaginationOptions
-            {
-
+                Primary = "#FF00A0",
+                Secondary = "#7A04AB",
+                Dark = "#030011",
+                Light = "#FE75FE",
+                Warning = "#E2C709",
             },
             BarOptions = new ThemeBarOptions
             {
-                HorizontalHeight = "76px",
-                VerticalBrandHeight = "76px",
                 DarkColors = new ThemeBarColorOptions
                 {
-                    BackgroundColor = "#5d4d77",
-                    Color = "#ffffff",
-                    BrandColorOptions = new ThemeBarBrandColorOptions
+                    BackgroundColor = "#030011",
+                    Color="#ffffff",
+                    ItemColorOptions = new ThemeBarItemColorOptions
                     {
-                        BackgroundColor = "#619806",
-                    }
-                },
-                LightColors = new ThemeBarColorOptions
-                {
-                    BackgroundColor = "#f1eaea",
-                    Color = "#717171",
-                    BrandColorOptions = new ThemeBarBrandColorOptions
-                    {
-                        BackgroundColor = "#b5b5b5"
+                        ActiveBackgroundColor = "#FE42FE",
+                        HoverBackgroundColor = "#7A04AB",
+                        ActiveColor ="#000000",
+                        HoverColor="#ffffff"
                     }
                 }
             }
         };
+    /*
+     $theomenden-bright: #FF00A0;
+    $theomenden-dark: #120458;
+    $theomenden-light: #FE75FE;
+    $theomenden-white: #fff;
+    $theomenden-black: #000;
+    $theomenden-medium: #7A04AB;
+     */
 
     [Parameter] public ApplicationUserState? InitialState { get; set; }
 

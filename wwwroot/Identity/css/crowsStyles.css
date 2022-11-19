@@ -184,11 +184,12 @@
   background-color: transparent !important;
 }
 
-html, body {
+html,
+body {
   overflow-x: hidden;
   overflow-y: hidden;
   height: 100%;
-  width: 100%;
+  width: 100vw;
   font-family: "Roboto", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
@@ -251,58 +252,18 @@ h1:focus {
   body {
     margin: 0;
     padding: 0;
-    background-image: url("https://static.tumblr.com/03fbbc566b081016810402488936fbae/pqpk3dn/MRSmlzpj3/tumblr_static_bg3.png");
-    background-repeat: repeat;
-    background-size: contain;
     background-position-x: 0;
     background-position-y: 0;
-    background-color: #a39193;
-    -webkit-animation: 10s linear 0s normal none infinite animate;
-    -moz-animation: 10s linear 0s normal none infinite animate;
-    -ms-animation: 10s linear 0s normal none infinite animate;
-    -o-animation: 10s linear 0s normal none infinite animate;
-    animation: 10s linear 0s normal none infinite animate;
+    background-color: #120458;
   }
-
-  @-webkit-keyframes animate {
-    from {
-      background-position: 0 0;
-    }
-    to {
-      background-position: 500px 0;
-    }
-  }
-  @-moz-keyframes animate {
-    from {
-      background-position: 0 0;
-    }
-    to {
-      background-position: 500px 0;
-    }
-  }
-  @-ms-keyframes animate {
-    from {
-      background-position: 0 0;
-    }
-    to {
-      background-position: 500px 0;
-    }
-  }
-  @-o-keyframes animate {
-    from {
-      background-position: 0 0;
-    }
-    to {
-      background-position: 500px 0;
-    }
-  }
-  @keyframes animate {
-    from {
-      background-position: 0 0;
-    }
-    to {
-      background-position: 500px 0;
-    }
+}
+@media (prefers-color-scheme: light) {
+  body {
+    margin: 0;
+    padding: 0;
+    background-position-x: 0;
+    background-position-y: 0;
+    background-color: #fff;
   }
 }
 /*Playing Card Formatting*/

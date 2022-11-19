@@ -1,6 +1,4 @@
 ﻿using Blazorise;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
 using System.Reflection;
 using TheOmenDen.CrowsAgainstHumility.Core.Auth.ViewModels;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
