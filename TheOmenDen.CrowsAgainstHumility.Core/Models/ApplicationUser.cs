@@ -31,7 +31,7 @@ public class ApplicationUser: IdentityUser<Guid>
 
     public NotificationType NotificationType { get; set; }
 
-    public String ImageUrl { get; set; }
+    public String? ImageUrl { get; set; }
 
     public String GetUIImageUrl => String.IsNullOrWhiteSpace(ImageUrl)
         ? @"img\avatars\avatar-00.png"

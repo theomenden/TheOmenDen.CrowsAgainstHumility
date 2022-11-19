@@ -21,7 +21,9 @@ public partial class Register: ComponentBase
     
     private Validations _validationsReference;
 
-    protected RegisterInputModel InputModel { get; set; } = new();
+    private Core.Enumerations.NotificationType _selectedNotificationValue;
+
+    protected RegisterInputModel InputModel { get; } = new();
 
     protected Boolean DoesHaveErrors { get; set; }
 
@@ -39,7 +41,9 @@ public partial class Register: ComponentBase
                 CreatedDate = DateTime.UtcNow,
                 FirstName = InputModel.FirstName,
                 LastName = InputModel.LastName,
-                Email = InputModel.Email
+                UserName = InputModel.Username,
+                Email = InputModel.Email,
+                NotificationType = _selectedNotificationValue ?? Core.Enumerations.NotificationType.Ignore
             };
 
             var createUserResult = await UserManager.CreateAsync(user, InputModel.Password);

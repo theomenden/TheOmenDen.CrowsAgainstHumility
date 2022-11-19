@@ -1,16 +1,22 @@
 ﻿using Blazorise;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
+using System.Threading;
 using TheOmenDen.CrowsAgainstHumility.Core.Auth.InputModels;
 using TheOmenDen.CrowsAgainstHumility.Extensions;
 using TheOmenDen.CrowsAgainstHumility.Identity.Extensions;
 using TheOmenDen.CrowsAgainstHumility.Services;
+using TwitchLib.Api;
+using TwitchLib.Api.Interfaces;
 
 namespace TheOmenDen.CrowsAgainstHumility.Pages.Auth;
 
 public partial class Login: ComponentBase
 {
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
     [Inject] private TokenStateService TokenStateService { get; init; }
 
     [Inject] private ILogger<Login> Logger { get; init; }
@@ -24,7 +30,11 @@ public partial class Login: ComponentBase
     [Inject] private TokenProvider TokenProvider { get; init; }
 
     [Inject] private SignInManager<ApplicationUser> SignInManager { get; init; }
-    
+
+    [Inject] private TwitchStrings TwitchStrings { get; init; }
+
+    [Inject] private TwitchAPI TwitchAPI { get; init; }
+
     private Validations _validationsRef;
 
     private List<AuthenticationScheme> _externalProviders = new(5);
@@ -54,7 +64,7 @@ public partial class Login: ComponentBase
             .ToList();
     }
 
-    private async Task OnLogin()
+    private async Task OnLoginAsync()
     {
         try
         {
@@ -90,26 +100,22 @@ public partial class Login: ComponentBase
     {
         try
         {
-            var username = TokenStateService.GetUserName();
+            var authState = await AuthenticationStateTask;
 
-            var user = UserManager.Users
-                .FirstOrDefault(u => u.UserName.Equals(username));
+            var user = await UserManager.GetUserAsync(authState.User);
 
-            if(user is null)
+            if (user is not null)
             {
-                HasErrors = true;
-                return;
+                var token = await UserManager.GenerateUserTokenAsync(user, TokenOptions.DefaultProvider, "Login");
+
+                var data = $"{user.Id}|{token}|{authenticationScheme.Name}";
+
+                var protector = DataProtectionProvider.CreateProtectorForLogin();
+
+                var protectedData = protector.Protect(data);
+
+                NavigationManager.NavigateTo($"/Account/LoginExternalProvider?data={protectedData}", true);
             }
-
-            var token = await UserManager.GenerateUserTokenAsync(user, TokenOptions.DefaultProvider, "Login");
-
-            var data = $"{user.Id}|{token}|{authenticationScheme.Name}";
-
-            var protector = DataProtectionProvider.CreateProtectorForLogin();
-
-            var protectedData = protector.Protect(data);
-
-            NavigationManager.NavigateTo($"/Account/LoginExternalProvider?data={protectedData}", true);
         }
         catch (Exception ex)
         {

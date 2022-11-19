@@ -1,5 +1,4 @@
 ﻿using Blazorise;
-using System.Linq;
 using TheOmenDen.CrowsAgainstHumility.Components;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 using TheOmenDen.CrowsAgainstHumility.Services.Authentication;
@@ -25,10 +24,7 @@ public partial class GamesList : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        await foreach (var game in CreateTestGames())
-        {
-            _games.Add(game);
-        }
+        _games = await CreateTestGamesAsync().ToListAsync();
 
         await base.OnInitializedAsync();
     }
@@ -38,13 +34,17 @@ public partial class GamesList : ComponentBase
         {
             Scrollable=true,
             Size= ModalSize.ExtraLarge,
+            Border= Border.Is2.Light.OnAll.Rounded,
+            Centered = true,
             UseModalStructure=false
         });
 
-    private static async IAsyncEnumerable<CrowGameDto> CreateTestGames()
+    private static async IAsyncEnumerable<CrowGameDto> CreateTestGamesAsync()
     {
         for (var i = 0; i < ThreadSafeRandom.Global.Next(10,50); i++)
         {
+            await Task.Delay(100);
+
             yield return new CrowGameDto(Enumerable.Empty<Pack>(),
                 Enumerable.Empty<Player>()
                 , $"test-room-{i}", GameCodeGenerator.GenerateGameCode(),

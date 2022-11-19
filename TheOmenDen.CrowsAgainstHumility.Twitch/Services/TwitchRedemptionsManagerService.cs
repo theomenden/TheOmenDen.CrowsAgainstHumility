@@ -35,8 +35,8 @@ internal sealed class TwitchRedemptionsManagerService: ITwitchRedemptionsManager
     }
     private void InitializeChannelConnections(String channel, String oauthToken, String username, String clientId)
     {
-        _logger.LogDebug("InitializeChannelConnection({Channel}, {OAuthToken}, {Username}, {ClientId})",
-            channel, oauthToken, username, clientId);
+        _logger.LogDebug("InitializeChannelConnection({Channel}, {Username})",
+            channel, username);
 
         Guard.FromNullOrWhitespace(channel, nameof(channel));
         Guard.FromNullOrWhitespace(oauthToken, nameof(oauthToken));

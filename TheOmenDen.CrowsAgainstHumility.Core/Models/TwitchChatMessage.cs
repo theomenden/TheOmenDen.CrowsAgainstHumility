@@ -1,4 +1,4 @@
-﻿using TwitchLib.Api.Core.Models.Undocumented.CSStreams;
+﻿using TwitchLib.Api.Core.Models.Undocumented;
 using TwitchLib.Client.Models;
 
 namespace TheOmenDen.CrowsAgainstHumility.Core.Models;

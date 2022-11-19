@@ -1,7 +1,7 @@
 @inject TokenProvider TokenProvider
-<Fluxor.Blazor.Web.StoreInitializer />
 <CascadingAuthenticationState>
-    <ThemeProvider Theme="@_theme">
+<Fluxor.Blazor.Web.StoreInitializer />
+<ThemeProvider Theme="@_theme">
         <Router AppAssembly="@typeof(App).Assembly">
             <Found Context="routeData">
                 <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
@@ -56,17 +56,18 @@
                 </LayoutView>
             </NotFound>
         </Router>
-        <ModalProvider UseModalStructure Animated Size="ModalSize.Default" />
+    <ModalProvider UseModalStructure Animated 
+                   Size="ModalSize.Default" 
+                   Border="Border.Is1.Light.OnAll.Rounded" />
         <ApplicationLoadingIndicator />
         <PageProgressProvider />
         <NotificationProvider />
         <MessageProvider />
     </ThemeProvider>
 </CascadingAuthenticationState>
-
 @code {
 
-    private Theme _theme = new Theme()
+    private Theme _theme = new ()
         {
             IsGradient = true,
             LuminanceThreshold = 170,

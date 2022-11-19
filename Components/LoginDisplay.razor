@@ -5,21 +5,21 @@
             <BarDropdownMenu>
                 @if (context.User.IsInRole("Administrator"))
                 {
-                    <BarDropdownItem To="admin/manage">
+                    <BarDropdownItem Background="Background.Dark" TextColor="TextColor.Light" To="admin/manage">
                         Admin Actions
                     </BarDropdownItem>
                 }
-                <BarDropdownItem To="user/manage">
+                <BarDropdownItem Background="Background.Dark" TextColor="TextColor.Light" To="user/manage">
                     Account
                 </BarDropdownItem>
                 <BarDropdownDivider />
-                <Form>
-                    <Button Type="ButtonType.Submit" Class="dropdown-item">Log out</Button>
-                </Form>
+                <form method="post" action="Account/LogoutInternal">
+                    <button type="submit" class="dropdown-item">Log out</button>
+                </form>
             </BarDropdownMenu>
         </BarDropdown>
     </Authorized>
     <NotAuthorized>
-        <BarLink To="login">Log in</BarLink>
+        <BarLink Background="Background.Dark" TextColor="TextColor.Light" To="login">Log in</BarLink>
     </NotAuthorized>
 </AuthorizeView>

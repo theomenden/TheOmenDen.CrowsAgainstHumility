@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.JSInterop;
 using TheOmenDen.CrowsAgainstHumility.Circuits;
+using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 using TheOmenDen.CrowsAgainstHumility.Events;
 
 namespace TheOmenDen.CrowsAgainstHumility.Pages;
@@ -18,11 +19,16 @@ public partial class Index : ComponentBase, IDisposable, IAsyncDisposable
     [Inject]
     public NavigationManager NavigationManager { get; init; }
 
-    [Inject]
-    public ISessionDetails SessionDetails { get; init; }
+    [Inject] public ISessionDetails SessionDetails { get; init; }
 
     [Inject]
     public CircuitHandler CircuitHandler { get; init; }
+
+    [Inject] protected IUserService UserService { get; init; }
+
+    [Inject] private IUserInformationService UserInformationService { get; init; }
+
+    [Inject] private ILogger<Index> Logger { get; init; }
     #endregion
 
     private TrackingCircuitHandler _trackingCircuitHandler;
@@ -33,19 +39,29 @@ public partial class Index : ComponentBase, IDisposable, IAsyncDisposable
 
     protected override async Task OnInitializedAsync()
     {
-        _trackingCircuitHandler = (TrackingCircuitHandler)CircuitHandler;
-        _sessionCircuitMessage = $"My Circuit ID = {_trackingCircuitHandler.CircuitId}";
+        await base.OnInitializedAsync();
 
-        var authState = await AuthenticationStateTask;
-
-        var userIdentity = authState.User.Identity;
-
-        if (userIdentity is { IsAuthenticated: true })
+        try
         {
-            SessionDetails.ConnectSession(_trackingCircuitHandler.CircuitId, userIdentity);
-            SessionDetails.CircuitsChanged += OnCircuitsChanged;
-            SessionDetails.UserDisconnect += OnUserDisconnected;
+            _trackingCircuitHandler = (TrackingCircuitHandler)CircuitHandler;
+            _sessionCircuitMessage = $"My Circuit ID = {_trackingCircuitHandler.CircuitId}";
+
+            var authState = await AuthenticationStateTask;
+
+            var userIdentity = authState.User.Identity;
+
+            if (userIdentity is { IsAuthenticated: true })
+            {
+                SessionDetails.ConnectSession(_trackingCircuitHandler.CircuitId, userIdentity);
+                SessionDetails.CircuitsChanged += OnCircuitsChanged;
+                SessionDetails.UserDisconnect += OnUserDisconnected;
+            }
         }
+        catch (Exception ex)
+        {
+            Logger.LogError("Failed to initialize the index due to an exception @{Ex}", ex);
+        }
+
     }
 
     private void OnUserDisconnected(object sender, UserDisconnectEventArgs e)

@@ -29,6 +29,8 @@ using Blazored.SessionStorage;
 using System.Text.Json.Serialization;
 using AspNet.Security.OAuth.Twitch;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Components.Server;
+using Microsoft.Identity.Web;
 #endregion
 #region Bootstrap Logger
 Log.Logger = new LoggerConfiguration()
@@ -93,18 +95,18 @@ try
         .AddBootstrap5Components()
         .AddBootstrapIcons()
         .AddLoadingIndicator();
-    
+
     builder.Services.AddApplicationInsightsTelemetry(options => options.ConnectionString = appInsightsConnectionString);
 
     var twitchStrings = new TwitchStrings(builder.Configuration["twitch-key"], builder.Configuration["twitch-clientId"]);
 
     builder.Services.AddSingleton(twitchStrings);
-    
+
     builder.Services
         .AddAuthentication(options =>
         {
-            options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme; 
-            options.DefaultChallengeScheme    = TwitchAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = TwitchAuthenticationDefaults.AuthenticationScheme;
         })
         .AddTwitter(options =>
         {
@@ -115,11 +117,13 @@ try
 
             options.ConsumerKey = twitterKeys.Key;
             options.ConsumerSecret = twitterKeys.Secret;
+            options.SaveTokens = true;
         })
         .AddTwitch(options =>
         {
             options.ClientId = twitchStrings.ClientId;
-            options.ClientSecret = twitchStrings.Key;
+            options.ClientSecret = twitchStrings.Key; 
+            options.SaveTokens = true;
         })
         .AddDiscord(options =>
         {
@@ -130,19 +134,21 @@ try
 
             options.ClientId = discordKeys.Id;
             options.ClientSecret = discordKeys.Secret;
-        });
+            options.SaveTokens = true;
+        })
+        .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+        {
+            options.Cookie.Name = "CrowsAgainstHumilityCookie";
+            options.Cookie.HttpOnly = true;
+            options.ExpireTimeSpan = TimeSpan.FromDays(5);
 
-    builder.Services.ConfigureApplicationCookie(options =>
-    {
-        options.Cookie.HttpOnly = true;
-        options.ExpireTimeSpan = TimeSpan.FromDays(5);
+            options.LoginPath = "/Identity/Account/Login";
+            options.AccessDeniedPath = "/Identity/Account/AccessDenied";
 
-        options.LoginPath = "/Identity/Account/Login";
-        options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+            options.SlidingExpiration = true;
+        })
+        .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"), cookieScheme: "microsoftCookies");
 
-        options.SlidingExpiration = true;
-    });
-    
     builder.Services.AddHttpClient();
     builder.Services.AddScoped<TokenProvider>();
     builder.Services.AddScoped<TokenStateService>();
@@ -161,13 +167,13 @@ try
                        ?? builder.Configuration["ConnectionStrings:CrowsAgainstHumilityDb"];
 
     builder.Services.AddCorvidDataServices(dbConnection);
-    
+
     builder.Services.AddResponseCompression(options =>
     {
         options.MimeTypes = new[] { MediaTypeNames.Application.Octet };
     });
 
-    var connectionString = builder.Configuration.GetConnectionString("CrowsAgainstAuthority") 
+    var connectionString = builder.Configuration.GetConnectionString("CrowsAgainstAuthority")
                            ?? throw new InvalidOperationException("Connection string 'UserContextConnection' not found.");
 
     builder.Services.AddCorvidIdentityServices(connectionString);
@@ -175,7 +181,7 @@ try
     var apiKey = builder.Configuration["crowsagainstemails"] ?? String.Empty;
 
     builder.Services.AddCorvidEmailServices(apiKey);
-    
+
     var currentAssembly = typeof(Program).Assembly;
 
     builder.Services.AddFluxor(options => options
@@ -203,7 +209,7 @@ try
     builder.Services.AddSingleton<ISessionDetails, SessionDetails>();
 
     builder.Services.AddScoped<CircuitHandler, TrackingCircuitHandler>(sp => new TrackingCircuitHandler(sp.GetRequiredService<ISessionDetails>()));
-    
+
     builder.Services.AddResponseCaching();
 
     builder.Services.AddSignalR(options => options.MaximumReceiveMessageSize = 104_857_600)
@@ -245,9 +251,15 @@ try
         {
             options.MaximumReceiveMessageSize = 104_857_600;
         });
-
+    builder.Services.AddHttpContextAccessor();
     builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApplicationUser>>();
-    
+    builder.Services.AddScoped<IHostEnvironmentAuthenticationStateProvider>(sp =>
+    {
+        // this is safe because 
+        //     the `RevalidatingIdentityAuthenticationStateProvider` extends the `ServerAuthenticationStateProvider`
+        var provider = (ServerAuthenticationStateProvider)sp.GetRequiredService<AuthenticationStateProvider>();
+        return provider;
+    });
     await using var app = builder.Build();
 
     app.UseResponseCompression();
@@ -270,7 +282,7 @@ try
 
     app.UseAuthentication();
     app.UseAuthorization();
-    
+
     app.UseEndpoints(endpoints =>
     {
         endpoints.MapControllers();

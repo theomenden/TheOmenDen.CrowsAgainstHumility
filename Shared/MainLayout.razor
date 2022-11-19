@@ -98,6 +98,9 @@
                                 </sup>
                             </BarLink>
                         </BarItem>
+                        <BarItem>
+                            <LoginDisplay />
+                        </BarItem>
                     </BarEnd>
                 </BarMenu>
             </Bar>
@@ -107,28 +110,31 @@
         <LayoutHeader Fixed>
             <Bar @ref="@_topBar"
                  Breakpoint="Breakpoint.Desktop"
+                 NavigationBreakpoint="Breakpoint.Tablet"
                  Background="Background.Dark"
                  ThemeContrast="ThemeContrast.Dark"
                  Shadow="Shadow.Default"
                  Border="Border.Is2.OnBottom.RoundedBottom.Light.OnBottom"
                  @bind-Visible="@_topBarVisible">
-                <BarToggler Bar="@_sideBar" Border="Border.Is0" />
-                <BarBrand>
-                    <BarItem>
-                        <BarLink To="" TextColor="TextColor.Light"
-                                 Class="text-decoration-underline link-primary">
-                            @ApplicationTitle
-                        </BarLink>
-                    </BarItem>
-                </BarBrand>
-                <BarMenu>
-                    <BarStart />
-                    <BarEnd Margin="Margin.Is2.FromEnd">
+                <Container>
+                    <BarToggler Bar="@_sideBar" Border="Border.Is0" />
+                    <BarBrand>
                         <BarItem>
-                            <LoginDisplay />
+                            <BarLink To="" TextColor="TextColor.Light"
+                                     Class="text-decoration-underline link-primary">
+                                @ApplicationTitle
+                            </BarLink>
                         </BarItem>
-                    </BarEnd>
-                </BarMenu>
+                    </BarBrand>
+                    <BarMenu>
+                        <BarStart />
+                        <BarEnd Margin="Margin.Is2.FromEnd">
+                            <BarItem>
+                                <LoginDisplay />
+                            </BarItem>
+                        </BarEnd>
+                    </BarMenu>
+                </Container>
             </Bar>
         </LayoutHeader>
         <LayoutContent Padding="Padding.Is4.OnX">
@@ -138,6 +144,6 @@
         </LayoutContent>
     </Layout>
 </Layout>
-@code{
-    RenderFragment customIcon =@<Image Source="../images/TheOmenDenWithCrow.svg" Text="Small Blazorise logo" Style="width:72px; height: 72px" />;
+@code {
+    RenderFragment customIcon =@<Image Source="../images/TheOmenDenWithCrow.svg" Text="The Omen Den Logo" Style="width:72px; height: 72px" />;
 }

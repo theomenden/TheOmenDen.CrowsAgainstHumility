@@ -29,16 +29,15 @@
                               TextAlignment="TextAlignment.Start">
                             Enter a word or a comma (,) separated list of words to filter out
                         </Text>
-                        <TextEdit Autofocus Text="@_filterText" 
+                        <TextEdit Autofocus 
+                                  Text="@_filterText" 
                                   TextChanged="OnTextChangedAsync" 
                                   Immediate="false" 
                                   Debounce="true" 
                                   DebounceInterval="25"/>
                     </FieldLabel>
                 </Field>
-                <Button Type="ButtonType.Submit"
-                        PreventDefaultOnSubmit
-                        Border="Border.Is2.Light.OnAll.Rounded"
+                <Button Border="Border.Is2.Light.OnAll.Rounded"
                         Color="Color.Primary"
                         Block
                         Shadow="Shadow.Default"

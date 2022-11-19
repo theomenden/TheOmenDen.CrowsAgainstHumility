@@ -9,8 +9,7 @@
              VerticalAlignment="VerticalAlignment.Middle">
             <Div Background="Background.Dark"
                  TextColor="TextColor.Light"
-                 Border="Border.Is2.Secondary.OnAll.Rounded"
-                >
+                 Border="Border.Is2.Secondary.OnAll.Rounded">
                 <Text TextAlignment="TextAlignment.Center"
                       Margin="Margin.Is4.FromTop">
                     <Heading Size="HeadingSize.Is2"
@@ -20,9 +19,8 @@
                     <Paragraph Class="lead" TextAlignment="TextAlignment.Center">
                         Start creating funny interactions and memories with your friends
                     </Paragraph>
-                    <Small 
-                        TextColor="TextColor.Muted"
-                        TextAlignment="TextAlignment.Justified">Or see who is the most messed up</Small>
+                    <Small TextColor="TextColor.Muted"
+                           TextAlignment="TextAlignment.Justified">Or see who is the most messed up</Small>
                 </Text>
             </Div>
             <Card Shadow="Shadow.Default"
@@ -93,6 +91,18 @@
                                         </TextEdit>
                                     </Field>
                                 </Validation>
+                                <Validation>
+                                    <Field>
+                                        <FieldLabel>Notifications</FieldLabel>
+                                        <SelectList TItem="Core.Enumerations.NotificationType"
+                                                    TValue="Core.Enumerations.NotificationType"
+                                                    Data="@Core.Enumerations.NotificationType.ReadOnlyEnumerationList"
+                                                    TextField="@((item)=>item.Name)"
+                                                    ValueField="@((item)=>item)"
+                                                    @bind-SelectedValue="_selectedNotificationValue"
+                                                    DefaultItemText="Choose the level of notifications you'd like to receive" />
+                                    </Field>
+                                </Validation>
                                 <Field TextAlignment="TextAlignment.Center">
                                     <Button Type="ButtonType.Submit"
                                             Color="Color.Primary"
@@ -141,7 +151,7 @@
                         <Blazorise.Link To="terms-of-service">
                             Terms of Service
                         </Blazorise.Link>
-                         &amp; 
+                        &amp;
                         <Blazorise.Link To="privacy-policy">
                             Privacy Policy
                         </Blazorise.Link>

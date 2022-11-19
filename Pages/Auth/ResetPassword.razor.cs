@@ -1,5 +1,4 @@
 ﻿using Blazorise;
-using Humanizer;
 using Microsoft.AspNetCore.Identity;
 using TheOmenDen.CrowsAgainstHumility.Core.Auth.InputModels;
 using TheOmenDen.CrowsAgainstHumility.Extensions;
