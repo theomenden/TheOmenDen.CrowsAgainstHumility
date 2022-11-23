@@ -1,10 +1,12 @@
-﻿using System.Linq;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 
 namespace TheOmenDen.CrowsAgainstHumility.Core.Models;
 
 public sealed class Player : IEquatable<Player>
 {
+    public Player() {}
     public Player(String connectionId)
     {
         ConnectionId = connectionId;
@@ -21,7 +23,9 @@ public sealed class Player : IEquatable<Player>
 
     public Guid Id { get; set;}
 
-    public bool IsConnected { get; set; } 
+    public bool IsConnected { get; set; }
+
+    public bool IsCardTsar { get; set; } = false;
 
     public bool Equals(Player? other) => other is not null 
                                          && (ReferenceEquals(this, other) 

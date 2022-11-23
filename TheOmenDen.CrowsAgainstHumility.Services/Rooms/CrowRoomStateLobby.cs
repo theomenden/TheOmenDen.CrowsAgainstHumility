@@ -1,5 +1,4 @@
 ﻿using TheOmenDen.CrowsAgainstHumility.Core.Models;
-using TheOmenDen.Shared.Extensions;
 
 namespace TheOmenDen.CrowsAgainstHumility.Services.Rooms;
 public sealed class CrowRoomStateLobby: ICrowRoomState
@@ -14,7 +13,7 @@ public sealed class CrowRoomStateLobby: ICrowRoomState
         _gameEndCallback= gameEndCallback;
     }
 
-    internal async Task<Boolean> SetRoomSettings(CrowRoomSettings settings, CrowGamePlayer player)
+    internal async Task<Boolean> SetRoomSettings(CrowRoomSettings settings, Player player)
     {
         var cardTsar = _room.Players.FirstOrDefault(p => p.IsCardTsar);
 
@@ -40,9 +39,9 @@ public sealed class CrowRoomStateLobby: ICrowRoomState
         return;
     }
 
-    public Task AddCrow(CrowGamePlayer player, bool isReconnection, CancellationToken cancellationToken = default)
-        => _room.SendCrow(player, "RoomStateChanged", Rooms.ToRoomStateDto());
+    public Task AddCrow(Player player, bool isReconnection, CancellationToken cancellationToken = default)
+        => _room.SendPlayer(player, "RoomStateChanged", _room.ToRoomStateDto(), cancellationToken);
 
-    public Task RemoveCrow(CrowGamePlayer player, CancellationToken cancellationToken = default)
+    public Task RemoveCrow(Player player, CancellationToken cancellationToken = default)
         => Task.CompletedTask;
 }

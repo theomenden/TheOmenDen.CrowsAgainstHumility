@@ -31,4 +31,6 @@ public sealed class CrowRoomSettings
     public Boolean IsPrivateRoom { get; set; } = true;
 
     public String RoomCode { get; set; } = String.Empty;
+
+    public Int32 Rounds { get; set; } = 40;
 }

@@ -98,7 +98,7 @@ public sealed class CrowGameLobby
 
         var newRoom = new PublicRoom(_hubContext, roomName, roomSettings, GameEnded);
         AddRoom(newRoom);
-        await _hubContext.Clients.Group(_lobbyGroupName).SendAsync("RoomCreated", newRoom.ToRoomStateDto());
+        await _hubContext.Clients.Group(_lobbyGroupName).SendAsync("RoomCreated", newRoom.ToRoomStateDto(), cancellationToken: cancellationToken);
         return true;
     }
 
