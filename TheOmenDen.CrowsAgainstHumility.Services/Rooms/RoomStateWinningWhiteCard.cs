@@ -14,18 +14,18 @@ internal sealed class RoomStateWinningWhiteCard: ICrowRoomState
 
     private readonly Player _cardTsar;
     private readonly CrowGameRoom _room;
-    private readonly RoomStateCardTsarTurn _roomStateCardTsarTurn;
+    private readonly RoomStateCardCzarTurn _roomStateCardCzarTurn;
 
     private readonly List<WhiteCard> _chosenWhiteCards = new(10);
     private readonly CrowGameTimer _readingTimer;
 
     private bool _hasWhiteCardBeenChosen = false;
 
-    public RoomStateWinningWhiteCard(Player player, CrowGameRoom room, RoomStateCardTsarTurn roomStateCardTsarTurn)
+    public RoomStateWinningWhiteCard(Player player, CrowGameRoom room, RoomStateCardCzarTurn roomStateCardCzarTurn)
     {
         _cardTsar= player;
         _room= room;
-        _roomStateCardTsarTurn= roomStateCardTsarTurn;
+        _roomStateCardCzarTurn= roomStateCardCzarTurn;
 
         _readingTimer = new(WhiteCardChoiceTimeout * 1000, WhiteCardChoiceTimerElapsed);
     }
@@ -54,7 +54,7 @@ internal sealed class RoomStateWinningWhiteCard: ICrowRoomState
     {
         if (player == _cardTsar)
         {
-            _room.RoomState = _roomStateCardTsarTurn;
+            _room.RoomState = _roomStateCardCzarTurn;
         }
 
         return Task.CompletedTask;
@@ -86,7 +86,7 @@ internal sealed class RoomStateWinningWhiteCard: ICrowRoomState
 
             _room.AddRejectedWhiteCardsToPlayedWhiteCards(rejectedCards);
 
-            _room.RoomState = new RoomStateBlackCard(player, _room, chosenWhiteCard, _roomStateCardTsarTurn);
+            _room.RoomState = new RoomStateBlackCard(player, _room, chosenWhiteCard, _roomStateCardCzarTurn);
         }
     }
 

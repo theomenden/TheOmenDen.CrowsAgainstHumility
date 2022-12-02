@@ -10,17 +10,15 @@ namespace TheOmenDen.CrowsAgainstHumility.Services.Lobbies;
 public sealed class CrowGameLobby
 {
     private readonly ILogger<CrowGameLobby> _logger;
-    private IHubContext<CrowGameHub> _hubContext;
-    private List<CrowGameRoom> _rooms = new(10);
-    private Dictionary<Player, CrowGameRoom> _playersInRooms = new(10);
-    private string _lobbyGroupName = Guid.NewGuid().ToString();
+    private readonly IHubContext<CrowGameHub> _hubContext;
+    private readonly List<CrowGameRoom> _rooms = new(10);
+    private readonly Dictionary<Player, CrowGameRoom> _playersInRooms = new(10);
+    private readonly string _lobbyGroupName = Guid.NewGuid().ToString();
 
     public CrowGameLobby(IHubContext<CrowGameHub> hubContext, ILogger<CrowGameLobby> logger)
     {
         _hubContext= hubContext;
         _logger= logger;
-
-
     }
 
     internal void AddRoom(CrowGameRoom room)
@@ -83,7 +81,7 @@ public sealed class CrowGameLobby
 
         await room.AddPlayer(player, true);
     }
-
+    #region Room State Altering Methods
     internal async Task<bool> CreateRoom(string roomName, CrowRoomSettings roomSettings,
         CancellationToken cancellationToken = default)
     {
@@ -124,6 +122,39 @@ public sealed class CrowGameLobby
         }
     }
 
+    internal async Task<RoomStateDto?> JoinRoom(Player? player, CrowGameRoom? newRoom, String roomCode)
+    {
+        if (newRoom is null || player is null)
+        {
+            return null;
+        }
+
+        if (newRoom.RoomSettings.IsPrivateRoom &&
+            !newRoom.RoomSettings.RoomCode.Equals(roomCode))
+        {
+            return null;
+        }
+
+        if (!_playersInRooms.TryGetValue(player, out var oldRoom))
+        {
+            await _hubContext.Groups.RemoveFromGroupAsync(player.ConnectionId, _lobbyGroupName);
+        }
+        else
+        {
+            await LeaveRoom(player, oldRoom);
+        }
+
+        _playersInRooms.Add(player, newRoom);
+        await newRoom.AddPlayer(player);
+        await _hubContext.Groups.AddToGroupAsync(player.ConnectionId, newRoom.RoomName);
+        await _hubContext.Clients.GroupExcept(newRoom.RoomName, player.ConnectionId).SendAsync("PlayerJoined", player.ToPlayerDto());
+
+        var newRoomState = newRoom.ToRoomStateDto();
+
+        await _hubContext.Clients.Group(_lobbyGroupName).SendAsync("RoomStateChanged", newRoomState);
+        return newRoomState;
+    }
+
     internal async Task LeaveRoom(Player player, CrowGameRoom room)
     {
         if (_playersInRooms.Remove(player))
@@ -146,7 +177,8 @@ public sealed class CrowGameLobby
             await _hubContext.Clients.Group(_lobbyGroupName).SendAsync("RoomStateChanged", room.ToRoomStateDto());
         }
     }
-
+    #endregion
+    #region Game State Altering Methods
     internal async Task<bool> StartGame(CrowGameRoom room, Player player)
     {
         if (!room.StartGame(player))
@@ -171,4 +203,5 @@ public sealed class CrowGameLobby
             await LeaveRoom(player, room);
         }
     }
+    #endregion
 }

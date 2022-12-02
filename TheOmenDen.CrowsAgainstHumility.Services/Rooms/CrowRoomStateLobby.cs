@@ -15,7 +15,7 @@ public sealed class CrowRoomStateLobby: ICrowRoomState
 
     internal async Task<Boolean> SetRoomSettings(CrowRoomSettings settings, Player player)
     {
-        var cardTsar = _room.Players.FirstOrDefault(p => p.IsCardTsar);
+        var cardTsar = _room.Players.FirstOrDefault(p => p.IsCardCzar);
 
         if (cardTsar is null || cardTsar == player)
         {

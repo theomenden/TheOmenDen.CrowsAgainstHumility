@@ -11,7 +11,7 @@ internal sealed class RoomStateBlackCard: ICrowRoomState
     private readonly Player _cardTsar;
     private readonly CrowGameRoom _room;
     private readonly WhiteCard _chosenWhiteCard;
-    private readonly RoomStateCardTsarTurn _roomStateCardTsarTurn;
+    private readonly RoomStateCardCzarTurn _roomStateCardCzarTurn;
 
     private bool _turnEnded = false;
     private int _turnTime;
@@ -21,12 +21,12 @@ internal sealed class RoomStateBlackCard: ICrowRoomState
     private readonly List<ValueTuple<Player, WhiteCard>> _playerResults = Enumerable.Empty<ValueTuple<Player, WhiteCard>>().ToList();
     private readonly List<CrowChatMessage> _chatLog = Enumerable.Empty<CrowChatMessage>().ToList();
 
-    public RoomStateBlackCard(Player player, CrowGameRoom room, WhiteCard chosenWhiteCard, RoomStateCardTsarTurn roomStateCardTsarTurn)
+    public RoomStateBlackCard(Player player, CrowGameRoom room, WhiteCard chosenWhiteCard, RoomStateCardCzarTurn roomStateCardCzarTurn)
     {
         _cardTsar = player;
         _room = room;
         _chosenWhiteCard = chosenWhiteCard;
-        _roomStateCardTsarTurn = roomStateCardTsarTurn;
+        _roomStateCardCzarTurn = roomStateCardCzarTurn;
 
         _playersSubmitting = room.Players.Where(p => !p.Equals(_cardTsar)).ToList();
         _timer = new(_turnTime * 1000, TimerElapsed);
@@ -43,7 +43,7 @@ internal sealed class RoomStateBlackCard: ICrowRoomState
 
     public async Task AddCrow(Player player, bool isReconnection, CancellationToken cancellationToken = default)
     {
-        await _roomStateCardTsarTurn.AddCrow(player, isReconnection, cancellationToken);
+        await _roomStateCardCzarTurn.AddCrow(player, isReconnection, cancellationToken);
 
         switch (isReconnection)
         {
@@ -78,7 +78,7 @@ internal sealed class RoomStateBlackCard: ICrowRoomState
 
     public async Task RemoveCrow(Player player, CancellationToken cancellationToken = default)
     {
-        await _roomStateCardTsarTurn.RemoveCrow(player, cancellationToken);
+        await _roomStateCardCzarTurn.RemoveCrow(player, cancellationToken);
 
         if (!player.Equals(_cardTsar))
         {
@@ -132,7 +132,7 @@ internal sealed class RoomStateBlackCard: ICrowRoomState
 
             _ = _room.SendAll("ChatMessage", cm);
 
-            _room.RoomState = new RoomStateScoring(_cardTsar, _room, _chosenWhiteCard, _playerResults, _playersSubmitting, _roomStateCardTsarTurn);
+            _room.RoomState = new RoomStateScoring(_cardTsar, _room, _chosenWhiteCard, _playerResults, _playersSubmitting, _roomStateCardCzarTurn);
         }
     }
 

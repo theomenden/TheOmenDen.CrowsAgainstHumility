@@ -1,16 +1,18 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
 using TheOmenDen.CrowsAgainstHumility.Core.Models;
+using TheOmenDen.CrowsAgainstHumility.Services.CardPoolBuilding;
 using TheOmenDen.CrowsAgainstHumility.Services.Hubs;
 
 namespace TheOmenDen.CrowsAgainstHumility.Services.Rooms;
 public class CrowGameRoom
 {
-    private static int _roomCounter;
-    private List<WhiteCard> _unusedWhiteCards = new(4000);
-    private List<BlackCard> _unusedBlackCards = new(50);
-    private List<BlackCard> _usedBlackCards = new(50);
+    private static int _roomCounter = 0;
+    private readonly List<WhiteCard> _unusedWhiteCards = new(4000);
+    private readonly List<BlackCard> _unusedBlackCards = new(50);
+    private readonly List<BlackCard> _usedBlackCards = new(50);
     private List<WhiteCard> _usedWhiteCards = new(4000);
-    private List<Player> _players = new(10);
+    private readonly List<Player> _players = new(10);
     private ICrowRoomState _roomState;
 
     public CrowGameRoom(IHubContext<CrowGameHub> context, String roomName, Func<CrowGameRoom, CancellationToken, Task> gameEndCallback)
@@ -63,7 +65,7 @@ public class CrowGameRoom
 
     internal RoomStateDto ToRoomStateDto()
     {
-        var playersDto = Enumerable.Empty<PlayerDto>().ToList();
+        List<PlayerDto> playersDto;
 
         lock (_players)
         {
@@ -71,6 +73,19 @@ public class CrowGameRoom
         }
 
         return new(RoomName, playersDto, RoomSettings, IsGameInProgress);
+    }
+
+    internal async Task PlayWhiteCard(Player player, WhiteCard whiteCard)
+    {
+        if (RoomState is RoomStateBlackCard rbc)
+        {
+            await rbc.SubmitCard(player, whiteCard);
+            return;
+        }
+
+        var cm = new CrowChatMessage(CrowChatMessageType.Chat, "Played a card", player.Name);
+
+        await SendAll("ChatMessage", cm);
     }
 
     internal void AddWhiteCardToPlayedWhiteCards(WhiteCard whiteCard)
@@ -150,7 +165,7 @@ public class CrowGameRoom
         
         lock (_players)
         {
-            isCardTsar = _players.FirstOrDefault(p => p.Id == player.Id)?.IsCardTsar ?? false;
+            isCardTsar = _players.FirstOrDefault(p => p.Id == player.Id)?.IsCardCzar ?? false;
         }
 
         if (!isCardTsar || RoomState is not CrowRoomStateLobby rsl)
@@ -162,6 +177,10 @@ public class CrowGameRoom
         return true;
 
     }
+
+    internal async Task<bool> SetRoomSettings(CrowRoomSettings settings, Player player) =>
+        RoomState is CrowRoomStateLobby rsl 
+        && await rsl.SetRoomSettings(settings, player);
 
     public Int32 RoundCount => RoomSettings.Rounds;
 
@@ -196,6 +215,15 @@ public class CrowGameRoom
     internal Task SendPlayer(Player player, string method, object? arg1, object? arg2, object? arg3, object? arg4, CancellationToken cancellationToken = default)
         => HubContext.Clients.Client(player.ConnectionId).SendAsync(method, arg1, arg2, arg3, arg4, cancellationToken: cancellationToken);
     #endregion
+
+    private void GetNewBlackCard()
+    {
+        var randomizedProvider = new BlackCardProvider(_unusedBlackCards);
+
+        _unusedBlackCards.Add(randomizedProvider.GetBlackCardForRound());
+
+        _usedWhiteCards = new (10);
+    }
 
     private static void IncrementRoomCount()
     {

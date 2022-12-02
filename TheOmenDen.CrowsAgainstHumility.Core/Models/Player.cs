@@ -1,11 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-
-namespace TheOmenDen.CrowsAgainstHumility.Core.Models;
+﻿namespace TheOmenDen.CrowsAgainstHumility.Core.Models;
 
 public sealed class Player : IEquatable<Player>
 {
+    private const int MaxHandSize = 10;
+
     public Player() {}
     public Player(String connectionId)
     {
@@ -17,15 +15,21 @@ public sealed class Player : IEquatable<Player>
 
     public String ConnectionId { get; set; }
 
+    public int AwesomePoints { get; set; } = 2;
+
     public string Name { get; set; } = String.Empty;
 
-    public String ConnectionGuid { get; }
+    public string Username { get; set; } = String.Empty;
+
+    public List<WhiteCard> Hand { get; } = new (MaxHandSize);
+
+    public Guid ConnectionGuid { get; }
 
     public Guid Id { get; set;}
 
     public bool IsConnected { get; set; }
 
-    public bool IsCardTsar { get; set; } = false;
+    public bool IsCardCzar { get; set; } = false;
 
     public bool Equals(Player? other) => other is not null 
                                          && (ReferenceEquals(this, other) 

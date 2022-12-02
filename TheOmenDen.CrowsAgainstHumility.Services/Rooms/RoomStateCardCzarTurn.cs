@@ -2,14 +2,14 @@
 using TheOmenDen.CrowsAgainstHumility.Core.Models;
 
 namespace TheOmenDen.CrowsAgainstHumility.Services.Rooms;
-internal sealed class RoomStateCardTsarTurn: ICrowRoomState
+internal sealed class RoomStateCardCzarTurn: ICrowRoomState
 {
     private readonly Player _player;
     private readonly CrowGameRoom _room;
     private readonly CrowGameRound _roomRoundState;
     private int _entryCount = 0;
 
-    public RoomStateCardTsarTurn(Player player, CrowGameRoom room, CrowGameRound roomRoundState)
+    public RoomStateCardCzarTurn(Player player, CrowGameRoom room, CrowGameRound roomRoundState)
     {
         _player= player;
         _room= room;

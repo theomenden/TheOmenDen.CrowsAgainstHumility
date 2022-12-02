@@ -1,5 +1,6 @@
 ﻿using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
 using TheOmenDen.CrowsAgainstHumility.Core.Models;
+using TheOmenDen.CrowsAgainstHumility.Services.CardPoolBuilding;
 
 namespace TheOmenDen.CrowsAgainstHumility.Services.Rooms;
 internal sealed class CrowGameRound: ICrowRoomState
@@ -34,8 +35,9 @@ internal sealed class CrowGameRound: ICrowRoomState
         {
             var player = remainingPlayers.First();
             _playersThatHavePlayedACard.Add(player);
-            _room.RoomState = new RoomStateCardTsarTurn(player, _room, this);
+            _room.RoomState = new RoomStateCardCzarTurn(player, _room, this);
             _entryCount++;
+            ReplenishHands();
             return;
         }
 
@@ -59,4 +61,9 @@ internal sealed class CrowGameRound: ICrowRoomState
 
     internal Task AddScore(List<ValueTuple<Player, Int32>> scores)
     => _roomStateGame.AddScore(scores);
+
+    private void ReplenishHands()
+    {
+        WhiteCardProvider.ReplenishPlayerHand(_room);
+    }
 }

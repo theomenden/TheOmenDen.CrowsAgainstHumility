@@ -32,7 +32,7 @@ internal class RoomStateCrowGame: ICrowRoomState
 
         if (_entryCount < _room.RoundCount)
         {
-            _room.RoomState = new RoomStateRound(_entryCount, _room, this);
+            _room.RoomState = new CrowGameRound(_entryCount, _room, this);
             _entryCount++;
             return;
         }

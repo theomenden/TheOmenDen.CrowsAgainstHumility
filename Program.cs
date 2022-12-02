@@ -31,6 +31,8 @@ using AspNet.Security.OAuth.Twitch;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.Identity.Web;
+using TheOmenDen.CrowsAgainstHumility.Services.Hubs;
+
 #endregion
 #region Bootstrap Logger
 Log.Logger = new LoggerConfiguration()
@@ -52,21 +54,13 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    builder.Host
-        .ConfigureAppConfiguration((context, config) =>
-            {
-                config
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json", true, true)
-                    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true)
-                    .AddEnvironmentVariables()
-                    .AddAzureKeyVault(
-                    new Uri(builder.Configuration["VaultUri"]),
-                    new DefaultAzureCredential());
+    builder.Configuration.AddAzureKeyVault(
+        new Uri(builder.Configuration["VaultUri"]),
+        new DefaultAzureCredential());
 
-            })
-        .UseDefaultServiceProvider(options => options.ValidateScopes = false)
-        .UseSerilog((context, services, configuration) => configuration
+
+        builder.Host.UseDefaultServiceProvider(options => options.ValidateScopes = false)
+            .UseSerilog((context, services, configuration) => configuration
             .ReadFrom.Configuration(context.Configuration)
             .ReadFrom.Services(services)
             .Enrich.FromLogContext()
@@ -122,7 +116,7 @@ try
         .AddTwitch(options =>
         {
             options.ClientId = twitchStrings.ClientId;
-            options.ClientSecret = twitchStrings.Key; 
+            options.ClientSecret = twitchStrings.Key;
             options.SaveTokens = true;
         })
         .AddDiscord(options =>
@@ -256,7 +250,7 @@ try
     builder.Services.AddScoped<IHostEnvironmentAuthenticationStateProvider>(sp =>
     {
         // this is safe because 
-        //     the `RevalidatingIdentityAuthenticationStateProvider` extends the `ServerAuthenticationStateProvider`
+        // the `RevalidatingIdentityAuthenticationStateProvider` extends the `ServerAuthenticationStateProvider`
         var provider = (ServerAuthenticationStateProvider)sp.GetRequiredService<AuthenticationStateProvider>();
         return provider;
     });
@@ -283,15 +277,12 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
 
-    app.UseEndpoints(endpoints =>
-    {
-        endpoints.MapControllers();
-        endpoints.MapRazorPages();
-        endpoints.MapBlazorHub();
-        endpoints.MapHub<CawHub>(CawHub.HubUrl);
-        endpoints.MapHub<CrowGameHub>(CrowGameHub.HubUrl);
-        endpoints.MapFallbackToPage("/_Host");
-    });
+    app.MapControllers();
+    app.MapRazorPages();
+    app.MapBlazorHub();
+    app.MapHub<CawHub>(CawHub.HubUrl);
+    app.MapHub<CrowGameHub>(CrowGameHub.HubUrl);
+    app.MapFallbackToPage("/_Host");
 
     await app.RunAsync();
 }

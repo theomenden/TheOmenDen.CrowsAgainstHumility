@@ -84,15 +84,15 @@
     <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
     <PackageReference Include="Azure.Identity" Version="1.8.0" />
     <PackageReference Include="Blazored.SessionStorage" Version="2.2.0" />
-    <PackageReference Include="Blazorise" Version="1.1.3.1" />
-    <PackageReference Include="Blazorise.Animate" Version="1.1.3.1" />
-    <PackageReference Include="Blazorise.Bootstrap5" Version="1.1.3.1" />
-    <PackageReference Include="Blazorise.Components" Version="1.1.3.1" />
-    <PackageReference Include="Blazorise.Icons.Bootstrap" Version="1.1.3.1" />
-    <PackageReference Include="Blazorise.LoadingIndicator" Version="1.1.3.1" />
-    <PackageReference Include="Blazorise.Markdown" Version="1.1.3.1" />
-    <PackageReference Include="Blazorise.QRCode" Version="1.1.3.1" />
-    <PackageReference Include="Blazorise.SpinKit" Version="1.1.3.1" />
+    <PackageReference Include="Blazorise" Version="1.1.4.1" />
+    <PackageReference Include="Blazorise.Animate" Version="1.1.4.1" />
+    <PackageReference Include="Blazorise.Bootstrap5" Version="1.1.4.1" />
+    <PackageReference Include="Blazorise.Components" Version="1.1.4.1" />
+    <PackageReference Include="Blazorise.Icons.Bootstrap" Version="1.1.4.1" />
+    <PackageReference Include="Blazorise.LoadingIndicator" Version="1.1.4.1" />
+    <PackageReference Include="Blazorise.Markdown" Version="1.1.4.1" />
+    <PackageReference Include="Blazorise.QRCode" Version="1.1.4.1" />
+    <PackageReference Include="Blazorise.SpinKit" Version="1.1.4.1" />
     <PackageReference Include="Discord.Net" Version="3.8.1" />
     <PackageReference Include="Fluxor" Version="5.6.0" />
     <PackageReference Include="Fluxor.Blazor.Web" Version="5.6.0" />
@@ -108,7 +108,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Azure.SignalR" Version="1.19.0" />
+    <PackageReference Include="Microsoft.Azure.SignalR" Version="1.19.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.0">
@@ -121,15 +121,15 @@
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Identity.Web" Version="1.25.7" />
-    <PackageReference Include="Microsoft.Identity.Web.UI" Version="1.25.7" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="1.25.10" />
+    <PackageReference Include="Microsoft.Identity.Web.UI" Version="1.25.10" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.9.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.0" />
     <PackageReference Include="Serilog" Version="2.12.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
     <PackageReference Include="Serilog.Enrichers.AssemblyName" Version="1.0.9" />
     <PackageReference Include="Serilog.Enrichers.CorrelationId" Version="3.0.1" />
     <PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />

@@ -9,20 +9,20 @@ internal sealed class RoomStateScoring: ICrowRoomState
     private readonly CrowGameRoom _room;
     private readonly WhiteCard _chosenWhiteCard;
     private readonly List<Player> _playersSubmitting;
-    private readonly RoomStateCardTsarTurn _roomStateCardTsarTurn;
+    private readonly RoomStateCardCzarTurn _roomStateCardCzarTurn;
     private readonly CrowGameTimer _turnEndTimer;
     private readonly List<(Player player, WhiteCard chosenCard)> _playerResults;
     private readonly int _timeout;
 
     private List<(Player player, Int32 score)> _playerScores;
 
-    public RoomStateScoring(Player player, CrowGameRoom room, WhiteCard chosenWhiteCard, List<ValueTuple<Player, WhiteCard>> playerResults, List<Player> playersSubmitting, RoomStateCardTsarTurn roomStateCardTsarTurn)
+    public RoomStateScoring(Player player, CrowGameRoom room, WhiteCard chosenWhiteCard, List<ValueTuple<Player, WhiteCard>> playerResults, List<Player> playersSubmitting, RoomStateCardCzarTurn roomStateCardCzarTurn)
     {
         _room = room;
         _chosenWhiteCard = chosenWhiteCard;
         _playersSubmitting = playersSubmitting;
         _playerResults = playerResults;
-        _roomStateCardTsarTurn = roomStateCardTsarTurn;
+        _roomStateCardCzarTurn = roomStateCardCzarTurn;
         _cardTsar = player;
         CalculateScores();
         _timeout = 10 + _playerScores!.Count;
@@ -32,13 +32,13 @@ internal sealed class RoomStateScoring: ICrowRoomState
     public async Task Enter(CancellationToken cancellationToken = default)
     {
         await SendScores(_timeout, cancellationToken);
-        _roomStateCardTsarTurn.Scores = _playerScores;
+        _roomStateCardCzarTurn.Scores = _playerScores;
         _turnEndTimer.StartTimer();
     }
 
     public async Task AddCrow(Player player, bool isReconnection, CancellationToken cancellationToken = default)
     {
-        await _roomStateCardTsarTurn.AddCrow(player, isReconnection, cancellationToken);
+        await _roomStateCardCzarTurn.AddCrow(player, isReconnection, cancellationToken);
         
         var turnScores = _playerScores.Select(s => new PlayerScore(s.player.ToPlayerDto(), s.score)).ToArray();
 
@@ -52,7 +52,7 @@ internal sealed class RoomStateScoring: ICrowRoomState
     private void TurnEndTimerElapsed(object? sender, ElapsedEventArgs e)
     {
         _turnEndTimer.Dispose();
-        _room.RoomState = _roomStateCardTsarTurn;
+        _room.RoomState = _roomStateCardCzarTurn;
     }
 
     private void CalculateScores()
@@ -64,9 +64,9 @@ internal sealed class RoomStateScoring: ICrowRoomState
             _playerScores.Add(new(p, 0));
         }
 
-        var playerResult = _playerResults.First(p => p.chosenCard == _chosenWhiteCard);
+        var (player, _) = _playerResults.First(p => p.chosenCard == _chosenWhiteCard);
 
-        _playerScores.Add(new(playerResult.player, 1));
+        _playerScores.Add(new(player, 1));
     }
 
     private async Task SendScores(int timeout, CancellationToken cancellationToken = default)
