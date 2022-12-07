@@ -1,17 +1,83 @@
-﻿using Fluxor;
+﻿using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.EventArgs;
+using TheOmenDen.CrowsAgainstHumility.Services;
 
 namespace TheOmenDen.CrowsAgainstHumility.Store;
-[FeatureState]
 public class CrowGameState
 {
-    public bool IsLoading { get; }
+    #region Event Handlers
+    public event EventHandler? RoundStarted;
+    public event EventHandler? CardCzarChoiceStarted;
+    public event EventHandler<PlayerWhiteCardChoiceEventArgs>? PlayerCardChoiceStarted;
+    public event EventHandler? WhiteCardChosen;
+    public event EventHandler<(List<PlayerScore> scores, WhiteCard playedWhiteCard, Int32 timeOut)>? TurnScoring;
+    public event EventHandler<IWhiteCardPlayedEventArgs>? WhiteCardEventReceived;
+    public event EventHandler<CrowChatMessage>? ChatMessageReceived;
+    #endregion
+    private readonly List<CrowChatMessage> _chatLog = Enumerable.Empty<CrowChatMessage>().ToList();
 
-    private CrowGameState()
+    internal CrowGameState()
     {
     }
+    #region Exposed Properties
+    public IEnumerable<CrowChatMessage> ChatLog => _chatLog;
+    public Int32 CurrentRound { get; private set; } = 0;
+    public Int32 RoundCount { get; private set; } = 0;
 
-    public CrowGameState(bool isLoading)
+    public TurnTimer TurnTimer { get; } = new();
+
+    public BlackCard? BlackCard { get; private set; } = null;
+
+    public WhiteCard? WhiteCard { get; private set; } = null;
+    #endregion
+    #region Game State
+
+    internal void NewRoundStarted(Int32 currentRound, Int32 roundCount, CrowChatMessage? chatMessage)
     {
-        IsLoading = isLoading;
+        CurrentRound= currentRound;
+        RoundCount= roundCount;
+        RoundStarted?.Invoke(this, EventArgs.Empty);
+
+        if (chatMessage is not null)
+        {
+            AddChatMessage(chatMessage);
+        }
     }
+
+    internal void CardCzarChoiceStart(BlackCard blackCard, Int32 time)
+    {
+        BlackCard= blackCard;
+        TurnTimer.StartTimer(time);
+        CardCzarChoiceStarted?.Invoke(this, EventArgs.Empty);
+    }
+
+    internal void PlayerWhiteCardChoiceStart(PlayerDto player, WhiteCard whiteCard, Int32 time)
+    {
+        TurnTimer.StartTimer(time);
+        PlayerCardChoiceStarted?.Invoke(this, new PlayerWhiteCardChoiceEventArgs(player, time));
+    }
+
+    internal void ChosenWhiteCard(WhiteCard chosenCard)
+    {
+        WhiteCard = chosenCard;
+        WhiteCardChosen?.Invoke(this, EventArgs.Empty);
+    }
+
+    internal void TurnScoresReceived(List<PlayerScore> scores, WhiteCard playedWhiteCard, Int32 timeout)
+    {
+        WhiteCard = playedWhiteCard;
+        TurnTimer.StopTimer();
+        TurnScoring?.Invoke(this, (scores, playedWhiteCard, timeout));
+    }
+    #endregion
+    #region Chat Messages
+    internal void AddChatMessage(CrowChatMessage chatMessage)
+    {
+        if (_chatLog.Count >= 75)
+        {
+            _chatLog.RemoveRange(0, _chatLog.Count - 74);
+        }
+        _chatLog.Add(chatMessage);
+        ChatMessageReceived?.Invoke(this, chatMessage);
+    }
+    #endregion
 }

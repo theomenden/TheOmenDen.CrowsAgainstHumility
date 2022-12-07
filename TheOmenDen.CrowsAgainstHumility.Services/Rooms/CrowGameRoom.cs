@@ -216,11 +216,9 @@ public class CrowGameRoom
         => HubContext.Clients.Client(player.ConnectionId).SendAsync(method, arg1, arg2, arg3, arg4, cancellationToken: cancellationToken);
     #endregion
 
-    private void GetNewBlackCard()
+    private void GetNewBlackCard(String roomName)
     {
-        var randomizedProvider = new BlackCardProvider(_unusedBlackCards);
-
-        _unusedBlackCards.Add(randomizedProvider.GetBlackCardForRound());
+        _unusedBlackCards.Add(BlackCardProvider.GetBlackCardForRound(roomName));
 
         _usedWhiteCards = new (10);
     }

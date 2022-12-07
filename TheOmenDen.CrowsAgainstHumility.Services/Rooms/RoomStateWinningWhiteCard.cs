@@ -1,6 +1,4 @@
 ﻿using System.Timers;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.Identity.Client;
 using TheOmenDen.CrowsAgainstHumility.Core.Models;
 using TheOmenDen.CrowsAgainstHumility.Services.Helpers;
 using TheOmenDen.Shared.Utilities;
@@ -16,7 +14,7 @@ internal sealed class RoomStateWinningWhiteCard: ICrowRoomState
     private readonly CrowGameRoom _room;
     private readonly RoomStateCardCzarTurn _roomStateCardCzarTurn;
 
-    private readonly List<WhiteCard> _chosenWhiteCards = new(10);
+    private readonly List<WhiteCard> _suppliedWhiteCards = new(10);
     private readonly CrowGameTimer _readingTimer;
 
     private bool _hasWhiteCardBeenChosen = false;
@@ -77,12 +75,12 @@ internal sealed class RoomStateWinningWhiteCard: ICrowRoomState
                 return;
             }
 
-            var threadSafeRandom = ThreadSafeRandom.Global.Next(_chosenWhiteCards.Count - 1);
+            var threadSafeRandom = ThreadSafeRandom.Global.Next(_suppliedWhiteCards.Count - 1);
 
-            var chosenWhiteCard = _chosenWhiteCards.ElementAtOrDefault(whiteCardIndex)
-                ?? _chosenWhiteCards.ElementAt(threadSafeRandom);
+            var chosenWhiteCard = _suppliedWhiteCards.ElementAtOrDefault(whiteCardIndex)
+                ?? _suppliedWhiteCards.ElementAt(threadSafeRandom);
 
-            var rejectedCards = _chosenWhiteCards.Where(wc => wc != chosenWhiteCard).ToArray();
+            var rejectedCards = _suppliedWhiteCards.Where(wc => wc != chosenWhiteCard).ToArray();
 
             _room.AddRejectedWhiteCardsToPlayedWhiteCards(rejectedCards);
 

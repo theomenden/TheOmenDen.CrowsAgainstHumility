@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.Connections.Features;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Logging;
 using TheOmenDen.CrowsAgainstHumility.Core.Models;
 using TheOmenDen.CrowsAgainstHumility.Services.Lobbies;
@@ -176,7 +175,7 @@ public sealed class CrowGameHub : Hub
 
         if (room is not null && player is not null)
         {
-            room.ChooseWhiteCard(cardIndex, player);
+           // room.ChooseWhiteCard(cardIndex, player);
         }
     }
 
@@ -187,7 +186,7 @@ public sealed class CrowGameHub : Hub
 
         if (room is not null && player is not null)
         {
-            await room.AddWhiteCardToPlayedWhiteCards(card);
+            room.AddWhiteCardToPlayedWhiteCards(card);
         }
     }
     #endregion

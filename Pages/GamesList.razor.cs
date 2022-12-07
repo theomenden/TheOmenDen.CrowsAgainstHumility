@@ -7,7 +7,7 @@ using TheOmenDen.Shared.Utilities;
 
 namespace TheOmenDen.CrowsAgainstHumility.Pages;
 
-public partial class GamesList : ComponentBase
+public partial class GamesList : ComponentBase, IDisposable
 {
     [Inject] public NavigationManager Navigation { get; init; }
 
@@ -52,5 +52,19 @@ public partial class GamesList : ComponentBase
 
             StringBuilderPoolFactory<GameCodeGenerator>.Remove(nameof(GameCodeGenerator));
         }
+    }
+
+    private void OnGameListChanged(object? sender, EventArgs e) => StateHasChanged();
+
+    private void OnGameSettingsChanged(object? sender, EventArgs e) => StateHasChanged();
+
+    private async Task JoinRoomAsync(String roomName, String roomCode)
+    {
+        StateHasChanged();
+        if()
+    }
+
+    public void Dispose()
+    {
     }
 }
