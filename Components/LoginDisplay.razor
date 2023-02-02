@@ -13,13 +13,17 @@
                     Account
                 </BarDropdownItem>
                 <BarDropdownDivider />
-                <form method="post" action="Account/LogoutInternal">
-                    <button type="submit" class="dropdown-item">Log out</button>
-                </form>
+                <Form method="post" action="Account/LogoutInternal">
+                    <Button Type="ButtonType.Submit" PreventDefaultOnSubmit Class="dropdown-item">Log out</Button>
+                </Form>
             </BarDropdownMenu>
         </BarDropdown>
     </Authorized>
     <NotAuthorized>
-        <BarLink Background="Background.Dark" TextColor="TextColor.Light" To="login">Log in</BarLink>
+        <Button Type="ButtonType.Link" 
+                Background="Background.Secondary" 
+                TextColor="TextColor.Light" 
+                To="login" 
+                Border="Border.Is2.Primary.OnAll.Rounded">Log in</Button>
     </NotAuthorized>
 </AuthorizeView>

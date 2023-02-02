@@ -91,43 +91,46 @@ internal sealed class TwitchChatService: IDisposable, IAsyncDisposable, ITwitchC
 
         _twitchClient.Connect();
     }
-
     #region Resource Cleanup
     public void DisconnectFromTwitch()
     {
-
         _logger.LogDebug("Disconnecting from Twitch");
-
-        if (_twitchClient is not null)
+     
+        if (_twitchClient is null)
         {
-            _twitchClient.Disconnect();
-            _twitchClient = null;
+            return;
         }
+
+        _twitchClient.Disconnect();
+        _twitchClient = null;
     }
 
     public ValueTask DisconnectFromTwitchAsync()
     {
         _logger.LogDebug("Disconnecting from Twitch");
 
-        if (_twitchClient is not null)
+        if (_twitchClient is null)
         {
-            _twitchClient.Disconnect();
-            _twitchClient = null;
+            return ValueTask.CompletedTask;
         }
 
+        _twitchClient.Disconnect();
+        _twitchClient = null;
         return ValueTask.CompletedTask;
     }
     private void Dispose(Boolean disposing)
     {
-        if (!_disposedValue)
+        if (_disposedValue)
         {
-            if (disposing)
-            {
-                DisconnectFromTwitch();
-            }
-
-            _disposedValue = true;
+            return;
         }
+
+        if (disposing)
+        {
+            DisconnectFromTwitch();
+        }
+
+        _disposedValue = true;
     }
 
     public ValueTask DisposeAsync() => DisconnectFromTwitchAsync();
@@ -149,6 +152,5 @@ internal sealed class TwitchChatService: IDisposable, IAsyncDisposable, ITwitchC
     {
         _logger.LogInformation("[Twitch Client] Connected to Twitch with username {Username}", e.BotUsername);
     }
-
     #endregion
 }

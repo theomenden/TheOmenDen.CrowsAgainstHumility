@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TheOmenDen.CrowsAgainstHumility.Twitch.Events;
+﻿using TheOmenDen.CrowsAgainstHumility.Twitch.Events;
 
 namespace TheOmenDen.CrowsAgainstHumility.Twitch.Services;
 internal sealed class BitsRedeemManagerService: IDisposable

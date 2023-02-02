@@ -8,7 +8,7 @@ public static class ServiceCollectionExtensions
    private static readonly ILoggerFactory LoggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
    {
        builder.AddJsonConsole();
-       builder.AddConsole();
+       builder.AddDebug();
    });
 
     public static IServiceCollection AddCorvidDataServices(this IServiceCollection services, String connectionString)

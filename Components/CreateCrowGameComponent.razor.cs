@@ -61,18 +61,11 @@ public partial class CreateCrowGameComponent : ComponentBase, IDisposable, IAsyn
     private string _gameCode = String.Empty;
 
     private bool _enabledCustomFilters = false;
-    protected override void OnInitialized()
-    {
-        _gameCode = GameCodeGenerator.GenerateGameCodeFromComponent(nameof(CreateCrowGameComponent)); ;
-    }
+    protected override void OnInitialized() => _gameCode = GameCodeGenerator.GenerateGameCodeFromComponent(nameof(CreateCrowGameComponent));
 
-    private void InitializeNewGame()
-    {
-        StateManager.Game = new CrowGame()
-        {
-            Name = _gameName
-        };
-    }
+    private Task InitializeNewGame()
+        => StateManager.CreateRoomAsync(_gameName, new CrowRoomSettings());
+    
 
     private async Task OnHandleReadData(AutocompleteReadDataEventArgs autocompleteReadDataEventArgs)
     {

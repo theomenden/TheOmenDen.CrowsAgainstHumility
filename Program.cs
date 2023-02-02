@@ -54,8 +54,10 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
+    var vaultUri = builder.Configuration["VaultUri"] ?? String.Empty;
+
     builder.Configuration.AddAzureKeyVault(
-        new Uri(builder.Configuration["VaultUri"]),
+        new Uri(vaultUri),
         new DefaultAzureCredential());
 
 
@@ -254,6 +256,7 @@ try
         var provider = (ServerAuthenticationStateProvider)sp.GetRequiredService<AuthenticationStateProvider>();
         return provider;
     });
+    
     await using var app = builder.Build();
 
     app.UseResponseCompression();

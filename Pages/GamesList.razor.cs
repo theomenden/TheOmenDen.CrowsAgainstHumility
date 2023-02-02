@@ -58,13 +58,13 @@ public partial class GamesList : ComponentBase, IDisposable
 
     private void OnGameSettingsChanged(object? sender, EventArgs e) => StateHasChanged();
 
-    private async Task JoinRoomAsync(String roomName, String roomCode)
+    private Task JoinRoomAsync(String roomName, String roomCode)
     {
-        StateHasChanged();
-        if()
+        return InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()
     {
+        GC.SuppressFinalize(this);
     }
 }

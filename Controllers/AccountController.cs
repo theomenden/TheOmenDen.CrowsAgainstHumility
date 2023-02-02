@@ -1,17 +1,12 @@
 ﻿using System.Security.Claims;
 using System.Text;
-using System.Text.Encodings.Web;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using TheOmenDen.CrowsAgainstHumility.Identity.Extensions;
 using TwitchLib.Api;
-using TwitchLib.Api.Interfaces;
 
 namespace TheOmenDen.CrowsAgainstHumility.Controllers;
 public sealed class AccountController : Controller
