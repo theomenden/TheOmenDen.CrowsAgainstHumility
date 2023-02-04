@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Identity.Client;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 using TheOmenDen.CrowsAgainstHumility.Identity.Extensions;
 
@@ -12,7 +11,7 @@ namespace TheOmenDen.CrowsAgainstHumility.Pages.Consumer;
 public partial class Dashboard: ComponentBase
 {
     [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; }
-
+    #region Injected Members
     [Inject] private IDataProtectionProvider DataProtectionProvider { get; init; }
 
     [Inject] private NavigationManager NavigationManager { get; init; }
@@ -24,7 +23,8 @@ public partial class Dashboard: ComponentBase
     [Inject] private IUserInformationService UserInformationService { get; init; }
 
     [Inject] private ILogger<Dashboard> Logger { get; init; }
-
+    #endregion
+    #region Fields
     private Boolean HasErrors { get; set; }
 
     private ApplicationUser _user;
@@ -34,7 +34,7 @@ public partial class Dashboard: ComponentBase
     private string _avatarImageSelectorUrl;
 
     private List<AuthenticationScheme> _externalProviders = new(5);
-
+    #endregion
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();

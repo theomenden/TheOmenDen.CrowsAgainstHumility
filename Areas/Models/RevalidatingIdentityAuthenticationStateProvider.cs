@@ -57,7 +57,7 @@ public sealed class RevalidatingIdentityAuthenticationStateProvider<TUser> :
     {
         if (cancellationToken.IsCancellationRequested)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            return false;
         }
 
         var user = await userManager.GetUserAsync(principal);

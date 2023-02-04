@@ -32,6 +32,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.Identity.Web;
 using TheOmenDen.CrowsAgainstHumility.Services.Hubs;
+using TheOmenDen.CrowsAgainstHumility.Identity.Utilities;
 
 #endregion
 #region Bootstrap Logger
@@ -249,6 +250,7 @@ try
         });
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApplicationUser>>();
+    builder.Services.AddScoped<UserInfo>();
     builder.Services.AddScoped<IHostEnvironmentAuthenticationStateProvider>(sp =>
     {
         // this is safe because 

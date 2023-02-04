@@ -1,4 +1,5 @@
 ﻿@page "/login"
+@page "/login/{ReturnUrl}"
 @using Microsoft.AspNetCore.Authentication
 <Row Height="Height.Is100">
     <Column Height="Height.Is100"
@@ -54,7 +55,7 @@
                                 <Field>
                                     <Row>
                                         <Column>
-                                            <Check TValue="bool" @bind-Checked="@Input.IsRemembered">Remember Me?</Check>
+                                            <Check TValue="bool" @bind-Checked="@Input.IsRemembered">Remember Me</Check>
                                         </Column>
                                         <Column TextAlignment="TextAlignment.End">
                                             <Blazorise.Link To="forgot-password">Forgot Password?</Blazorise.Link>
@@ -63,7 +64,8 @@
                                 </Field>
                                 <Field>
                                     <Button Type="ButtonType.Submit"
-                                            PreventDefaultOnSubmit Color="Color.Primary"
+                                            PreventDefaultOnSubmit 
+                                            Color="Color.Primary"
                                             Block
                                             Clicked="@OnLoginAsync">
                                         <Icon Name="IconName.UserCheck" />

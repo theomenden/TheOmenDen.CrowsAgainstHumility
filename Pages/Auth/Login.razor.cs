@@ -1,22 +1,24 @@
-﻿using Blazorise;
+﻿#region Usings
+using Blazorise;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
-using System.Threading;
 using TheOmenDen.CrowsAgainstHumility.Core.Auth.InputModels;
 using TheOmenDen.CrowsAgainstHumility.Extensions;
 using TheOmenDen.CrowsAgainstHumility.Identity.Extensions;
 using TheOmenDen.CrowsAgainstHumility.Services;
 using TwitchLib.Api;
-using TwitchLib.Api.Interfaces;
-
+#endregion
 namespace TheOmenDen.CrowsAgainstHumility.Pages.Auth;
 
-public partial class Login: ComponentBase
+public partial class Login : ComponentBase
 {
+    #region Parameters
     [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
-
+    [Parameter] public String ReturnUrl { get; set; }
+    #endregion
+    #region Injected Members
     [Inject] private TokenStateService TokenStateService { get; init; }
 
     [Inject] private ILogger<Login> Logger { get; init; }
@@ -34,12 +36,13 @@ public partial class Login: ComponentBase
     [Inject] private TwitchStrings TwitchStrings { get; init; }
 
     [Inject] private TwitchAPI TwitchAPI { get; init; }
-
+    #endregion
+    #region Private fields
     private Validations _validationsRef;
 
     private List<AuthenticationScheme> _externalProviders = new(5);
-
-    protected LoginInputModel Input { get; set; } = new ();
+    #endregion
+    protected LoginInputModel Input { get; set; } = new();
 
     protected Boolean HasErrors { get; set; }
 
@@ -47,9 +50,9 @@ public partial class Login: ComponentBase
     {
         await base.OnInitializedAsync();
 
-        var(couldRetrieveEmail,email) = NavigationManager.TryGetQueryString<String>("email");
+        var (couldRetrieveEmail, email) = NavigationManager.TryGetQueryString<string>("email");
         var (couldCheckForErrors, hasErrors) = NavigationManager.TryGetQueryString<bool>("hasErrors");
-        
+        var (couldGetReturnUrl, returnUrl) = NavigationManager.TryGetQueryString<string>("ReturnUrl");
         if (couldRetrieveEmail)
         {
             Input.Email = email;
@@ -58,6 +61,13 @@ public partial class Login: ComponentBase
         if (couldCheckForErrors)
         {
             HasErrors = hasErrors;
+        }
+
+
+
+        if (String.IsNullOrWhiteSpace(ReturnUrl) && couldGetReturnUrl)
+        {
+            ReturnUrl = returnUrl ?? String.Empty;
         }
 
         _externalProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync())
@@ -92,7 +102,7 @@ public partial class Login: ComponentBase
         catch (Exception ex)
         {
             HasErrors = true;
-            Logger.LogError("Failed to log in due to exception @{Ex}", ex);
+            Logger.LogError("Failed to log in due to exception {@Ex}", ex);
         }
     }
 

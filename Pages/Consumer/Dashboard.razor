@@ -94,16 +94,18 @@
 </Container>
 <Modal @ref="_modalRef">
     <ModalContent>
-        <ModalHeader>
-            <ModalTitle>Select your Avatar</ModalTitle>
-            <CloseButton />
+        <ModalHeader Background="Background.Dark">
+            <ModalTitle TextColor="TextColor.Light">Select your Avatar</ModalTitle>
+            <CloseButton Background="Background.White"/>
         </ModalHeader>
-        <ModalBody>
+        <ModalBody Background="Background.Dark">
             <AvatarSelector @bind-SelectedImageUrl="_avatarImageSelectorUrl" />
         </ModalBody>
-        <ModalFooter>
-            <Button Color="Color.Primary" Clicked="SaveProfileImageAsync" Margin="Margin.Is2.FromEnd"><Icon Name="IconName.Save" />Save</Button>
+        <ModalFooter Background="Background.Dark">
+            <Buttons Flex="Flex.JustifyContent.Between">
+            <Button Color="Color.Primary" Clicked="SaveProfileImageAsync" Margin="Margin.Is2.FromEnd"><Icon Name="IconName.Save"/>Save</Button>
             <Button Color="Color.Secondary" Clicked="@_modalRef.Hide">Close</Button>
+            </Buttons>
         </ModalFooter>
     </ModalContent>
 </Modal>

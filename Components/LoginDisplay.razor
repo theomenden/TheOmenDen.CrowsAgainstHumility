@@ -2,28 +2,37 @@
     <Authorized>
         <BarDropdown RightAligned>
             <BarDropdownToggle>@context.User.Identity.Name</BarDropdownToggle>
-            <BarDropdownMenu>
+            <BarDropdownMenu Background="Background.Dark" TextColor="TextColor.Light"
+                             Border="Border.Is2.Primary.OnAll.Rounded">
                 @if (context.User.IsInRole("Administrator"))
                 {
-                    <BarDropdownItem Background="Background.Dark" TextColor="TextColor.Light" To="admin/manage">
+                    <BarDropdownItem Background="Background.Dark" TextColor="TextColor.Light" To="admin/manage" Title="admin">
                         Admin Actions
                     </BarDropdownItem>
                 }
-                <BarDropdownItem Background="Background.Dark" TextColor="TextColor.Light" To="user/manage">
+                <BarDropdownItem Background="Background.Dark"
+                                 TextColor="TextColor.Light"
+                                 To="user/manage"
+                                 Title="manageuser">
                     Account
                 </BarDropdownItem>
                 <BarDropdownDivider />
-                <Form method="post" action="Account/LogoutInternal">
-                    <Button Type="ButtonType.Submit" PreventDefaultOnSubmit Class="dropdown-item">Log out</Button>
-                </Form>
+                <BarDropdownItem Background="Background.Dark"
+                                 TextColor="TextColor.Light">
+                    <Form method="post" action="Account/LogoutInternal">
+                        <Button Type="ButtonType.Submit" Class="dropdown-item">Log out</Button>
+                    </Form>
+                </BarDropdownItem>
             </BarDropdownMenu>
         </BarDropdown>
     </Authorized>
     <NotAuthorized>
-        <Button Type="ButtonType.Link" 
-                Background="Background.Secondary" 
-                TextColor="TextColor.Light" 
-                To="login" 
-                Border="Border.Is2.Primary.OnAll.Rounded">Log in</Button>
+        <Button Type="ButtonType.Link"
+                Background="Background.Secondary"
+                TextColor="TextColor.Light"
+                To="login"
+                Border="Border.Is2.Primary.OnAll.Rounded">
+            Log in
+        </Button>
     </NotAuthorized>
 </AuthorizeView>
