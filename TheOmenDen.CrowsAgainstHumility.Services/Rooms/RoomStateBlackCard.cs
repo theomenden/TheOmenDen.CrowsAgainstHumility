@@ -19,7 +19,7 @@ internal sealed class RoomStateBlackCard: ICrowRoomState
     private List<WhiteCard> _whiteCardsPlayed = Enumerable.Empty<WhiteCard>().ToList();
     private readonly List<Player> _playersSubmitting;
     private readonly List<ValueTuple<Player, WhiteCard>> _playerResults = Enumerable.Empty<ValueTuple<Player, WhiteCard>>().ToList();
-    private readonly List<CrowChatMessage> _chatLog = Enumerable.Empty<CrowChatMessage>().ToList();
+    private readonly List<GameMessage> _chatLog = Enumerable.Empty<GameMessage>().ToList();
 
     public RoomStateBlackCard(Player player, CrowGameRoom room, WhiteCard chosenWhiteCard, RoomStateCardCzarTurn roomStateCardCzarTurn)
     {
@@ -98,7 +98,7 @@ internal sealed class RoomStateBlackCard: ICrowRoomState
     {
         if (!_playersSubmitting.Contains(player))
         {
-            var cm = new CrowChatMessage(CrowChatMessageType.AlreadyPlayedCard, "You already played a card", player.Name);
+            var cm = new GameMessage(CrowChatMessageType.AlreadyPlayedCard, "You already played a card", player.Name);
             _chatLog.Add(cm);
             await _room.SendAll("ChatMessage", cm, cancellationToken);
             return;
@@ -128,7 +128,7 @@ internal sealed class RoomStateBlackCard: ICrowRoomState
             _turnEnded = true;
             _timer.Dispose();
 
-            var cm = new CrowChatMessage(CrowChatMessageType.GameFlow, null, $"{_cardTsar.Name} chose .");
+            var cm = new GameMessage(CrowChatMessageType.GameFlow, null, $"{_cardTsar.Name} chose .");
 
             _ = _room.SendAll("ChatMessage", cm);
 
@@ -151,7 +151,7 @@ internal sealed class RoomStateBlackCard: ICrowRoomState
 
         var turnTimeLeft = (int)(timeRemaining * 0.001);
         var whiteCardPlayedMessage =
-        new CrowChatMessage(CrowChatMessageType.WhiteCardPlay, $"{player.Name} played a card", player.Name);
+        new GameMessage(CrowChatMessageType.WhiteCardPlay, $"{player.Name} played a card", player.Name);
         await _room.SendAllExcept(player, "WhiteCardSubmitted", player.ToPlayerDto(), turnTimeLeft, null, whiteCardPlayedMessage,
         cancellationToken);
         await _room.SendPlayer(player, "WhiteCardSubmitted", player.ToPlayerDto(), turnTimeLeft, whiteCard, whiteCardPlayedMessage,
@@ -164,8 +164,8 @@ internal sealed class RoomStateBlackCard: ICrowRoomState
         CancellationToken cancellationToken = default)
     {
         var displayCardsMessage = _room.RoomSettings.ShowPlayedCards
-            ? new CrowChatMessage(CrowChatMessageType.WhiteCardPlay, whiteCard.CardText, player.Name)
-            : new CrowChatMessage(CrowChatMessageType.WhiteCardPlay, null, player.Name);
+            ? new GameMessage(CrowChatMessageType.WhiteCardPlay, whiteCard.CardText, player.Name)
+            : new GameMessage(CrowChatMessageType.WhiteCardPlay, null, player.Name);
 
         _chatLog.Add(displayCardsMessage);
         await _room.SendAll("ChatMessage", displayCardsMessage, cancellationToken);

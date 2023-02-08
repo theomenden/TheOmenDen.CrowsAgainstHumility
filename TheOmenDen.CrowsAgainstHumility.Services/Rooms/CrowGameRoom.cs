@@ -83,7 +83,7 @@ public class CrowGameRoom
             return;
         }
 
-        var cm = new CrowChatMessage(CrowChatMessageType.Chat, "Played a card", player.Name);
+        var cm = new GameMessage(CrowChatMessageType.Chat, "Played a card", player.Name);
 
         await SendAll("ChatMessage", cm);
     }

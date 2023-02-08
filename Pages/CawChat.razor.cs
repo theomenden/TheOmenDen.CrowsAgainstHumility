@@ -1,121 +1,102 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
-using TheOmenDen.CrowsAgainstHumility.Hubs;
+﻿using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.SignalR.Client;
+using TheOmenDen.CrowsAgainstHumility.Extensions;
 
 namespace TheOmenDen.CrowsAgainstHumility.Pages;
 public partial class CawChat : ComponentBase, IAsyncDisposable
 {
-    [Inject] NavigationManager NavigationManager { get; init; }
-
-    // flag to indicate chat status
-    private bool _isChatting = false;
-
-    // name of the user who will be chatting
-    private string _username = String.Empty;
-
-    // on-screen message
-    private string _message = String.Empty;
-
-    // new message input
-    private string _newMessage = String.Empty;
-
-    // list of messages in chat
-    private readonly List<ChatMessage> _messages = new ();
-
-    private string _hubUrl = String.Empty;
-    private HubConnection? _hubConnection;
-
-    public async Task Chat()
+    #region Parameters
+    [CascadingParameter] public HubConnection HubConnection { get; set; }
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    [Parameter] public String CurrentMessage { get; set; }
+    [Parameter] public Guid CurrentUserId { get; set; }
+    [Parameter] public Guid ContactId { get; set; }
+    [Parameter] public String ContactEmail { get; set; }
+    [Parameter] public String CurrentUserEmail { get; set; }
+    #endregion
+    #region Injected Members
+    [Inject] private NavigationManager NavigationManager { get; init; }
+    #endregion
+    private List<CawChatMessage> _messages = new (20);
+    private List<ApplicationUser> _chatUsers = Enumerable.Empty<ApplicationUser>().ToList(); 
+    protected override async Task OnInitializedAsync()
     {
-        // check username is valid
-        if (string.IsNullOrWhiteSpace(_username))
+        HubConnection ??= new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/chat"))
+            .Build();
+
+        if (HubConnection.State is HubConnectionState.Disconnected)
         {
-            _message = "Please enter a name";
-            return;
+            await HubConnection.StartAsync();
         }
 
-        try
+        var state = await AuthenticationStateTask;
+
+        var user = state.User;
+
+        CurrentUserId = user.GetUserId();
+        CurrentUserEmail = user.Claims.Where(a => a.Type == "name").Select(a => a.Value).FirstOrDefault() ?? String.Empty;
+        if (CurrentUserId != Guid.Empty)
         {
-            // Start chatting and force refresh UI.
-            _isChatting = true;
-            await Task.Delay(1);
-
-            // remove old messages if any
-            _messages.Clear();
-
-            // Create the chat client
-            var baseUrl = NavigationManager.BaseUri;
-
-            _hubUrl = baseUrl.TrimEnd('/') + CawHub.HubUrl;
-
-            _hubConnection = new HubConnectionBuilder()
-                .WithUrl(_hubUrl)
-                .Build();
-
-            _hubConnection.On<string, string>("Broadcast", BroadcastMessage);
-
-            await _hubConnection.StartAsync();
-
-            await SendAsync($"[Notice] {_username} joined chat room.");
-        }
-        catch (Exception e)
-        {
-            _message = $"ERROR: Failed to start chat client: {e.Message}";
-            _isChatting = false;
+            await LoadUserChatMessagesAsync(CurrentUserId);
         }
     }
 
-    private void BroadcastMessage(string name, string message)
+    private async Task LoadUserChatMessagesAsync(Guid userId)
     {
-        var isMine = name.Equals(_username, StringComparison.OrdinalIgnoreCase);
+        var contact = await _cawChatManager.GetUserDetailsAsync(userId);
+        ContactId = contact.Id;
+        ContactEmail = contact.Email;
 
-        _messages.Add(new ChatMessage(name, message, isMine, false, isMine ? "sent" : "received"));
+        NavigationManager.NavigateTo("chat/ContactId");
 
-        // Inform blazor the UI needs updating
-        StateHasChanged();
+        _messages = await _cawChatManager.GetConversationAsync(ContactId);
     }
 
-    private async Task DisconnectAsync()
+    private async Task GetUsersAsync()
     {
-        if (_isChatting)
+        _chatUsers = await _cawChatManager.GetAllUsersAsync();
+    }
+
+    private async Task RegisterHubOperationsAsync()
+    {
+        HubConnection.On<CawChatMessage, String>("ReceiveMessage", async (message, userName) =>
         {
-            await SendAsync($"[Notice] {_username} left chat room.");
+            if ((ContactId == message.ToUserId && CurrentUserId == message.FromUserId)
+                || (ContactId == message.FromUserId && CurrentUserId == message.ToUserId))
+            {
+                if (ContactId == message.ToUserId && CurrentUserId == message.FromUserId)
+                {
+                    _messages.Add(new CawChatMessage
+                    {
+                        Message = message.Message,
+                        CreatedAt = message.CreatedAt,
+                        FromUser = new() { Email = CurrentUserEmail }
+                    });
 
-            await _hubConnection.StopAsync();
-            await _hubConnection.DisposeAsync();
+                    await HubConnection.SendAsync("ChatNotificationAsync", $"New Message From {userName}", ContactId,
+                        CurrentUserId);
+                }
 
-            _hubConnection = null;
-            _isChatting = false;
-        }
-    }
+                if (ContactId == message.FromUserId && CurrentUserId == message.ToUserId)
+                {
+                    _messages.Add(new CawChatMessage
+                    {
+                        Message = message.Message,
+                        CreatedAt = message.CreatedAt,
+                        FromUser = new() { Email = ContactEmail }
+                    });
+                }
 
-    private async Task SendAsync(string message)
-    {
-        if (_isChatting && !string.IsNullOrWhiteSpace(message))
-        {
-            GetChatSenderStatus(true);
-
-            await _hubConnection.SendAsync("Broadcast", _username, message);
-
-            _newMessage = string.Empty;
-        }
-    }
-
-    private static String GetChatSenderStatus(Boolean isMine)
-    {
-        const string chatMessageClass = "chat-message chat-message";
-
-        var attachedIdentifier= isMine ? "--sent" : "--received";
-
-        return $"{chatMessageClass}{attachedIdentifier}";
+                StateHasChanged();
+            }
+        });
     }
 
     public async ValueTask DisposeAsync()
     {
-        if (_hubConnection is not null)
-        {
-            await _hubConnection.DisposeAsync();
-        }
-
+        await HubConnection.DisposeAsync();
         GC.SuppressFinalize(this);
+        await ValueTask.CompletedTask;
     }
 }

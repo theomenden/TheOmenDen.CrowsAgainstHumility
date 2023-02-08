@@ -1,33 +1,26 @@
-﻿using System.Security.Claims;
-using System.Text;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using System.Text;
 using TheOmenDen.CrowsAgainstHumility.Identity.Extensions;
-using TwitchLib.Api;
 
 namespace TheOmenDen.CrowsAgainstHumility.Controllers;
 public sealed class AccountController : Controller
 {
+    #region Private readonly members
     private readonly UserManager<ApplicationUser> _userManager;
-
     private readonly SignInManager<ApplicationUser> _signInManager;
-
     private readonly ILogger<AccountController> _logger;
-
     private readonly IDataProtectionProvider _dataProtectionProvider;
-
-    private readonly TwitchAPI _twitchApi;
-
-    public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<AccountController> logger, IDataProtectionProvider dataProtectionProvider, TwitchAPI twitchApi)
+    #endregion
+    public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<AccountController> logger, IDataProtectionProvider dataProtectionProvider)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _logger = logger;
         _dataProtectionProvider = dataProtectionProvider;
-        _twitchApi = twitchApi;
     }
 
     [AllowAnonymous]
@@ -67,7 +60,7 @@ public sealed class AccountController : Controller
 
         if (result.Succeeded)
         {
-            _logger.LogInformation("{User} logged in.", user.UserName);
+            _logger.LogInformation("{User} logged in.", user.Email);
             return LocalRedirect(returnUrl);
         }
 
@@ -89,6 +82,53 @@ public sealed class AccountController : Controller
         return LocalRedirect($"~/login?email={email}&hasErrors=true");
     }
 
+    [AllowAnonymous]
+    [HttpGet("/Account/LoginExternal")]
+    public Task<IActionResult> LoginExternalAsync(String data, String? returnUrl = null,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    [Authorize]
+    [HttpPost("/Account/AssociateExternal")]
+    public async Task<IActionResult> AssociateExternalProvideAsync(String userId, String provider, String providerName, String? returnUrl )
+    {
+        returnUrl ??= Url.Content("~/");
+
+        var user = await _userManager.FindByIdAsync(userId);
+
+        var signInAuthProperties = _signInManager.ConfigureExternalAuthenticationProperties(provider, returnUrl, userId);
+
+        var signInResult = await _signInManager.ExternalLoginSignInAsync(provider, "", signInAuthProperties.IsPersistent);
+        
+        if (signInResult.Succeeded && user is not null)
+        {
+            var loginInfo = new UserLoginInfo(provider, "", providerName);
+
+            await _userManager.AddLoginAsync(user, loginInfo);
+
+            return LocalRedirect(returnUrl);
+        }
+
+        if (signInResult.IsNotAllowed)
+        {
+            return LocalRedirect("~/access-denied");
+        }
+
+        if (signInResult.RequiresTwoFactor)
+        {
+            return LocalRedirect("~/login-2fa");
+        }
+
+        if (signInResult.IsLockedOut)
+        {
+            return LocalRedirect("~/lockout");
+        }
+
+        return LocalRedirect($"~/login?email={user.Email}&hasErrors=true");
+    }
+
     [Authorize]
     [HttpPost("/Account/LogoutInternal")]
     public async Task<IActionResult> LogoutAsync(CancellationToken cancellationToken = default)
@@ -100,7 +140,6 @@ public sealed class AccountController : Controller
 
         return LocalRedirect("~/");
     }
-
 
     [AllowAnonymous]
     [HttpGet("/Account/ConfirmEmailInternal")]
@@ -119,33 +158,4 @@ public sealed class AccountController : Controller
             ? LocalRedirect("~/confirmed-email")
             : BadRequest("Failed to confirm user email");
     }
-
-    //[AllowAnonymous]
-    //[HttpGet("/Account/AssociateLogin")]
-    //public async Task<IActionResult> OnPostAssociateLoginAsync(String data, String? returnUrl = null, CancellationToken cancellationToken = default)
-    //{
-
-    //}
-
-
-    //[Authorize]
-    //[HttpPost("/Account/LinkExternalProvider")]
-    //public async Task<IActionResult> LinkByExternalProviderAsync(String data, String? returnUrl = null)
-    //{
-
-    //}
-
-    //[AllowAnonymous]
-    //[HttpGet("/Account/LoginExternalProvider")]
-    //public async Task<IActionResult> LoginByExternalProviderAsync(String data, String? returnUrl = null)
-    //{
-
-    //}
-
-    //[AllowAnonymous]
-    //[HttpGet("/Account/ConfirmEmailInternal")]
-    //public async Task<IActionResult> ConfirmEmailAsync(String userId, String token)
-    //{
-
-    //}
 }

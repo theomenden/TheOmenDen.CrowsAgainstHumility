@@ -7,7 +7,6 @@ using Serilog.Events;
 using System.Net.Mime;
 using TheOmenDen.CrowsAgainstHumility.Extensions;
 using TheOmenDen.Shared.Logging.Serilog;
-using TheOmenDen.CrowsAgainstHumility.Hubs;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using TheOmenDen.CrowsAgainstHumility.Circuits;
 using TheOmenDen.CrowsAgainstHumility.Middleware;
@@ -86,8 +85,14 @@ try
         .AddFilter<ApplicationInsightsLoggerProvider>(typeof(Program).FullName, LogLevel.Trace)
         .AddSerilog(dispose: true);
 
+    
     // Add services to the container.
-    builder.Services.AddBlazorise(options => options.Immediate = true)
+    builder.Services.AddBlazorise(options =>
+        {
+            options.Immediate = true;
+
+            options.LicenseKey = builder.Configuration["blazorise-commercial"] ?? String.Empty;
+        })
         .AddBootstrap5Providers()
         .AddBootstrap5Components()
         .AddBootstrapIcons()
@@ -285,7 +290,7 @@ try
     app.MapControllers();
     app.MapRazorPages();
     app.MapBlazorHub();
-    app.MapHub<CawHub>(CawHub.HubUrl);
+    app.MapHub<CawChatHub>(CawChatHub.HubUrl);
     app.MapHub<CrowGameHub>(CrowGameHub.HubUrl);
     app.MapFallbackToPage("/_Host");
 

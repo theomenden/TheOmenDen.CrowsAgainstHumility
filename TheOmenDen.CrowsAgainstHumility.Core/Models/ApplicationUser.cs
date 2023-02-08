@@ -38,4 +38,8 @@ public class ApplicationUser: IdentityUser<Guid>
         : ImageUrl;
     
     public virtual ICollection<CrowGamePlayer> CrowGamePlayers { get; set; } = new HashSet<CrowGamePlayer>();
+
+    public virtual ICollection<CawChatMessage> ChatMessagesToUsers { get; set; } = new HashSet<CawChatMessage>();
+
+    public virtual ICollection<CawChatMessage> ChatMessagesFromUsers { get; set; } = new HashSet<CawChatMessage>();
 }

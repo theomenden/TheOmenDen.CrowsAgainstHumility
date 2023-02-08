@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
-using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 
 namespace TheOmenDen.CrowsAgainstHumility.Controllers;
 public class CrowGameController : Controller

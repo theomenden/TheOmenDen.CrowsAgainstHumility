@@ -75,7 +75,7 @@ public partial class Dashboard: ComponentBase
         catch (Exception ex)
         {
             HasErrors = true;
-            Logger.LogError("Failed to login via {Provider}. Exception @{Ex}", authenticationScheme.DisplayName, ex);
+            Logger.LogError("Failed to login via {Provider}. Exception: {@Ex}", authenticationScheme.DisplayName, ex);
         }
     }
 }

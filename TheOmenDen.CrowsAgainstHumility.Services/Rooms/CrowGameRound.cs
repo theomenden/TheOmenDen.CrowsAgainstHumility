@@ -24,7 +24,7 @@ internal sealed class CrowGameRound: ICrowRoomState
         {
             var currentRound = _roundNumber + 1;
 
-            var cm = new CrowChatMessage(CrowChatMessageType.GameFlow, null, $"Round {currentRound} starting.");
+            var cm = new GameMessage(CrowChatMessageType.GameFlow, null, $"Round {currentRound} starting.");
 
             await _room.SendAll("RoundStarted", currentRound, _room.RoomSettings.Rounds, cm, cancellationToken);
         }
@@ -51,7 +51,7 @@ internal sealed class CrowGameRound: ICrowRoomState
 
         var currentRound = _roundNumber + 1;
 
-        var cm = new CrowChatMessage(CrowChatMessageType.GameFlow, null, $"Round {currentRound} starting.");
+        var cm = new GameMessage(CrowChatMessageType.GameFlow, null, $"Round {currentRound} starting.");
 
         await _room.SendPlayer(player, "RoundStarted", currentRound, _room.RoomSettings.Rounds, cm, cancellationToken);
     }

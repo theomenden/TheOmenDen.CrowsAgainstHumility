@@ -11,15 +11,15 @@ public class CrowGameState
     public event EventHandler? WhiteCardChosen;
     public event EventHandler<(List<PlayerScore> scores, WhiteCard playedWhiteCard, Int32 timeOut)>? TurnScoring;
     public event EventHandler<IWhiteCardPlayedEventArgs>? WhiteCardEventReceived;
-    public event EventHandler<CrowChatMessage>? ChatMessageReceived;
+    public event EventHandler<GameMessage>? ChatMessageReceived;
     #endregion
-    private readonly List<CrowChatMessage> _chatLog = Enumerable.Empty<CrowChatMessage>().ToList();
+    private readonly List<GameMessage> _chatLog = Enumerable.Empty<GameMessage>().ToList();
 
     internal CrowGameState()
     {
     }
     #region Exposed Properties
-    public IEnumerable<CrowChatMessage> ChatLog => _chatLog;
+    public IEnumerable<GameMessage> ChatLog => _chatLog;
     public Int32 CurrentRound { get; private set; } = 0;
     public Int32 RoundCount { get; private set; } = 0;
 
@@ -31,7 +31,7 @@ public class CrowGameState
     #endregion
     #region Game State
 
-    internal void NewRoundStarted(Int32 currentRound, Int32 roundCount, CrowChatMessage? chatMessage)
+    internal void NewRoundStarted(Int32 currentRound, Int32 roundCount, GameMessage? chatMessage)
     {
         CurrentRound= currentRound;
         RoundCount= roundCount;
@@ -70,7 +70,7 @@ public class CrowGameState
     }
     #endregion
     #region Chat Messages
-    internal void AddChatMessage(CrowChatMessage chatMessage)
+    internal void AddChatMessage(GameMessage chatMessage)
     {
         if (_chatLog.Count >= 75)
         {

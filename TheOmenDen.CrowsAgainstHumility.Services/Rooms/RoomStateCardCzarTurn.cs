@@ -38,7 +38,7 @@ internal sealed class RoomStateCardCzarTurn: ICrowRoomState
     {
         await _roomRoundState.AddCrow(player, isReconnection, cancellationToken);
         await _room.SendPlayer(player, "ChatMessage",
-            new CrowChatMessage(CrowChatMessageType.GameFlow, null, $"{player.Name}'s turn to play"), cancellationToken);
+            new GameMessage(CrowChatMessageType.GameFlow, null, $"{player.Name}'s turn to play"), cancellationToken);
     }
 
     public Task RemoveCrow(Player player, CancellationToken cancellationToken = default)
@@ -54,7 +54,7 @@ internal sealed class RoomStateCardCzarTurn: ICrowRoomState
     private async Task StartPlayerTurn()
     {
         await _room.SendAll("ChatMessage",
-            new CrowChatMessage(CrowChatMessageType.GameFlow, null, $"{_player.Name}'s turn to be the Card Tsar."));
+            new GameMessage(CrowChatMessageType.GameFlow, null, $"{_player.Name}'s turn to be the Card Tsar."));
 
         _room.RoomState = new RoomStateBlackCard(_player, _room, new(), this); 
     }

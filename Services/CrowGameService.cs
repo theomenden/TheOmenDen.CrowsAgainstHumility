@@ -225,7 +225,7 @@ public sealed class CrowGameService : IDisposable
 
         _hubConnection.On<RoomStateDto>("RoomCreated", AddRoom);
         _hubConnection.On<RoomStateDto>("RoomDeleted", RemoveRoom);
-        _hubConnection.On<RoomStateDto>("RoomSTateChanged", state =>
+        _hubConnection.On<RoomStateDto>("RoomStateChanged", state =>
         {
             if (_currentRoomState is not null && state.RoomName.Equals(_currentRoomState.RoomName))
             {
@@ -255,12 +255,12 @@ public sealed class CrowGameService : IDisposable
             GameStarted?.Invoke(this, EventArgs.Empty);
         });
 
-        _hubConnection.On<Int32, Int32, CrowChatMessage>("RoundStarted", (currentRound, roundCount, chatMessage) =>
+        _hubConnection.On<Int32, Int32, GameMessage>("RoundStarted", (currentRound, roundCount, chatMessage) =>
             _gameState.NewRoundStarted(currentRound, roundCount, chatMessage));
 
-        _hubConnection.On<CrowChatMessage>("ChatMessage", cm => _gameState.AddChatMessage(cm));
+        _hubConnection.On<GameMessage>("ChatMessage", cm => _gameState.AddChatMessage(cm));
 
-        _hubConnection.On<PlayerDto, Int32, WhiteCard, CrowChatMessage>("WhiteCardChosen",
+        _hubConnection.On<PlayerDto, Int32, WhiteCard, GameMessage>("WhiteCardChosen",
             (player, timeRemaining, whiteCard, chatMessage) =>
             {
                 PlayerWhiteCardChosen?.Invoke(this, player);
