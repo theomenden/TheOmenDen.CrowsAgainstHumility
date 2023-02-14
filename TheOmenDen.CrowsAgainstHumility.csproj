@@ -67,23 +67,26 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="bundleconfig.json" />
     <Content Remove="C:\Users\andre\.nuget\packages\theomenden.shared.logging\1.11.13.2247\contentFiles\any\net7.0\omenden-jsonapi.ico" />
     <Content Remove="compilerconfig.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="bundleconfig.json" />
     <None Include="compilerconfig.json" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AspNet.Security.OAuth.Discord" Version="7.0.0" />
     <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="7.0.0" />
+    <PackageReference Include="AspNet.Security.OAuth.Patreon" Version="7.0.0" />
     <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="7.0.0" />
     <PackageReference Include="AspNet.Security.OAuth.Discord" Version="7.0.0" />
     <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="7.0.0" />
     <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="7.0.0" />
     <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
-    <PackageReference Include="Azure.Identity" Version="1.8.1" />
+    <PackageReference Include="Azure.Identity" Version="1.8.2" />
     <PackageReference Include="Blazored.SessionStorage" Version="2.3.0" />
     <PackageReference Include="Blazorise" Version="1.2.0" />
     <PackageReference Include="Blazorise.Animate" Version="1.2.0" />
@@ -104,6 +107,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="6.0.13" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="7.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="7.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.2" />
@@ -122,8 +127,8 @@
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.2" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Identity.Web" Version="1.25.10" />
-    <PackageReference Include="Microsoft.Identity.Web.UI" Version="1.25.10" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="1.26.0" />
+    <PackageReference Include="Microsoft.Identity.Web.UI" Version="1.26.0" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.9.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -150,7 +155,7 @@
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
     <PackageReference Include="TheOmenDen.Shared" Version="2023.1.15.141" />
     <PackageReference Include="TheOmenDen.Shared.Interfaces" Version="1.11.13.2216" />
-    <PackageReference Include="TheOmenDen.Shared.Logging" Version="1.11.13.2247" />
+    <PackageReference Include="TheOmenDen.Shared.Logging" Version="2.2.10.2201" />
     <PackageReference Include="TwitchLib" Version="3.5.3" />
     <PackageReference Include="TwitchLib.Api" Version="3.8.0" />
     <PackageReference Include="TwitchLib.Client" Version="3.3.1" />

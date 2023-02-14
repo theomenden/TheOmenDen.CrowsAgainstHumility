@@ -36,18 +36,20 @@
                                 Rules
                             </BarLink>
                         </BarItem>
-                        <BarItem>
-                            <BarLink To="/game-list">
-                                <BarIcon IconName="IconName.Dice" />
-                                Lobbies
-                            </BarLink>
-                        </BarItem>
-                        <BarItem>
-                            <BarLink To="/chatRoom">
-                                <BarIcon IconName="@("bi bi-chat-dots")" TextColor="TextColor.Light" />
-                                Chat Room
-                            </BarLink>
-                        </BarItem>
+                        <AuthorizeView>
+                            <BarItem>
+                                <BarLink To="/game-list">
+                                    <BarIcon IconName="IconName.Dice" />
+                                    Lobbies
+                                </BarLink>
+                            </BarItem>
+                            <BarItem>
+                                <BarLink To="/chatRoom">
+                                    <BarIcon IconName="@("bi bi-chat-dots")" TextColor="TextColor.Light" />
+                                    Chat Room
+                                </BarLink>
+                            </BarItem>
+                        </AuthorizeView>
                     </BarStart>
                     <BarEnd />
                 </BarMenu>

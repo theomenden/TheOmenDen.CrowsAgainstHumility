@@ -1,5 +1,6 @@
 ﻿#region Usings
 using Blazorise;
+using Blazorise.LoadingIndicator;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.DataProtection;
@@ -39,8 +40,8 @@ public partial class Login : ComponentBase
     #endregion
     #region Private fields
     private Validations _validationsRef;
-
     private List<AuthenticationScheme> _externalProviders = new(5);
+    private LoadingIndicator _loadingIndicator;
     #endregion
     protected LoginInputModel Input { get; set; } = new();
 
@@ -49,7 +50,6 @@ public partial class Login : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-
         var (couldRetrieveEmail, email) = NavigationManager.TryGetQueryString<string>("email");
         var (couldCheckForErrors, hasErrors) = NavigationManager.TryGetQueryString<bool>("hasErrors");
         var (couldGetReturnUrl, returnUrl) = NavigationManager.TryGetQueryString<string>("ReturnUrl");
@@ -63,19 +63,20 @@ public partial class Login : ComponentBase
             HasErrors = hasErrors;
         }
 
-
-
         if (String.IsNullOrWhiteSpace(ReturnUrl) && couldGetReturnUrl)
         {
             ReturnUrl = returnUrl ?? String.Empty;
         }
 
         _externalProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync())
+            .Where(scheme => !scheme.Name.Equals("OpenIdConnect", StringComparison.OrdinalIgnoreCase))
             .ToList();
     }
 
     private async Task OnLoginAsync()
     {
+        await _loadingIndicator.Show();
+
         try
         {
             HasErrors = false;
@@ -104,33 +105,13 @@ public partial class Login : ComponentBase
             HasErrors = true;
             Logger.LogError("Failed to log in due to exception {@Ex}", ex);
         }
-    }
-
-    private async Task OnExternalLoginAsync(AuthenticationScheme authenticationScheme)
-    {
-        try
+        finally
         {
-            var authState = await AuthenticationStateTask;
-
-            var user = await UserManager.GetUserAsync(authState.User);
-
-            if (user is not null)
-            {
-                var token = await UserManager.GenerateUserTokenAsync(user, TokenOptions.DefaultProvider, "Login");
-
-                var data = $"{user.Id}|{token}|{authenticationScheme.Name}";
-
-                var protector = DataProtectionProvider.CreateProtectorForLogin();
-
-                var protectedData = protector.Protect(data);
-
-                NavigationManager.NavigateTo($"/Account/LoginExternalProvider?data={protectedData}", true);
-            }
-        }
-        catch (Exception ex)
-        {
-            HasErrors = true;
-            Logger.LogError("Failed to login via {Provider}. Exception @{Ex}", authenticationScheme.DisplayName, ex);
+            await _loadingIndicator.Hide();
         }
     }
+
+    private static String GetExternalLoginUrl(AuthenticationScheme authenticationScheme)
+        => $"Account/challenge/{authenticationScheme.Name}";
+
 }

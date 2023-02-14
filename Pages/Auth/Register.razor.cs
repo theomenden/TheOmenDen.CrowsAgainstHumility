@@ -50,7 +50,7 @@ public partial class Register: ComponentBase
 
             if (createUserResult.Succeeded)
             {
-                await RegistrationService.AddDefaultRolesAsync();
+                await RegistrationService.SeedWithDefaultRolesAsync();
                 await RegistrationService.AddDefaultUserRoleAsync(user);
 
                 switch (UserManager.Options.SignIn.RequireConfirmedEmail)

@@ -1,4 +1,6 @@
 #region Usings
+
+using System.IO.Compression;
 using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.Bootstrap;
@@ -29,9 +31,12 @@ using System.Text.Json.Serialization;
 using AspNet.Security.OAuth.Twitch;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Server;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Identity.Web;
 using TheOmenDen.CrowsAgainstHumility.Services.Hubs;
 using TheOmenDen.CrowsAgainstHumility.Identity.Utilities;
+using TheOmenDen.CrowsAgainstHumility.Utilities;
 
 #endregion
 #region Bootstrap Logger
@@ -140,7 +145,8 @@ try
         })
         .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
         {
-            options.Cookie.Name = "CrowsAgainstHumilityCookie";
+            options.Cookie.Name = builder.Configuration["Cookies:SharedCookieName"];
+            options.Cookie.Path = builder.Configuration["Cookies:SharedCookiePath"];
             options.Cookie.HttpOnly = true;
             options.ExpireTimeSpan = TimeSpan.FromDays(5);
 
@@ -173,12 +179,41 @@ try
     builder.Services.AddResponseCompression(options =>
     {
         options.MimeTypes = new[] { MediaTypeNames.Application.Octet };
+        options.EnableForHttps = true;
+        options.Providers.Add<BrotliCompressionProvider>();
+        options.Providers.Add<GzipCompressionProvider>();
     });
+
+    builder.Services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
+    builder.Services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.SmallestSize);
+
+    builder.Services.AddHsts(options =>
+    {
+        options.Preload = true;
+        options.IncludeSubDomains = true;
+        options.MaxAge = TimeSpan.FromDays(365);
+    });
+
+    builder.Services.AddHealthChecks();
 
     var connectionString = builder.Configuration.GetConnectionString("CrowsAgainstAuthority")
                            ?? throw new InvalidOperationException("Connection string 'UserContextConnection' not found.");
 
     builder.Services.AddCorvidIdentityServices(connectionString);
+
+    builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+    {
+        options.TokenLifespan = TimeSpan.FromDays(2);
+    });
+
+    if (builder.Environment.IsDevelopmentOrStaging())
+    {
+        builder.Services.AddDataProtection()
+            .PersistKeysToFileSystem(new DirectoryInfo(builder.Configuration["Cookies:PersistKeysDirectory"]))
+            .Prot
+            .SetApplicationName(builder.Configuration["Cookies:ApplicationName"]);
+    }
+    
 
     var apiKey = builder.Configuration["crowsagainstemails"] ?? String.Empty;
 
@@ -273,7 +308,7 @@ try
 
     app.UseWebSockets();
     app.UseHttpsRedirection();
-
+    app.UsePathBase(app.Configuration["Application:PathBase"]);
     app.UseStaticFiles();
 
     app.UseRouting();
@@ -286,6 +321,21 @@ try
 
     app.UseAuthentication();
     app.UseAuthorization();
+
+    app.MapGet("/robots.txt", async context =>
+    {
+        await SearchEngineGenerators.GenerateRobotsAsync(context);
+    });
+    app.MapGet("/sitemap.txt", async context =>
+    {
+        await SearchEngineGenerators.GenerateSitemapAsync(context);
+    });
+    app.MapGet("/sitemap.xml", async context =>
+    {
+        await SearchEngineGenerators.GenerateSitemapXmlAsync(context);
+    });
+
+    app.MapHealthChecks("/healthcheck");
 
     app.MapControllers();
     app.MapRazorPages();

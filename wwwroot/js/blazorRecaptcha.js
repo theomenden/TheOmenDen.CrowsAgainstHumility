@@ -1,4 +1,4 @@
-function loadRecaptch(key) {
+function loadRecaptcha(key) {
     const script = document.createElement('script');
     script.src = `https://www.google.com/recaptcha/api.js?render=${key}`;
     script.type = 'text/javascript';
@@ -12,7 +12,9 @@ function isRecaptchaLoaded(key) {
         grecaptcha.execute(key, { action: 'homepage' }).then(function(){
             return true;
         });
-    } catch {
+        return true;
+    } catch (ex) {
+        console.error(JSON.stringify(ex));
         return false;
     }
 }

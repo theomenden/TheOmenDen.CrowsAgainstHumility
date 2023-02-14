@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.JSInterop;
+using TheOmenDen.Shared.Guards;
 
 namespace TheOmenDen.CrowsAgainstHumility.Services;
 
@@ -28,10 +29,7 @@ internal sealed class ReCaptchaService
     public async ValueTask<String> GenerateCaptchaTokenAsync(String? action,
         CancellationToken cancellationToken = default)
     {
-        if (String.IsNullOrWhiteSpace(action))
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
+        Guard.FromNullOrWhitespace(action, nameof(action));
 
         var isCaptchaLoaded = await _jsRuntime.InvokeAsync<bool>("isRecaptchaLoaded", cancellationToken, _settings.SiteKey);
 
@@ -48,16 +46,13 @@ internal sealed class ReCaptchaService
 
     public async ValueTask<bool> VerifyCaptchaAsync(String? token, CancellationToken cancellationToken = default)
     {
-        if (token is null)
-        {
-            throw new ArgumentNullException(nameof(token));
-        }
+        Guard.FromNullOrWhitespace(nameof(token), token);
 
         try
         {
             using var httpClient = _httpClientFactory.CreateClient();
 
-            var uri = $"{httpClient.BaseAddress}?secret={_settings.secretKey}&response={token}";
+            var uri = $"{httpClient.BaseAddress}?secret={_settings.SecretKey}&response={token}";
 
             using var request = new HttpRequestMessage(HttpMethod.Get, uri);
 

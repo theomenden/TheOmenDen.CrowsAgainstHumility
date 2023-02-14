@@ -36,62 +36,8 @@ public partial class CawChat : ComponentBase, IAsyncDisposable
 
         CurrentUserId = user.GetUserId();
         CurrentUserEmail = user.Claims.Where(a => a.Type == "name").Select(a => a.Value).FirstOrDefault() ?? String.Empty;
-        if (CurrentUserId != Guid.Empty)
-        {
-            await LoadUserChatMessagesAsync(CurrentUserId);
-        }
     }
-
-    private async Task LoadUserChatMessagesAsync(Guid userId)
-    {
-        var contact = await _cawChatManager.GetUserDetailsAsync(userId);
-        ContactId = contact.Id;
-        ContactEmail = contact.Email;
-
-        NavigationManager.NavigateTo("chat/ContactId");
-
-        _messages = await _cawChatManager.GetConversationAsync(ContactId);
-    }
-
-    private async Task GetUsersAsync()
-    {
-        _chatUsers = await _cawChatManager.GetAllUsersAsync();
-    }
-
-    private async Task RegisterHubOperationsAsync()
-    {
-        HubConnection.On<CawChatMessage, String>("ReceiveMessage", async (message, userName) =>
-        {
-            if ((ContactId == message.ToUserId && CurrentUserId == message.FromUserId)
-                || (ContactId == message.FromUserId && CurrentUserId == message.ToUserId))
-            {
-                if (ContactId == message.ToUserId && CurrentUserId == message.FromUserId)
-                {
-                    _messages.Add(new CawChatMessage
-                    {
-                        Message = message.Message,
-                        CreatedAt = message.CreatedAt,
-                        FromUser = new() { Email = CurrentUserEmail }
-                    });
-
-                    await HubConnection.SendAsync("ChatNotificationAsync", $"New Message From {userName}", ContactId,
-                        CurrentUserId);
-                }
-
-                if (ContactId == message.FromUserId && CurrentUserId == message.ToUserId)
-                {
-                    _messages.Add(new CawChatMessage
-                    {
-                        Message = message.Message,
-                        CreatedAt = message.CreatedAt,
-                        FromUser = new() { Email = ContactEmail }
-                    });
-                }
-
-                StateHasChanged();
-            }
-        });
-    }
+    
 
     public async ValueTask DisposeAsync()
     {

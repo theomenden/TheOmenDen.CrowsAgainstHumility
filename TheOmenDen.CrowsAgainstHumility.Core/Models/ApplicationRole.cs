@@ -4,7 +4,6 @@ namespace TheOmenDen.CrowsAgainstHumility.Core.Models;
 public sealed class ApplicationRole: IdentityRole<Guid>
 {
     public ApplicationRole()
-    :base()
     {
     }
 

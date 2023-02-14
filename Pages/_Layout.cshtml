@@ -57,7 +57,28 @@
                 builder.configureLogging("information");
             },
             reconnectionHandler: {
-                onConnectionDown: (options, error) => console.error(error),
+                onConnectionDown: (options, error) => {
+                    let isReloading = false;
+
+                    async function attemptReload() {
+                        if (!isReloading) {
+                            isReloading = true;
+
+                            const request = new Request({
+                                url: '/healthcheck',
+                                method: 'GET'
+                            });
+
+                            const result = await fetch(request);
+
+                            if (result.status == 200) {
+                                document.location.reload();
+                            }
+                            isReloading = false;
+                        }
+                    }
+                    setInterval(attemptReload, 1500);
+                },
                 onConnectionUp: () => console.log("Up, up, and away!")
             },
             reconnectionOptions: {

@@ -1,0 +1,8 @@
+[
+  {
+    "outputFileName": "wwwroot/js/blazorRecaptcha.min.js",
+    "inputFiles": [
+      "wwwroot/js/blazorRecaptcha.js"
+    ]
+  }
+]

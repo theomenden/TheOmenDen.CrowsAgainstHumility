@@ -3,7 +3,7 @@
 namespace TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 public interface IUserRegistrationService
 {
-    Task AddDefaultRolesAsync(CancellationToken cancellationToken = default);
+    Task SeedWithDefaultRolesAsync(CancellationToken cancellationToken = default);
     Task AddDefaultUserRoleAsync(ApplicationUser applicationUser, CancellationToken cancellationToken = default);
 
     Task AddUserToRolesAsync(ApplicationUser user, IEnumerable<string> roles,
