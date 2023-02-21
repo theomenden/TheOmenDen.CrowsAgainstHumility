@@ -6,12 +6,6 @@ namespace TheOmenDen.CrowsAgainstHumility.Core.Models;
 
 public partial class Pack: IComparable<Pack>, IEquatable<Pack>
 {
-    public Pack()
-    {
-        BlackCards = new HashSet<BlackCard>();
-        WhiteCards = new HashSet<WhiteCard>();
-    }
-
     public Guid Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
@@ -24,8 +18,8 @@ public partial class Pack: IComparable<Pack>, IEquatable<Pack>
 
     [NotMapped] public Int32 BlackCardsInPack { get; set; } = 0;
 
-    public virtual ICollection<BlackCard> BlackCards { get; set; }
-    public virtual ICollection<WhiteCard> WhiteCards { get; set; }
+    public virtual ICollection<BlackCard> BlackCards { get; set; } = new HashSet<BlackCard>();
+    public virtual ICollection<WhiteCard> WhiteCards { get; set; } = new HashSet<WhiteCard>();
 
     public int CompareTo(Pack other)
         => String.CompareOrdinal(Name, other.Name);

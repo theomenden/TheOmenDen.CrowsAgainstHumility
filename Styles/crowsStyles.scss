@@ -9,10 +9,15 @@ html,
 body {
     overflow-x: hidden;
     overflow-y: hidden;
-    height: 100%;
-    width: 100vw;
+    min-height: 100vh;
     font-family: "Roboto", Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    font-size: inherit;
 }
 
 h1:focus {

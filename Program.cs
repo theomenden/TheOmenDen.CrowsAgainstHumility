@@ -3,7 +3,7 @@
 using System.IO.Compression;
 using Blazorise;
 using Blazorise.Bootstrap5;
-using Blazorise.Icons.Bootstrap;
+using Blazorise.Icons.FontAwesome;
 using Serilog;
 using Serilog.Events;
 using System.Net.Mime;
@@ -29,6 +29,7 @@ using TheOmenDen.CrowsAgainstHumility.Areas.Models;
 using Blazored.SessionStorage;
 using System.Text.Json.Serialization;
 using AspNet.Security.OAuth.Twitch;
+using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.DataProtection;
@@ -37,6 +38,7 @@ using Microsoft.Identity.Web;
 using TheOmenDen.CrowsAgainstHumility.Services.Hubs;
 using TheOmenDen.CrowsAgainstHumility.Identity.Utilities;
 using TheOmenDen.CrowsAgainstHumility.Utilities;
+using Microsoft.Extensions.Azure;
 
 #endregion
 #region Bootstrap Logger
@@ -61,18 +63,15 @@ try
 
     var vaultUri = builder.Configuration["VaultUri"] ?? String.Empty;
 
-    builder.Configuration.AddAzureKeyVault(
-        new Uri(vaultUri),
-        new DefaultAzureCredential());
+    builder.Configuration.AddAzureKeyVault(new Uri(vaultUri), new DefaultAzureCredential());
 
-
-        builder.Host.UseDefaultServiceProvider(options => options.ValidateScopes = false)
-            .UseSerilog((context, services, configuration) => configuration
-            .ReadFrom.Configuration(context.Configuration)
-            .ReadFrom.Services(services)
-            .Enrich.FromLogContext()
-            .Enrich.WithEventType()
-            );
+    builder.Host.UseDefaultServiceProvider(options => options.ValidateScopes = false)
+        .UseSerilog((context, services, configuration) => configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services)
+        .Enrich.FromLogContext()
+        .Enrich.WithEventType()
+        );
 
     var appInsightsConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"];
 
@@ -90,17 +89,15 @@ try
         .AddFilter<ApplicationInsightsLoggerProvider>(typeof(Program).FullName, LogLevel.Trace)
         .AddSerilog(dispose: true);
 
-    
-    // Add services to the container.
     builder.Services.AddBlazorise(options =>
         {
             options.Immediate = true;
-
+            options.IconStyle = IconStyle.DuoTone;
             options.LicenseKey = builder.Configuration["blazorise-commercial"] ?? String.Empty;
         })
         .AddBootstrap5Providers()
         .AddBootstrap5Components()
-        .AddBootstrapIcons()
+        .AddFontAwesomeIcons()
         .AddLoadingIndicator();
 
     builder.Services.AddApplicationInsightsTelemetry(options => options.ConnectionString = appInsightsConnectionString);
@@ -210,10 +207,8 @@ try
     {
         builder.Services.AddDataProtection()
             .PersistKeysToFileSystem(new DirectoryInfo(builder.Configuration["Cookies:PersistKeysDirectory"]))
-            .Prot
             .SetApplicationName(builder.Configuration["Cookies:ApplicationName"]);
     }
-    
 
     var apiKey = builder.Configuration["crowsagainstemails"] ?? String.Empty;
 
@@ -293,12 +288,10 @@ try
     builder.Services.AddScoped<UserInfo>();
     builder.Services.AddScoped<IHostEnvironmentAuthenticationStateProvider>(sp =>
     {
-        // this is safe because 
-        // the `RevalidatingIdentityAuthenticationStateProvider` extends the `ServerAuthenticationStateProvider`
         var provider = (ServerAuthenticationStateProvider)sp.GetRequiredService<AuthenticationStateProvider>();
         return provider;
     });
-    
+
     await using var app = builder.Build();
 
     app.UseResponseCompression();

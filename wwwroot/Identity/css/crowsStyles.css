@@ -146,7 +146,7 @@
 ::-webkit-scrollbar-thumb {
   background: var(--scrollbar-bg);
   border-radius: 10px;
-  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.44, #7a99d9), color-stop(0.72, #497dbd), color-stop(0.86, #1c3a94));
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.44, rgb(122, 153, 217)), color-stop(0.72, rgb(73, 125, 189)), color-stop(0.86, rgb(28, 58, 148)));
 }
 
 ::-webkit-scrollbar-track {
@@ -188,10 +188,15 @@ html,
 body {
   overflow-x: hidden;
   overflow-y: hidden;
-  height: 100%;
-  width: 100vw;
+  min-height: 100vh;
   font-family: "Roboto", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  font-size: inherit;
 }
 
 h1:focus {

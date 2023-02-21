@@ -2,25 +2,36 @@
     <Authorized>
         <BarDropdown RightAligned>
             <BarDropdownToggle>@context.User.Identity.Name</BarDropdownToggle>
-            <BarDropdownMenu Background="Background.Dark" TextColor="TextColor.Light"
-                             Border="Border.Is2.Primary.OnAll.Rounded">
+            <BarDropdownMenu 
+                Background="Background.Dark" 
+                TextColor="TextColor.Light"
+                Shadow="Shadow.Default">
                 @if (context.User.IsInRole("Administrator"))
                 {
-                    <BarDropdownItem Background="Background.Dark" TextColor="TextColor.Light" To="admin/manage" Title="admin">
+                    <BarDropdownItem To="admin/manage" Title="admin">
                         Admin Actions
                     </BarDropdownItem>
                 }
                 <BarDropdownItem Background="Background.Dark"
-                                 TextColor="TextColor.Light"
-                                 To="user/manage"
-                                 Title="manageuser">
-                    Account
+                                 Title="manageuser"
+                                 TextAlignment="TextAlignment.Center">
+                    <Button Type="ButtonType.Link" 
+                            To="user/manage" 
+                            Color="Color.Info"
+                            TextColor="TextColor.Dark">
+                        Account
+                    </Button>
                 </BarDropdownItem>
-                <BarDropdownDivider />
+                <BarDropdownDivider Background="Background.Light" />
                 <BarDropdownItem Background="Background.Dark"
-                                 TextColor="TextColor.Light">
+                                 Title="logoutuser"
+                                 TextAlignment="TextAlignment.Center">
                     <Form method="post" action="Account/LogoutInternal">
-                        <Button Type="ButtonType.Submit" Class="dropdown-item">Log out</Button>
+                        <Button Type="ButtonType.Submit"
+                                Color="Color.Danger"
+                                TextColor="TextColor.Light">
+                            Log out
+                        </Button>
                     </Form>
                 </BarDropdownItem>
             </BarDropdownMenu>
@@ -30,8 +41,7 @@
         <Button Type="ButtonType.Link"
                 Background="Background.Secondary"
                 TextColor="TextColor.Light"
-                To="login"
-                Border="Border.Is2.Primary.OnAll.Rounded">
+                To="login">
             Log in
         </Button>
     </NotAuthorized>

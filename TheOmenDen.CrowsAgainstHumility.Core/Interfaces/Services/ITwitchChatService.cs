@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TwitchLib.Client.Events;
+﻿using TwitchLib.Client.Events;
 using TwitchLib.Communication.Events;
 using TwitchLib.PubSub.Events;
 
 namespace TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 public interface ITwitchChatService
 {
-    event EventHandler<OnMessageReceivedArgs>? OnMessageReveived;
+    event EventHandler<OnMessageReceivedArgs>? OnMessageReceived;
     event EventHandler<OnChannelPointsRewardRedeemedArgs>? OnRewardRedeemed;
     event EventHandler<OnJoinedChannelArgs>? OnConnected;
     event EventHandler<OnDisconnectedEventArgs>? OnDisconnected;

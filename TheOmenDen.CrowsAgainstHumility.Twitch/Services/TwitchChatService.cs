@@ -24,7 +24,7 @@ internal sealed class TwitchChatService: IDisposable, IAsyncDisposable, ITwitchC
     private bool _disposedValue;
 
     #region Event Handlers
-    public event EventHandler<OnMessageReceivedArgs>? OnMessageReveived;
+    public event EventHandler<OnMessageReceivedArgs>? OnMessageReceived;
     public event EventHandler<OnChannelPointsRewardRedeemedArgs>? OnRewardRedeemed;
     public event EventHandler<OnJoinedChannelArgs>? OnConnected;
     public event EventHandler<OnDisconnectedEventArgs>? OnDisconnected;
@@ -83,7 +83,7 @@ internal sealed class TwitchChatService: IDisposable, IAsyncDisposable, ITwitchC
 
         _twitchClient.OnLog += OnClientLog;
         _twitchClient.OnJoinedChannel += OnConnected;
-        _twitchClient.OnMessageReceived += OnMessageReveived;
+        _twitchClient.OnMessageReceived += OnMessageReceived;
         _twitchClient.OnConnected += OnConnectedClient;
         _twitchClient.OnDisconnected += OnDisconnected;
 

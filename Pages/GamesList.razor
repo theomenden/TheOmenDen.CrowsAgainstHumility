@@ -12,12 +12,12 @@
           TextColor="TextColor.Light"
           VerticalAlignment="VerticalAlignment.Middle">
         Don't see your game listed? <Button Background="Background.Warning"
-                                            Border="Border.Is2.Secondary.OnAll.Rounded"
                                             Shadow="Shadow.Default"
                                             TextColor="TextColor.Dark"
                                             Margin="Margin.Is2.FromStart.OnWidescreen.Is3.FromStart.OnTablet"
                                             Clicked="InstantiateModalAsync">
-            Create a game! <Icon Name="IconName.Gamepad" />
+            Create a game! <Icon Name="IconName.Gamepad" 
+                                 IconSize="IconSize.Large" />
         </Button>
     </Span>
 </Jumbotron>
@@ -51,7 +51,6 @@
                             </Heading>
                             <Small TextColor="TextColor.Muted" TextWeight="TextWeight.Bold">@context.LobbyCode</Small>
                             <Button Color="Color.Primary"
-                                    Border="Border.Is3.Light.OnAll.Rounded"
                                     Margin="Margin.Is2.OnX.OnWidescreen.Is4.FromStart.OnTablet.Is5.FromStart.OnMobile">
                                 Join Game
                                 <sup>

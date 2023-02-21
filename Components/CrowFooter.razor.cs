@@ -4,7 +4,7 @@ namespace TheOmenDen.CrowsAgainstHumility.Components;
 
 public partial class CrowFooter: ComponentBase
 {
-
+    [Inject] private NavigationManager NavigationManager { get; init; }
 
     private static string AssemblyProductVersion
     {

@@ -2,84 +2,78 @@
      NavigationBreakpoint="Breakpoint.Tablet"
      Background="Background.Dark"
      ThemeContrast="ThemeContrast.Dark"
-     Border="Border.Is2.Light.OnTop.RoundedTop">
+     Shadow="Shadow.Large"
+     Class="footer">
     <BarBrand />
     <BarToggler />
     <BarMenu>
-        <Container Fluid>
-            <Row>
-                <Column ColumnSize="ColumnSize.IsFull.IsThird.OnDesktop" Margin="Margin.Is1.FromBottom.OnMobile">
-                    <BarItem>
-                        <Dropdown Background="Background.Dark" Direction="Direction.Up" Class="text-small"
-                                  Flex="Flex.Shrink.Is1">
-                            <DropdownToggle TextColor="TextColor.Muted"
-                                            Border="Border.Is2.Secondary.OnAll.Rounded">Policies</DropdownToggle>
-                            <DropdownMenu Background="Background.Dark" >
-                                <DropdownItem TextColor="TextColor.Secondary">
-                                    <Blazorise.Link To="privacy-policy" Title="privacy" Class="text-decoration-none">Privacy Policy</Blazorise.Link>
-                                </DropdownItem>
-                                <DropdownDivider Background="Background.Light" />
-                                <DropdownItem TextColor="TextColor.Secondary">
-                                    <Blazorise.Link To="terms-of-service" Title="terms" Class="text-decoration-none">Terms of Service</Blazorise.Link>
-                                </DropdownItem>
-                            </DropdownMenu>
-                        </Dropdown>
-                    </BarItem>
-                </Column>
-                <Column ColumnSize="ColumnSize.IsFull.IsThird.OnDesktop" Margin="Margin.Is1.OnY.OnMobile">
-                    <BarItem>
-                        <Dropdown Background="Background.Dark" Direction="Direction.Up" Class="text-small">
-                            <DropdownToggle TextColor="TextColor.Muted"
-                                            Border="Border.Is2.Secondary.OnAll.Rounded">
-                                App Information
-                            </DropdownToggle>
-                            <DropdownMenu Background="Background.Dark">
-                                <DropdownItem TextColor="TextColor.Secondary">
-                                    @ApplicationDevelopmentCompany
-                                    <sup>
-                                        <Icon Name="@("bi bi-badge-tm")"
-                                              IconSize="IconSize.ExtraSmall"
-                                              IconStyle="IconStyle.Solid"
-                                              TextColor="TextColor.Light"
-                                              Margin="Margin.Is1.FromTop"
-                                              Padding="Padding.Is1.FromTop" />
-                                    </sup>
-                                </DropdownItem>
-                                <DropdownItem TextColor="TextColor.Secondary">
-                                    <BarIcon IconName="IconName.Copyright"
-                                             IconSize="IconSize.ExtraSmall"
-                                             TextColor="TextColor.Muted" />
-                                    Copyright @DateTime.Today.Year
-                                </DropdownItem>
-                                <DropdownDivider Background="Background.Light" />
-                                <DropdownItem TextColor="TextColor.Secondary">
-                                    <BarIcon IconName="IconName.Code"
-                                             IconSize="IconSize.ExtraSmall" TextColor="TextColor.Muted" />
-                                    v-@AssemblyProductVersion
-                                </DropdownItem>
-                                <DropdownDivider Background="Background.Light" />
-                                <DropdownItem TextColor="TextColor.Secondary">
-                                    <Blazorise.Link To="https://aluthecrow.info" Target="Target.Blank" Title="Alu's Carrd" Class="text-decoration-none">
-                                        Alu's Carrd
-                                    </Blazorise.Link>
-                                </DropdownItem>
-                            </DropdownMenu>
-                        </Dropdown>
-                    </BarItem>
-                </Column>
-                <Column ColumnSize="ColumnSize.IsFull.IsThird.OnDesktop" Margin="Margin.Is1.FromTop.OnMobile">
-                    <BarItem>
-                        <BarLink TextColor="TextColor.Muted"
-                                 Class="text-decoration-none"
-                                 To="https://blazorise.com"
-                                 Target="Target.Blank"
-                                 Title="Blazorise">
-                            Powered by Blazorise
-                        </BarLink>
-                        <Small Margin="Margin.Is3.FromBottom" TextColor="TextColor.Muted"> Copyright &copy; @DateTime.Today.Year Megabit Ltd</Small>
-                    </BarItem>
-                </Column>
-            </Row>
-        </Container>
+        <BarStart>
+            <BarItem>
+                <Dropdown Direction="Direction.Up">
+                    <DropdownToggle TextColor="TextColor.Muted">
+                        <BarIcon IconName="IconName.Book" TextColor="TextColor.Muted" />
+                        Policies
+                    </DropdownToggle>
+                    <DropdownMenu Background="Background.Dark">
+                        <DropdownItem TextColor="TextColor.Muted" Clicked="@(() => NavigationManager.NavigateTo("/privacy-policy"))">
+                            Privacy Policy<Icon Name="IconName.Link" />
+                        </DropdownItem>
+                        <DropdownDivider Background="Background.Primary" />
+                        <DropdownItem TextColor="TextColor.Muted" Clicked="@(() => NavigationManager.NavigateTo("/terms-of-service"))">
+                            Terms of Service<Icon Name="IconName.Link" />
+                        </DropdownItem>
+                    </DropdownMenu>
+                </Dropdown>
+            </BarItem>
+        </BarStart>
+        <BarBrand Margin="Margin.Is2.FromEnd" Casing="CharacterCasing.Upper">
+            <BarItem>
+                <BarLink To=""
+                         TextWeight="TextWeight.Light"
+                         TextColor="TextColor.White50">
+                    Crows Against Humility
+                </BarLink>
+            </BarItem>
+        </BarBrand>
+        <BarEnd>
+            <BarItem Margin="Margin.Is3.FromEnd">
+                <Dropdown Direction="Direction.Up">
+                    <DropdownToggle TextColor="TextColor.Muted">
+                        <Icon Name="IconName.Code" IconSize="IconSize.Large" TextColor="TextColor.Muted" />
+                        App Information
+                    </DropdownToggle>
+                    <DropdownMenu Background="Background.Dark">
+                        <DropdownItem TextColor="TextColor.Muted">
+                            Build: @AssemblyProductVersion
+                        </DropdownItem>
+                        <DropdownDivider Background="Background.Primary" />
+                        <DropdownItem TextColor="TextColor.Muted">
+                            <Icon Name="@("fa-crow")" IconSize="IconSize.Large" />
+                            <Blazorise.Link To="https://aluthecrow.info" Target="Target.Blank">
+                                Alu's Carrd <Icon Name="IconName.ExternalLinkSquareAlt" />
+                            </Blazorise.Link>
+                        </DropdownItem>
+                        <DropdownItem TextColor="TextColor.Muted"
+                                      Flex="Flex.Column.JustifyContent.Between">
+                            <Blazorise.Link To="https://theomenden.com" Target="Target.Blank">
+                                @ApplicationDevelopmentCompany
+                                <Icon Name="IconName.ExternalLinkSquareAlt" />
+                            </Blazorise.Link>
+                            <Small>
+                                <Icon Name="IconName.Copyright" IconSize="IconSize.Large" />
+                                Copyright 2023
+                            </Small>
+                        </DropdownItem>
+                        <DropdownDivider Background="Background.Primary" />
+                        <DropdownItem TextColor="TextColor.Muted">
+                            Powered By: <Blazorise.Link To="https://blazorise.com" Target="Target.Blank">
+                                Blazorise
+                                <Icon Name="IconName.ExternalLinkSquareAlt" />
+                            </Blazorise.Link>
+                        </DropdownItem>
+                    </DropdownMenu>
+                </Dropdown>
+            </BarItem>
+        </BarEnd>
     </BarMenu>
 </Bar>

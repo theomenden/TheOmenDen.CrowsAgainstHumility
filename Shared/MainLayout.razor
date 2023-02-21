@@ -1,7 +1,6 @@
 @layout RootLayout
 @inherits LayoutComponentBase
-<PageTitle>@ApplicationTitle</PageTitle>
-
+<SEO Title="@ApplicationTitle" Canonical="/" Description="Crows Against Humility Main layout" />
 <Layout Sider>
     <LayoutSider>
         <LayoutSiderContent>
@@ -9,49 +8,42 @@
                  Mode="BarMode.VerticalInline"
                  Background="Background.Dark"
                  ThemeContrast="ThemeContrast.Dark"
-                 CollapseMode="BarCollapseMode.Hide"
+                 CollapseMode="BarCollapseMode.Small"
                  Breakpoint="Breakpoint.Desktop"
                  NavigationBreakpoint="Breakpoint.Tablet"
-                 TextOverflow="TextOverflow.Truncate"
-                 Shadow="Shadow.Default"
-                 Border="Border.Is2.Light.OnEnd.RoundedEnd">
-                <BarBrand Margin="Margin.Is2.FromEnd" Casing="CharacterCasing.Upper">
-                    <BarItem>
-                        <BarLink To="">
-                            <BarIcon IconName="customIcon" Display="Display.InlineBlock" />
-                        </BarLink>
-                    </BarItem>
-                </BarBrand>
-                <BarMenu>
+                 Shadow="Shadow.Large">
+                <BarToggler />
+                <BarBrand Margin="Margin.Is2.FromEnd" Casing="CharacterCasing.Upper" />
+                <BarMenu Margin="Margin.Is3.FromTop">
                     <BarStart>
                         <BarItem>
                             <BarLink To="">
-                                <BarIcon IconName="IconName.Home" />
+                                <BarIcon IconName="IconName.Home"/>
                                 Home
                             </BarLink>
                         </BarItem>
                         <BarItem>
                             <BarLink To="/rules">
-                                <BarIcon IconName="IconName.RulerHorizontal" />
+                                <BarIcon IconName="IconName.RulerHorizontal"/>
                                 Rules
                             </BarLink>
                         </BarItem>
                         <AuthorizeView>
                             <BarItem>
                                 <BarLink To="/game-list">
-                                    <BarIcon IconName="IconName.Dice" />
+                                    <BarIcon IconName="IconName.Gamepad"/>
                                     Lobbies
                                 </BarLink>
                             </BarItem>
                             <BarItem>
-                                <BarLink To="/chatRoom">
-                                    <BarIcon IconName="@("bi bi-chat-dots")" TextColor="TextColor.Light" />
-                                    Chat Room
+                                <BarLink To="/chat">
+                                    <BarIcon IconName="IconName.Comments"/>
+                                    Chat Rooms
                                 </BarLink>
                             </BarItem>
                         </AuthorizeView>
                     </BarStart>
-                    <BarEnd />
+                    <BarEnd/>
                 </BarMenu>
             </Bar>
         </LayoutSiderContent>
@@ -63,11 +55,10 @@
                  NavigationBreakpoint="Breakpoint.Tablet"
                  Background="Background.Dark"
                  ThemeContrast="ThemeContrast.Dark"
-                 Shadow="Shadow.Default"
-                 Border="Border.Is2.OnBottom.RoundedBottom.Light.OnBottom"
+                 Shadow="Shadow.Large"
                  @bind-Visible="@_topBarVisible">
                 <Container Fluid>
-                    <BarToggler Bar="@_sideBar" Border="Border.Is0" />
+                    <BarToggler Border="Border.Is0" />
                     <BarBrand>
                         <BarItem>
                             <BarLink To="" TextColor="TextColor.Light"
@@ -97,6 +88,3 @@
         </LayoutFooter>
     </Layout>
 </Layout>
-@code {
-    RenderFragment customIcon =@<Image Source="../images/TheOmenDenWithCrow.svg" Text="The Omen Den Logo" Style="width:72px; height: 72px" />;
-}

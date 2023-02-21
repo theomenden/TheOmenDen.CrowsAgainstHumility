@@ -72,16 +72,16 @@
                                     @switch (context.DisplayName)
                                     {
                                         case var pn when String.Equals(pn, "twitch", StringComparison.OrdinalIgnoreCase):
-                                            <Icon Name="@("bi bi-twitch")" Class="text-light display-3" />
+                                            <i class="fa-brands fa-twitch text-light display-3 shadow-sm"></i>
                                             break;
                                         case var pn when String.Equals(pn, "twitter", StringComparison.OrdinalIgnoreCase):
-                                            <Icon Name="@("bi bi-twitter")" Class="text-light display-3" Shadow="Shadow.Small" />
+                                            <i class="fa-brands fa-twitter text-light display-3 shadow-sm"></i>
                                             break;
                                         case var pn when String.Equals(pn, "discord", StringComparison.OrdinalIgnoreCase):
-                                            <Icon Name="@("bi bi-discord")" Class="text-light display-3" Shadow="Shadow.Small" />
+                                            <i class="fa-brands fa-discord text-light display-3 shadow-sm"></i>
                                             break;
-                                        case var pn when String.Equals(pn, "Microsoft", StringComparison.OrdinalIgnoreCase):
-                                            <Icon Name="@("bi bi-microsoft")" Class="text-light display-3" />
+                                        case var pn when String.Equals(pn, "OpenIdConnect", StringComparison.OrdinalIgnoreCase):
+                                            <i class="fa-brands fa-microsoft text-light display-3 shadow-sm"></i>
                                             break;
                                     }
                                 </Button>
