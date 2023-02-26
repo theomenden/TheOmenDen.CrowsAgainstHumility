@@ -1,42 +1,65 @@
 ﻿@page "/user/manage"
 @using Microsoft.AspNetCore.Authentication
-<SEO Canonical="/user/manage" Title="@($"{_user.UserName}'s Dashboard")" Description="Your user account dashboard"/>
-<Container Fluid 
-           Background="Background.Dark" 
+@using TheOmenDen.CrowsAgainstHumility.Core.Auth.ViewModels
+<SEO Canonical="/user/manage" Title="User Account Dashboard" Description="Your user account dashboard" />
+<Container Fluid
+           Background="Background.Dark"
            TextColor="TextColor.Light"
            Margin="Margin.Is3.FromTop"
            Border="Border.Is2.Secondary.OnAll.Rounded">
     <Row Height="Height.Is100">
         <Column ColumnSize="ColumnSize.IsFull.OnWidescreen">
-            <Heading Size="HeadingSize.Is4">Profile</Heading>
+            <Heading Size="HeadingSize.Is4"
+                     TextWeight="TextWeight.Light">
+                Viewing Your Profile
+            </Heading>
         </Column>
         <Column Margin="Margin.Is2.FromTop"
                 ColumnSize="ColumnSize.IsFull.IsThird.OnWidescreen.IsThird.OnFullHD">
-            <Blazorise.Link To="#" Display="Display.Block" Margin="Margin.Is4.FromBottom">
-                <Image Source="@_user?.GetUIImageUrl" Text="@_user?.UserName" Fluid Style="max-width: 200px;" />
-            </Blazorise.Link>
-            <Button Clicked="ShowProfileImageEditorAsync"
+            <Div Display="Display.Flex" Margin="Margin.Is4.FromBottom"
+                 Padding="Padding.Is2.FromStart.Is3.FromBottom">
+                <Image Source="@_userProfileImageUrl" 
+                       Text="@_user?.UserName" 
+                       Fluid
+                       Shadow="Shadow.Large"
+                       Border="Border.Is1.Light.OnAll.Rounded"
+                       Style="max-width: 200px;" />
+                </Div>
+                <Button Clicked="ShowProfileImageEditorAsync"
                     Color="Color.Info"
                     Size="Size.Small"
                     Border="Border.Is2.Light.OnAll.Rounded">
                 <Icon Name="IconName.Edit">Edit</Icon>
-            </Button>
-        </Column>
-        <Column ColumnSize="ColumnSize.IsFull.Is8.OnWidescreen.Is8.OnFullHD">
-            <Field>
-                <FieldLabel>Username</FieldLabel>
-                <TextEdit Text="@_user?.UserName" ReadOnly>
-                    <Feedback>
-                        <ValidationError />
-                    </Feedback>
-                </TextEdit>
-            </Field>
-            <Fields>
+                </Button>
+                </Column>
+                <Column ColumnSize="ColumnSize.IsFull.Is8.OnWidescreen.Is8.OnFullHD">
                 <Field>
-                    <FieldLabel>
-                        Email
-                    </FieldLabel>
-                    <TextEdit Text="@_user?.Email" ReadOnly>
+                <FieldLabel>Usernames</FieldLabel>
+                <Repeater TItem="LoginViewModel" Items="_userNames">
+                    <Field Horizontal
+                           Flex="Flex.AlignItems.Center.JustifyContent.Start"
+                           VerticalAlignment="VerticalAlignment.Middle">
+                        <FieldLabel TextColor="TextColor.Light" ColumnSize="ColumnSize.IsAuto">
+                            <i class="@GetLoginProviderIcon(@context.LoginProvider)"></i>
+                        </FieldLabel>
+                        <FieldBody ColumnSize="ColumnSize.IsQuarter">
+                            <Text TextColor="TextColor.Light" TextTransform="TextTransform.Capitalize">
+                                <Blazorise.Link To="@($"https://twitch.tv/{context.LoginUsername}")"
+                                                Target="Target.Blank">
+                                    @context.LoginUsername
+                                    <Icon Name="IconName.ExternalLinkSquareAlt" IconSize="IconSize.ExtraSmall" />
+                                </Blazorise.Link>
+                            </Text>
+                            </FieldBody>
+                            </Field>
+                            </Repeater>
+                            </Field>
+                            <Fields>
+                            <Field>
+                            <FieldLabel>
+                            Email
+                            </FieldLabel>
+                            <TextEdit Text="@_user?.Email" ReadOnly>
                         <Feedback>
                             <ValidationError />
                         </Feedback>
@@ -54,22 +77,22 @@
                          Flex="Flex.Row.AlignContent.Between.JustifyContent.Between.Grow.Is1.Shrink.Is1">
                         <Repeater TItem="AuthenticationScheme" Items="_externalProviders">
                             <Animate Anchor="#btn-animate"
-                                 Auto
+                                  Auto
                                  Animation="Animations.FlipUp"
                                  DelayMilliseconds="500">
-                                <Button Color="Color.Primary"
+                            <Button Color="Color.Primary"
                                     Border="Border.Rounded"
                                     Shadow="Shadow.Default"
                                     Margin="Margin.Is2.OnX"
                                     Outline
                                     Clicked="@(async () => await OnExternalLoginAsync(context))">
-                                    <Span Class="visually-hidden">
-                                        @context.DisplayName
-                                    </Span>
-                                    <Small>
-                                        Link with your @context.DisplayName
-                                    </Small>
-                                    @switch (context.DisplayName)
+                                <Span Class="visually-hidden">
+                                    @context.DisplayName
+                                </Span>
+                                <Small>
+                                    Link with your @context.DisplayName
+                                </Small>
+                                @switch (context.DisplayName)
                                     {
                                         case var pn when String.Equals(pn, "twitch", StringComparison.OrdinalIgnoreCase):
                                             <i class="fa-brands fa-twitch text-light display-3 shadow-sm"></i>
@@ -97,15 +120,15 @@
     <ModalContent>
         <ModalHeader Background="Background.Dark">
             <ModalTitle TextColor="TextColor.Light">Select your Avatar</ModalTitle>
-            <CloseButton Background="Background.White"/>
+            <CloseButton Background="Background.White" />
         </ModalHeader>
         <ModalBody Background="Background.Dark">
             <AvatarSelector @bind-SelectedImageUrl="_avatarImageSelectorUrl" />
         </ModalBody>
         <ModalFooter Background="Background.Dark">
             <Buttons Flex="Flex.JustifyContent.Between">
-            <Button Color="Color.Primary" Clicked="SaveProfileImageAsync" Margin="Margin.Is2.FromEnd"><Icon Name="IconName.Save"/>Save</Button>
-            <Button Color="Color.Secondary" Clicked="@_modalRef.Hide">Close</Button>
+                <Button Color="Color.Primary" Clicked="SaveProfileImageAsync" Margin="Margin.Is2.FromEnd"><Icon Name="IconName.Save" />Save</Button>
+                <Button Color="Color.Secondary" Clicked="@_modalRef.Hide">Close</Button>
             </Buttons>
         </ModalFooter>
     </ModalContent>

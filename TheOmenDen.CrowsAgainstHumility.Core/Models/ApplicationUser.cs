@@ -7,8 +7,7 @@ public class ApplicationUser: IdentityUser<Guid>
 {
     [Required]
     public DateTime CreatedDate { get; set; }
-
-
+    
     [Required]
     [MaxLength(256)]
     [Display(Name = "First Name")]

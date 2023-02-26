@@ -30,6 +30,17 @@ internal sealed class PlayerVerificationService : IPlayerVerificationService
         _twitchApi = twitchApi;
     }
 
+    public async ValueTask<String> GetProfileImageUrlAsync(string username,
+        CancellationToken cancellationToken = default)
+    {
+        await GenerateAccessTokenAsync();
+
+        var userAccount = await _twitchApi!.Helix.Users.GetUsersAsync(null, new List<String> { username });
+
+        return userAccount.Users[0].ProfileImageUrl;
+    }
+
+
     public Boolean IsPlayerInGameList(IEnumerable<String> playersInGame, String playerToVerify)
     => playersInGame.Contains(playerToVerify, StringComparer.OrdinalIgnoreCase);
 
@@ -39,8 +50,8 @@ internal sealed class PlayerVerificationService : IPlayerVerificationService
 
         return Task.FromResult(socketUser ?? default);
     }
-
-    public async Task<User?> CheckTwitchForUser(String username)
+    
+    public async Task<User?> CheckTwitchForUserAsync(String username)
     {
         await GenerateAccessTokenAsync();
 
@@ -61,7 +72,7 @@ internal sealed class PlayerVerificationService : IPlayerVerificationService
         return user;
     }
 
-    public async IAsyncEnumerable<User> CheckTwitchForUsers(IEnumerable<String> usernames, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<User> CheckTwitchForUsersAsync(IEnumerable<String> usernames, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         if (cancellationToken.IsCancellationRequested)
         {

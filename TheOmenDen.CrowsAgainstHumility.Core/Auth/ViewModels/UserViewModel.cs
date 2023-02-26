@@ -14,9 +14,11 @@ public sealed class UserViewModel
 
     public Boolean IsEmailConfirmed { get; set; }
 
-    public String[] RoleNames { get; set; }
+    public ICollection<String> RoleNames { get; set; } = new HashSet<String>();
 
     public String ImageUrl { get; set; }
 
-    public String[] Pronouns { get; set; }
+    public ICollection<String> Pronouns { get; set; } = new HashSet<String>();
+
+    public ICollection<LoginViewModel> Logins { get; set; } = new HashSet<LoginViewModel>();
 }

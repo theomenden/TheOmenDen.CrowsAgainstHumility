@@ -6,7 +6,8 @@ public static class ClaimsPrincipalExtensions
 {
     public static Guid GetUserId(this ClaimsPrincipal claimsPrincipal)
     {
-        var val = claimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
+        var val = claimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier)
+            ?? String.Empty;
 
         return Guid.Parse(val);
     }

@@ -11,6 +11,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped(typeof(IMessageChannelService<>),typeof(MessageChannelService<>))
         .AddScoped<ITwitchRedemptionsManager, TwitchRedemptionsManagerService>()
         .AddScoped<ITwitchChatService, TwitchChatService>();
+        
         return services;
     }
 }

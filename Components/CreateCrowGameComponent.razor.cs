@@ -79,7 +79,7 @@ public partial class CreateCrowGameComponent : ComponentBase, IDisposable, IAsyn
 
     private async Task AddPlayerToList()
     {
-        var player = await PlayerVerificationService.CheckTwitchForUser(_playerToAdd);
+        var player = await PlayerVerificationService.CheckTwitchForUserAsync(_playerToAdd);
 
         if (player is null)
         {

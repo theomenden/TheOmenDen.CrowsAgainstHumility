@@ -5,7 +5,9 @@ public interface IPlayerVerificationService
 {
     Boolean IsPlayerInGameList(IEnumerable<String> playersInGame, String playerToVerify);
 
-    Task<User?> CheckTwitchForUser(string username);
+    Task<User?> CheckTwitchForUserAsync(string username);
 
-    IAsyncEnumerable<User> CheckTwitchForUsers(IEnumerable<string> usernames, CancellationToken cancellationToken = default);
+    ValueTask<String> GetProfileImageUrlAsync(string username, CancellationToken cancellationToken = default);
+
+    IAsyncEnumerable<User> CheckTwitchForUsersAsync(IEnumerable<string> usernames, CancellationToken cancellationToken = default);
 }
