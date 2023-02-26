@@ -29,6 +29,7 @@ using TheOmenDen.CrowsAgainstHumility.Areas.Models;
 using Blazored.SessionStorage;
 using System.Text.Json.Serialization;
 using AspNet.Security.OAuth.Twitch;
+using Azure.Storage.Blobs;
 using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Server;
@@ -167,11 +168,9 @@ try
     builder.Services.AddCorvidTwitchServices(twitchStrings);
 
     builder.Services.AddCorvidDiscordServices();
-
-    var dbConnection = builder.Configuration["ConnectionStrings:UserContextConnection"]
-                       ?? builder.Configuration["ConnectionStrings:CrowsAgainstHumilityDb"];
-
-    builder.Services.AddCorvidDataServices(dbConnection);
+    
+    builder.Services.AddCorvidDataServices(builder.Configuration["ConnectionStrings:UserContextConnection"]
+                                           ?? builder.Configuration["ConnectionStrings:CrowsAgainstHumilityDb"]);
 
     builder.Services.AddResponseCompression(options =>
     {
@@ -203,16 +202,30 @@ try
         options.TokenLifespan = TimeSpan.FromDays(2);
     });
 
-    if (builder.Environment.IsDevelopmentOrStaging())
-    {
-        builder.Services.AddDataProtection()
+#if DEBUG
+    builder.Services.AddDataProtection()
             .PersistKeysToFileSystem(new DirectoryInfo(builder.Configuration["Cookies:PersistKeysDirectory"]))
             .SetApplicationName(builder.Configuration["Cookies:ApplicationName"]);
+#endif
+
+    if (builder.Environment.IsProduction())
+    {
+        var container = new BlobContainerClient(builder.Configuration["crowsagainststorage"],
+            builder.Configuration["Application:KeyBase"]);
+        const string blobName = "keys.xml";
+
+        await container.CreateIfNotExistsAsync();
+
+        var blobClient = container.GetBlobClient(blobName);
+
+        var vaultKeyIdentifier = $"{vaultUri}{builder.Configuration["Application:KeyPathBase"]}";
+
+        builder.Services.AddDataProtection()
+            .PersistKeysToAzureBlobStorage(blobClient)
+            .ProtectKeysWithAzureKeyVault(new Uri(vaultKeyIdentifier), new DefaultAzureCredential());
     }
 
-    var apiKey = builder.Configuration["crowsagainstemails"] ?? String.Empty;
-
-    builder.Services.AddCorvidEmailServices(apiKey);
+    builder.Services.AddCorvidEmailServices(builder.Configuration["crowsagainstemails"] ?? String.Empty);
 
     var currentAssembly = typeof(Program).Assembly;
 

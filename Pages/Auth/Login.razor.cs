@@ -39,6 +39,8 @@ public partial class Login : ComponentBase
     [Inject] private TwitchAPI TwitchAPI { get; init; }
     #endregion
     #region Private fields
+
+    private const string ClassListForIcons = @"fa-brands fa-{0} text-light display-3";
     private Validations _validationsRef;
     private List<AuthenticationScheme> _externalProviders = new(5);
     private LoadingIndicator _loadingIndicator;
@@ -109,6 +111,19 @@ public partial class Login : ComponentBase
         {
             await _loadingIndicator.Hide();
         }
+    }
+
+    private static string GetLoginProviderIcon(String loginProviderName)
+    {
+        var result = loginProviderName switch
+        {
+            _ when String.Equals(loginProviderName, "twitch", StringComparison.OrdinalIgnoreCase) => loginProviderName,
+            _ when String.Equals(loginProviderName, "twitter", StringComparison.OrdinalIgnoreCase) => loginProviderName,
+            _ when String.Equals(loginProviderName, "discord", StringComparison.OrdinalIgnoreCase) => loginProviderName,
+            _ => String.Empty
+        };
+
+        return String.Format(ClassListForIcons, result.ToLowerInvariant());
     }
 
     private static String GetExternalLoginUrl(AuthenticationScheme authenticationScheme)

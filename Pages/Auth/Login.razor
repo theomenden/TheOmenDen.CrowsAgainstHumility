@@ -153,18 +153,7 @@
                                             <Span Class="visually-hidden">
                                                 Log in using your @context.DisplayName account
                                             </Span>
-                                            @switch (context.DisplayName)
-                                            {
-                                                case var pn when String.Equals(pn, "twitch", StringComparison.OrdinalIgnoreCase):
-                                                    <Icon Name="@("bi bi-twitch")" Class="text-light display-3" />
-                                                    break;
-                                                case var pn when String.Equals(pn, "twitter", StringComparison.OrdinalIgnoreCase):
-                                                    <Icon Name="@("bi bi-twitter")" Class="text-light display-3" />
-                                                    break;
-                                                case var pn when String.Equals(pn, "discord", StringComparison.OrdinalIgnoreCase):
-                                                    <Icon Name="@("bi bi-discord")" Class="text-light display-3" />
-                                                    break;
-                                            }
+                                        <i class="@GetLoginProviderIcon(context.DisplayName)"></i>
                                         </Button>
                                     </Animate>
                                 </Repeater>
