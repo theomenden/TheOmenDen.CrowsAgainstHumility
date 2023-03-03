@@ -11,17 +11,35 @@
             <BarItem>
                 <Dropdown Direction="Direction.Up">
                     <DropdownToggle TextColor="TextColor.Muted">
-                        <BarIcon IconName="IconName.Book" TextColor="TextColor.Muted" />
-                        Policies
+                        <Icon Name="IconName.QuestionCircle" Margin="Margin.Is1.FromEnd" />
+                        Support
                     </DropdownToggle>
                     <DropdownMenu Background="Background.Dark">
-                        <DropdownItem TextColor="TextColor.Muted" Clicked="@(() => NavigationManager.NavigateTo("/privacy-policy"))">
-                            Privacy Policy<Icon Name="IconName.Link" />
+                        <DropdownItem TextColor="TextColor.Muted"
+                                      Clicked="@(() => NavigationManager.NavigateTo("/contactUs"))">
+                            Contact Us
+                            <Icon Name="IconName.Mail" Margin="Margin.Is1.FromEnd" />
                         </DropdownItem>
                         <DropdownDivider Background="Background.Primary" />
-                        <DropdownItem TextColor="TextColor.Muted" Clicked="@(() => NavigationManager.NavigateTo("/terms-of-service"))">
-                            Terms of Service<Icon Name="IconName.Link" />
-                        </DropdownItem>
+                        <Dropdown Direction="Direction.End">
+                            <DropdownToggle>
+                                <BarIcon IconName="IconName.Book" Margin="Margin.Is1.FromEnd"/>
+                                Policies
+                            </DropdownToggle>
+                            <DropdownMenu Background="Background.Dark">
+                                <DropdownItem TextColor="TextColor.Muted" Clicked="@(() => NavigationManager.NavigateTo("/privacy-policy"))">
+                                    Privacy Policy<Icon Name="IconName.Lock" Margin="Margin.Is1.FromStart" />
+                                </DropdownItem>
+                                <DropdownDivider Background="Background.Primary" />
+                                <DropdownItem TextColor="TextColor.Muted" Clicked="@(() => NavigationManager.NavigateTo("/terms-of-service"))">
+                                    Terms of Service<Icon Name="IconName.UserCheck" Margin="Margin.Is1.FromStart" />
+                                </DropdownItem>
+                                <DropdownDivider Background="Background.Primary" />
+                                <DropdownItem TextColor="TextColor.Muted" Clicked="@(() => NavigationManager.NavigateTo("/cookie"))">
+                                    Cookie Consent<Icon Name="@("fa-cookie")" Margin="Margin.Is1.FromStart" />
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
                     </DropdownMenu>
                 </Dropdown>
             </BarItem>

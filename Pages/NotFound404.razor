@@ -1,0 +1,63 @@
+﻿<LayoutView Layout="@typeof(ErrorLayout)">
+<SEO Canonical="/notFound"
+     Title="Not Found"
+     Description="This page is displayed when a user tries to find another component that doesn't exist" />
+<Container Fluid>
+    <Row>
+        <Column ColumnSize="ColumnSize.IsFull"
+                TextAlignment="TextAlignment.Center"
+                Flex="Flex.AlignItems.Center.JustifyContent.Center">
+            <Card Background="Background.Dark"
+                  TextAlignment="TextAlignment.Center"
+                  TextColor="TextColor.Light"
+                  Shadow="Shadow.Large">
+                <CardBody>
+                    <CardImage
+                        Source="Images/TheOmenDenForDarkTheme.svg"
+                        Alt="The Omen Den Logo"
+                        Width="Width.Is75"
+                        Border="Border.Is0.OnAll" />
+                    <CardText>
+                        <Heading Size="HeadingSize.Is1"
+                                 Margin="Margin.Is5.FromTop"
+                                 TextWeight="TextWeight.Bold">
+                            Page not found!
+                        </Heading>
+                        <Paragraph Class="lead"
+                                   Margin="Margin.Is4.OnY">
+                            Looks like you ended up in an empty nest. If you think this is a mistake, please let us know.
+                        </Paragraph>
+                    </CardText>
+                    <Buttons Role="ButtonsRole.Toolbar" 
+                             Flex="Flex.ReverseColumn.Shrink.Is1">
+                        <Button Type="ButtonType.Link"
+                                Target="Target.Default"
+                                To="contactUs"
+                                Color="Color.Info"
+                                Flex="Flex.InlineFlex.AlignItems.Center.JustifyContent.Center"
+                                Block>
+                            <Icon Name="IconName.Mail" 
+                                  IconStyle="IconStyle.Solid" 
+                                  Margin="Margin.Is2.FromEnd" />
+                            Contact Us
+                        </Button>
+                        <Button Type="ButtonType.Link"
+                                To=""
+                                Target="Target.Default"
+                                Color="Color.Secondary"
+                                Flex="Flex.InlineFlex.AlignItems.Center.JustifyContent.Center"
+                                Margin="Margin.Is4.FromBottom"
+                                Shadow="Shadow.Default"
+                                Block>
+                            <Icon Name="IconName.ArrowLeft" 
+                                  IconStyle="IconStyle.Solid"
+                                  Margin="Margin.Is2.FromEnd"/>
+                            Back To Homepage
+                        </Button>
+                    </Buttons>
+                </CardBody>
+            </Card>
+        </Column>
+    </Row>
+</Container>
+</LayoutView>

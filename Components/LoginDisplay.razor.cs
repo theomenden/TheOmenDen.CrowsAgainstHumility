@@ -21,11 +21,16 @@ public partial class LoginDisplay : FluxorComponent
 
         _authState = await AuthenticationStateTask.ConfigureAwait(false);
 
-        var userId = _authState.User.GetUserId();
+        var (success, userId) = _authState.User.TryGetUserId();
 
-        var contextUser = await UserService.GetUserViewModelAsync(userId);
-        
-        _userDisplayName = contextUser?.Logins.FirstOrDefault()?.LoginUsername ?? _authState.User.Identity?.Name;
+        if (success)
+        {
+            var contextUser = await UserService.GetUserViewModelAsync(userId);
+
+            _userDisplayName = contextUser?.Logins.FirstOrDefault()?.LoginUsername;
+        }
+
+        _userDisplayName ??= _authState.User.Identity?.Name;
     }
 
     private Boolean IsAdminRole() => _authState?.User.IsInRole("Administrator") ?? false;

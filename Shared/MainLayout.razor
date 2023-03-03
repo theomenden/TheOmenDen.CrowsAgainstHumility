@@ -4,79 +4,12 @@
 <Layout Sider>
     <LayoutSider>
         <LayoutSiderContent>
-            <Bar @ref="@_sideBar"
-                 Mode="BarMode.VerticalInline"
-                 Background="Background.Dark"
-                 ThemeContrast="ThemeContrast.Dark"
-                 CollapseMode="BarCollapseMode.Small"
-                 Breakpoint="Breakpoint.Desktop"
-                 NavigationBreakpoint="Breakpoint.Tablet"
-                 Shadow="Shadow.Large">
-                <BarToggler />
-                <BarBrand Margin="Margin.Is2.FromEnd" Casing="CharacterCasing.Upper" />
-                <BarMenu Margin="Margin.Is3.FromTop">
-                    <BarStart>
-                        <BarItem>
-                            <BarLink To="">
-                                <BarIcon IconName="IconName.Home"/>
-                                Home
-                            </BarLink>
-                        </BarItem>
-                        <BarItem>
-                            <BarLink To="/rules">
-                                <BarIcon IconName="IconName.RulerHorizontal"/>
-                                Rules
-                            </BarLink>
-                        </BarItem>
-                        <AuthorizeView>
-                            <BarItem>
-                                <BarLink To="/game-list">
-                                    <BarIcon IconName="IconName.Gamepad"/>
-                                    Lobbies
-                                </BarLink>
-                            </BarItem>
-                            <BarItem>
-                                <BarLink To="/chat">
-                                    <BarIcon IconName="IconName.Comments"/>
-                                    Chat Rooms
-                                </BarLink>
-                            </BarItem>
-                        </AuthorizeView>
-                    </BarStart>
-                    <BarEnd/>
-                </BarMenu>
-            </Bar>
+            <CrowSider />
         </LayoutSiderContent>
     </LayoutSider>
     <Layout>
         <LayoutHeader Fixed>
-            <Bar @ref="@_topBar"
-                 Breakpoint="Breakpoint.Desktop"
-                 NavigationBreakpoint="Breakpoint.Tablet"
-                 Background="Background.Dark"
-                 ThemeContrast="ThemeContrast.Dark"
-                 Shadow="Shadow.Large"
-                 @bind-Visible="@_topBarVisible">
-                <Container Fluid>
-                    <BarToggler Border="Border.Is0" />
-                    <BarBrand>
-                        <BarItem>
-                            <BarLink To="" TextColor="TextColor.Light"
-                                     Class="text-decoration-underline link-primary">
-                                @ApplicationTitle
-                            </BarLink>
-                        </BarItem>
-                    </BarBrand>
-                    <BarMenu>
-                        <BarStart />
-                        <BarEnd Margin="Margin.Is2.FromEnd">
-                            <BarItem>
-                                <LoginDisplay />
-                            </BarItem>
-                        </BarEnd>
-                    </BarMenu>
-                </Container>
-            </Bar>
+            <CrowHeader />
         </LayoutHeader>
         <LayoutContent Padding="Padding.Is4.OnX" Margin="Margin.Is2.OnY">
             <LoadingIndicator FullScreen>

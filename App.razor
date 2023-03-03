@@ -1,7 +1,7 @@
 @inject TokenProvider TokenProvider
 <CascadingAuthenticationState>
-<Fluxor.Blazor.Web.StoreInitializer />
-<ThemeProvider Theme="@_theme">
+    <Fluxor.Blazor.Web.StoreInitializer />
+    <ThemeProvider Theme="@_theme">
         <Router AppAssembly="@typeof(App).Assembly">
             <Found Context="routeData">
                 <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
@@ -12,62 +12,21 @@
                 <FocusOnNavigate RouteData="@routeData" Selector="h1" />
             </Found>
             <NotFound>
-                <PageTitle>Not found</PageTitle>
-                <LayoutView Layout="@typeof(ErrorLayout)">
-                    <Row>
-                        <Column ColumnSize="ColumnSize.IsFull"
-                                TextAlignment="TextAlignment.Center"
-                                Flex="Flex.AlignItems.Center.JustifyContent.Center">
-                            <Card Background="Background.Dark"
-                                  TextAlignment="TextAlignment.Center"
-                                  TextColor="TextColor.Light"
-                                  Border="Border.Is3.Secondary.OnAll.Rounded"
-                                  Shadow="Shadow.Large">
-                                <CardBody>
-                                    <Image Source="images/TheOmenDenWithCrow.svg"
-                                           Text="404 Not found"
-                                           Fluid
-                                           Width="Width.Is75"/>
-                                    <CardText>
-                                        <Heading Size="HeadingSize.Is1"
-                                                 Margin="Margin.Is5.FromTop"
-                                                 TextWeight="TextWeight.Bold">
-                                            Page not found!
-                                        </Heading>
-                                        <Paragraph Class="lead"
-                                                   Margin="Margin.Is4.OnY">
-                                            Looks like you ended up in an empty nest. If you think this is a mistake, please let us know.
-                                        </Paragraph>
-                                    </CardText>
-                                    <Button Type="ButtonType.Link"
-                                            To=""
-                                            Color="Color.Secondary"
-                                            Flex="Flex.InlineFlex.AlignItems.Center.JustifyContent.Center"
-                                            Margin="Margin.Is4.FromBottom"
-                                            Border="Border.Is2.Light.OnAll.Rounded"
-                                            Shadow="Shadow.Default">
-                                        <Icon Name="IconName.ArrowLeft" Margin="Margin.Is2.FromEnd"/>
-                                        Back To Homepage
-                                    </Button>
-                                </CardBody>
-                            </Card>
-                        </Column>
-                    </Row>
-                </LayoutView>
+                <TheOmenDen.CrowsAgainstHumility.Pages.NotFound404 />
             </NotFound>
         </Router>
-    <ModalProvider UseModalStructure Animated 
-                   Size="ModalSize.Default" 
-                   Border="Border.Is1.Light.OnAll.Rounded" />
+        <ModalProvider UseModalStructure Animated
+                       Size="ModalSize.Default"
+                       Border="Border.Is1.Light.OnAll.Rounded" />
         <ApplicationLoadingIndicator />
         <PageProgressProvider />
         <NotificationProvider />
         <MessageProvider />
-    </ThemeProvider>
-</CascadingAuthenticationState>
-@code {
+        </ThemeProvider>
+        </CascadingAuthenticationState>
+        @code {
 
-    private readonly Theme _theme = new ()
+    private readonly Theme _theme = new()
         {
             IsGradient = true,
             LuminanceThreshold = 170,
@@ -93,13 +52,13 @@
                 DarkColors = new ThemeBarColorOptions
                 {
                     BackgroundColor = "#030011",
-                    Color="#ffffff",
+                    Color = "#ffffff",
                     ItemColorOptions = new ThemeBarItemColorOptions
                     {
                         ActiveBackgroundColor = "#FE42FE",
                         HoverBackgroundColor = "#7A04AB",
-                        ActiveColor ="#000000",
-                        HoverColor="#ffffff"
+                        ActiveColor = "#000000",
+                        HoverColor = "#ffffff"
                     }
                 }
             }

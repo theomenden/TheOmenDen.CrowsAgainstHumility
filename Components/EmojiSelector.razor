@@ -1,0 +1,31 @@
+﻿@using TheOmenDen.CrowsAgainstHumility.Core.Models.ChatModels
+<Dropdown Display="Display.InlineBlock" 
+          Margin="Margin.Is4.FromTop" 
+          Padding="Padding.Is2.OnY"
+          Direction="Direction.End"
+          Flex="Flex.Shrink.Is1.Grow.Is1"> 
+    <DropdownToggle @ref="_dropdownToggle" Size="Size.Small" ToggleIconVisible="false" Background="Background.Dark">
+        <Icon Name="IconName.Smile" IconStyle="IconStyle.Regular" TextColor="TextColor.Light" />
+    </DropdownToggle>
+    <DropdownMenu Background="Background.Dark"
+                  Width="Width.Is50"
+                  Margin="Margin.Is4.OnY.Is5.FromStart"
+                  Padding="Padding.Is2.FromStart.Is3.FromTop"
+                  Border="Border.Is1.Light.OnAll.RoundedBottom">
+        <Container>
+            <Row Flex="Flex.Shrink.Is1.Grow.Is1.JustifyContent.Between">
+                <Repeater TItem="BttvBaseEmote" Items="_bttvEmotes">
+                    <Column ColumnSize="ColumnSize.Is2">
+                        <Button Outline
+                                Flex="Flex.Shrink.Is1"
+                                Type="ButtonType.Button"
+                                Border="Border.Is0.OnAll.Rounded"
+                                Clicked="@(async () => await SelectGlobalBttvEmoteAsync(context))">
+                            <Image Source="@GetEmoteUri(context.Id, context.ImageType)" Text="@context.Code" />
+                        </Button>
+                    </Column>
+                </Repeater>
+            </Row>
+        </Container>
+    </DropdownMenu>
+</Dropdown>

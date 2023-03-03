@@ -71,46 +71,35 @@
     <Row>
         <Column ColumnSize="ColumnSize.IsFull.Is8.OnWidescreen.Is8.OnFullHD">
             <Div Margin="Margin.Is4.OnTablet">
+                <Text TextColor="TextColor.Light" Italic>
+                    Link an external provider to your Crows Against Humility Account!
+                </Text>
                 @if (_externalProviders.Any())
                 {
-                    <Buttons ElementId="#btn-animate"
-                         Flex="Flex.Row.AlignContent.Between.JustifyContent.Between.Grow.Is1.Shrink.Is1">
-                        <Repeater TItem="AuthenticationScheme" Items="_externalProviders">
-                            <Animate Anchor="#btn-animate"
-                                  Auto
-                                 Animation="Animations.FlipUp"
-                                 DelayMilliseconds="500">
-                            <Button Color="Color.Primary"
-                                    Border="Border.Rounded"
-                                    Shadow="Shadow.Default"
-                                    Margin="Margin.Is2.OnX"
-                                    Outline
-                                    Clicked="@(async () => await OnExternalLoginAsync(context))">
-                                <Span Class="visually-hidden">
-                                    @context.DisplayName
-                                </Span>
-                                <Small>
-                                    Link with your @context.DisplayName
-                                </Small>
-                                @switch (context.DisplayName)
-                                    {
-                                        case var pn when String.Equals(pn, "twitch", StringComparison.OrdinalIgnoreCase):
-                                            <i class="fa-brands fa-twitch text-light display-3 shadow-sm"></i>
-                                            break;
-                                        case var pn when String.Equals(pn, "twitter", StringComparison.OrdinalIgnoreCase):
-                                            <i class="fa-brands fa-twitter text-light display-3 shadow-sm"></i>
-                                            break;
-                                        case var pn when String.Equals(pn, "discord", StringComparison.OrdinalIgnoreCase):
-                                            <i class="fa-brands fa-discord text-light display-3 shadow-sm"></i>
-                                            break;
-                                        case var pn when String.Equals(pn, "OpenIdConnect", StringComparison.OrdinalIgnoreCase):
-                                            <i class="fa-brands fa-microsoft text-light display-3 shadow-sm"></i>
-                                            break;
-                                    }
-                                </Button>
-                            </Animate>
-                        </Repeater>
-                    </Buttons>
+                    <Div Margin="Margin.Is4.OnTablet">
+                        <Buttons ElementId="#btn-animate">
+                            <Repeater TItem="AuthenticationScheme" Items="_externalProviders">
+                                <Animate Anchor="#btn-animate"
+                                         Auto
+                                         Animation="Animations.FlipUp"
+                                         DelayMilliseconds="500">
+                                    <Button Color="Color.Primary"
+                                            Border="Border.Rounded"
+                                            Shadow="Shadow.Default"
+                                            Margin="Margin.Is2.OnX"
+                                            Padding="Padding.Is4.OnX"
+                                            Outline
+                                            To="@GetExternalLoginUrl(context)"
+                                            Type="ButtonType.Link">
+                                        <Span Class="visually-hidden">
+                                            Link with your @context.DisplayName account
+                                        </Span>
+                                        <i class="@GetLoginProviderIcon(context.DisplayName)"></i>
+                                    </Button>
+                                </Animate>
+                            </Repeater>
+                        </Buttons>
+                    </Div>
                 }
             </Div>
         </Column>

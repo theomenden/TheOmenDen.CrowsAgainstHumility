@@ -12,7 +12,7 @@ public partial class User: ComponentBase
 
     [Inject] private ILogger<User> Logger { get; init; }
 
-    [Inject] private NavigationManager NavigationManager { get; set; }
+    [Inject] private NavigationManager NavigationManager { get; init; }
 
     [Inject] private UserManager<ApplicationUser> UserManager { get; init; }
 

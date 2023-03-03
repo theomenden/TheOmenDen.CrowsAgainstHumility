@@ -40,6 +40,7 @@ using TheOmenDen.CrowsAgainstHumility.Services.Hubs;
 using TheOmenDen.CrowsAgainstHumility.Identity.Utilities;
 using TheOmenDen.CrowsAgainstHumility.Utilities;
 using Microsoft.Extensions.Azure;
+using TheOmenDen.CrowsAgainstHumility.Twitch.Extensions;
 
 #endregion
 #region Bootstrap Logger
@@ -246,6 +247,8 @@ try
 #endif
         .UseRouting()
         .AddMiddleware<StoreLoggingMiddleware>());
+
+    builder.Services.AddTwitchManagementServices(builder.Configuration);
 
     builder.Services.AddCorvidGamesServices();
 

@@ -14,11 +14,6 @@ public partial class MainLayout: LayoutComponentBase
 
     [Inject] private IUserService UserService { get; init; }
 
-    private Bar _sideBar;
-
-    private Bar _topBar;
-
-    private bool _topBarVisible = false;
     
     private Guid CurrentUserId { get; set; }
 

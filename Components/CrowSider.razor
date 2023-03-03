@@ -1,0 +1,42 @@
+﻿<Bar @ref="@_sideBar"
+     Mode="BarMode.VerticalInline"
+     Background="Background.Dark"
+     ThemeContrast="ThemeContrast.Dark"
+     CollapseMode="BarCollapseMode.Small"
+     Breakpoint="Breakpoint.Desktop"
+     NavigationBreakpoint="Breakpoint.Tablet"
+     Shadow="Shadow.Large">
+    <BarToggler />
+    <BarBrand Margin="Margin.Is2.FromEnd" Casing="CharacterCasing.Upper" />
+    <BarMenu Margin="Margin.Is3.FromTop">
+        <BarStart>
+            <BarItem>
+                <BarLink To="">
+                    <BarIcon IconName="IconName.Home"/>
+                    Home
+                </BarLink>
+            </BarItem>
+            <BarItem>
+                <BarLink To="/rules">
+                    <BarIcon IconName="IconName.RulerHorizontal"/>
+                    Rules
+                </BarLink>
+            </BarItem>
+            <AuthorizeView>
+                <BarItem>
+                    <BarLink To="/game-list">
+                        <BarIcon IconName="IconName.Gamepad"/>
+                        Lobbies
+                    </BarLink>
+                </BarItem>
+                <BarItem>
+                    <BarLink To="/chat">
+                        <BarIcon IconName="IconName.Comments"/>
+                        Chat Rooms
+                    </BarLink>
+                </BarItem>
+            </AuthorizeView>
+        </BarStart>
+        <BarEnd/>
+    </BarMenu>
+</Bar>

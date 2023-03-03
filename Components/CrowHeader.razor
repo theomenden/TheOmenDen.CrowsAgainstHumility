@@ -1,0 +1,27 @@
+﻿<Bar @ref="@_topBar"
+     Breakpoint="Breakpoint.Desktop"
+     NavigationBreakpoint="Breakpoint.Tablet"
+     Background="Background.Dark"
+     ThemeContrast="ThemeContrast.Dark"
+     Shadow="Shadow.Large"
+     @bind-Visible="@_topBarVisible">
+    <Container Fluid>
+        <BarToggler Border="Border.Is0" />
+        <BarBrand>
+            <BarItem>
+                <BarLink To="" TextColor="TextColor.Light"
+                         Class="text-decoration-underline link-primary">
+                    @ApplicationTitle
+                </BarLink>
+            </BarItem>
+        </BarBrand>
+        <BarMenu>
+            <BarStart />
+            <BarEnd Margin="Margin.Is2.FromEnd">
+                <BarItem>
+                    <LoginDisplay />
+                </BarItem>
+            </BarEnd>
+        </BarMenu>
+    </Container>
+</Bar>

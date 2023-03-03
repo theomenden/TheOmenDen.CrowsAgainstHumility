@@ -1,12 +1,14 @@
 ﻿function loadJs(sourceUrl) {
-	if (sourceUrl.Length == 0) {
+	if (sourceUrl.Length === 0) {
 		console.error("Invalid source URL");
 		return;
 	}
 
-	let tag = document.createElement('script');
+	const tag = document.createElement('script');
 	tag.src = sourceUrl;
 	tag.type = "text/javascript";
+	tag.async = "async";
+    tag.defer = "defer";
 
 	tag.onload = function () {
 		console.log("Script loaded successfully");
@@ -20,14 +22,16 @@
 }
 
 function loadJsById(scriptId, sourceUrl) {
-	if (sourceUrl.Length == 0) {
-		console.error("Invalid source URL")
-	}
+	if (sourceUrl.Length === 0) {
+        console.error("Invalid source URL");
+    }
 
-	let tag = document.createElement('script');
+	const tag = document.createElement('script');
 	tag.src = sourceUrl;
 	tag.type = "text/javascript";
 	tag.id = scriptId;
+    tag.async = "async";
+    tag.defer = "defer";
 
 	tag.onload = function () {
 		console.log("Script loaded successfully");

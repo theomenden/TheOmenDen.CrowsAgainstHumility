@@ -26,9 +26,7 @@ public partial class Dashboard : ComponentBase
     private Boolean HasErrors { get; set; }
     private IEnumerable<LoginViewModel> _userNames = Enumerable.Empty<LoginViewModel>();
     private ApplicationUser _user;
-
     private Modal _modalRef;
-
     private string _avatarImageSelectorUrl;
     private string _userProfileImageUrl = String.Empty;
     private List<AuthenticationScheme> _externalProviders = new(5);
@@ -38,18 +36,23 @@ public partial class Dashboard : ComponentBase
     {
         var authState = await AuthenticationStateTask;
 
-        var userId = authState.User.GetUserId();
+        var (success, userId) = authState.User.TryGetUserId();
 
-        var userInfo = await UserService.GetUserViewModelAsync(userId);
+        if (success)
+        {
+            var userInfo = await UserService.GetUserViewModelAsync(userId);
 
-        _userNames = userInfo.Logins.ToImmutableArray();
+            _userNames = userInfo.Logins.ToImmutableArray();
 
-        var  userTwitchName = _userNames
-            .Where(u => u.LoginProvider.Equals("twitch", StringComparison.OrdinalIgnoreCase))
-            .Select(u => u.LoginUsername)
-            .First();
+            var userTwitchName = _userNames
+                .Where(u => u.LoginProvider.Equals("twitch", StringComparison.OrdinalIgnoreCase))
+                .Select(u => u.LoginUsername)
+                .First();
 
-        _userProfileImageUrl = await PlayerVerificationService.GetProfileImageUrlAsync(userTwitchName);
+            _userProfileImageUrl = await PlayerVerificationService.GetProfileImageUrlAsync(userTwitchName);
+        }
+
+        _userProfileImageUrl ??= String.Empty;
 
         _externalProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync())
             .ToList();
@@ -67,6 +70,9 @@ public partial class Dashboard : ComponentBase
 
         return String.Format(ClassListForIcons, result.ToLowerInvariant());
     }
+
+    private static String GetExternalLoginUrl(AuthenticationScheme authenticationScheme)
+        => $"Account/challenge/{authenticationScheme.Name}";
 
     private async Task ShowProfileImageEditorAsync()
     {

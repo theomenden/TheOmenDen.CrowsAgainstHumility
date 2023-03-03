@@ -16,7 +16,7 @@ public sealed class TurnTimer: IDisposable
         _timer.Elapsed += TimerElapsed;
     }
     
-    public Int32 RemainingSeconds { get; private set; } = 0;
+    public Int32 RemainingSeconds { get; private set; }
 
     internal void StartTimer(Int32 time)
     {
