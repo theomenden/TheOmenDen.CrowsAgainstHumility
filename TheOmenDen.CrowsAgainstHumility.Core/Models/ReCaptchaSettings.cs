@@ -1,6 +1,7 @@
 ﻿namespace TheOmenDen.CrowsAgainstHumility.Core.Models;
 public sealed class ReCaptchaSettings
 {
-    public string SiteKey { get; set; }
-    public string SecretKey { get; set; }
+    public String CaptchaUri { get; init; } = String.Empty;
+    public String SiteKey { get; init; } = String.Empty;
+    public String SecretKey { get; init; } = String.Empty;
 }

@@ -1,22 +1,36 @@
 ﻿@page "/contactUs"
-<SEO Canonical="/contactUs" Title="Contact The Omen Den Support" Description="Contact The Omen Den's support staff if there's something you need addressed by using the form on this page!" />
-
-<Container
-     Background="Background.Dark"
-     Shadow="Shadow.Large"
-     Border="Border.Is2.Light.OnAll.Rounded"
-     Padding="Padding.Is4.OnY"
-     Display="Display.Table">
-    <Form Margin="Margin.Is2.OnY">
-        <Row Display="Display.TableRow">
-            <Column ColumnSize="ColumnSize.Is8.OnFullHD.Is10.OnDesktop.IsFull.OnMobile">
-                <Fields>
+<SEO Canonical="/contactUs" 
+     Title="Contact The Omen Den Support" 
+     Description="Contact The Omen Den's support staff if there's something you need addressed by using the form on this page!" />
+<Form Margin="Margin.Is2.OnY.Is5.OnX"
+      Padding="Padding.Is2"
+      Flex="Flex.Column.AlignItems.Center">
+    <Container Background="Background.Dark"
+               Shadow="Shadow.Large"
+               Border="Border.Is1.Light.OnAll.Rounded"
+               Padding="Padding.Is4.OnY.Is2.OnX"
+               Margin="Margin.Is3.OnX"
+               TextAlignment="TextAlignment.Center"
+               Flex="Flex.Column.JustifyContent.Center.AlignItems.Center">
+        <Row Margin="Margin.Is2.FromTop.Is1.FromBottom"
+             Width="Width.Is100">
+            <Column ColumnSize="ColumnSize.Is10.OnFullHD.IsFull">
+                <Fields Flex="Flex.Row.OnTablet.Column.OnMobile">
                     <Field Horizontal>
                         <FieldLabel TextColor="TextColor.Light">
                             First Name
                         </FieldLabel>
                         <FieldBody>
-                            <TextEdit />
+                            <Addons>
+                                <Addon AddonType="AddonType.Start">
+                                    <AddonLabel>
+                                        <Icon Name="IconName.User" />
+                                    </AddonLabel>
+                                </Addon>
+                                <Addon AddonType="AddonType.Body">
+                                    <TextEdit @bind-Text="@_firstName" />
+                                </Addon>
+                            </Addons>
                         </FieldBody>
                     </Field>
                     <Field Horizontal>
@@ -24,14 +38,24 @@
                             Last Name
                         </FieldLabel>
                         <FieldBody>
-                            <TextEdit />
+                            <Addons>
+                                <Addon AddonType="AddonType.Start">
+                                    <AddonLabel>
+                                        <Icon Name="IconName.User" />
+                                    </AddonLabel>
+                                </Addon>
+                                <Addon AddonType="AddonType.Body">
+                                    <TextEdit @bind-Text="@_lastName" />
+                                </Addon>
+                            </Addons>
                         </FieldBody>
                     </Field>
                 </Fields>
             </Column>
         </Row>
-        <Row Display="Display.TableRow">
-            <Column ColumnSize="ColumnSize.Is8.OnFullHD.Is10.OnDesktop.IsFull.OnTablet">
+        <Row Margin="Margin.Is2.OnY"
+             Width="Width.Is100">
+            <Column ColumnSize="ColumnSize.Is10.OnFullHD.IsFull">
                 <Fields>
                     <Field Horizontal>
                         <FieldLabel TextColor="TextColor.Light">
@@ -43,9 +67,9 @@
                                     <AddonLabel>
                                         <Icon Name="IconName.Mail" />
                                     </AddonLabel>
-                                    <Addon AddonType="AddonType.Body">
-                                        <TextEdit Role="TextRole.Email" />
-                                    </Addon>
+                                </Addon>
+                                <Addon AddonType="AddonType.Body">
+                                    <TextEdit Role="TextRole.Email" @bind-Text="@_email" />
                                 </Addon>
                             </Addons>
                         </FieldBody>
@@ -53,5 +77,38 @@
                 </Fields>
             </Column>
         </Row>
-    </Form>
-</Container>
+        <Row Margin="Margin.Is2.OnY"
+             Width="Width.Is100">
+            <Column ColumnSize="ColumnSize.Is10.OnFullHD.IsFull">
+                <Fields Flex="Flex.Column.OnMobile">
+                    <Field>
+                        <FieldLabel TextColor="TextColor.Light">
+                            <Icon Name="IconName.Comment" />
+                            Write us your Feedback/Concerns
+                        </FieldLabel>
+                        <FieldBody>
+                                <MemoEdit @bind-Text="@_emailContent" />
+                        </FieldBody>
+                    </Field>
+                </Fields>
+            </Column>
+        </Row>
+        <Row Width="Width.Is100">
+            <Column ColumnSize="ColumnSize.IsFull">
+                <Buttons Role="ButtonsRole.Toolbar"
+                         Flex="Flex.Grow.Is1.Column.OnMobile">
+                    <Button Type="ButtonType.Submit"
+                            PreventDefaultOnSubmit
+                            Color="Color.Primary"
+                            Clicked="SubmitContactFormAsync"
+                            Block>
+                        Send <Icon Name="IconName.Mail" />
+                    </Button>
+                    <Button Type="ButtonType.Reset" Color="Color.Secondary" Block>
+                        Clear
+                    </Button>
+                </Buttons>
+            </Column>
+        </Row>
+    </Container>
+</Form>

@@ -9,7 +9,6 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddTwitchManagementServices(this IServiceCollection services, IConfiguration configuration)
     {
-
         var betterTtvUri = new Uri(configuration["BetterTTV:ConnectionString"] ?? String.Empty);
 
         services.AddHttpClient<IBetterTTVEmoteService, BetterTTVEmoteService>("bttvClient", options => options.BaseAddress = betterTtvUri);

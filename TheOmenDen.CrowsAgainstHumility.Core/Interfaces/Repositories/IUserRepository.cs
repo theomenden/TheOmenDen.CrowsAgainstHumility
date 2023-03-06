@@ -17,7 +17,7 @@ public interface IUserRepository
 
     Task<UserViewModel> GetUserViewModelAsync(Guid userId, CancellationToken cancellationToken = default);
 
-    Task<ApplicationUser> GetUserByUsernameAsync(string username, CancellationToken cancellationToken = default);
+    Task<ApplicationUser?> GetUserByUsernameAsync(string username, CancellationToken cancellationToken = default);
 
     ValueTask<bool> IsInRoleAsync(Guid userId, CancellationToken cancellationToken = default, params string[] roles);
 

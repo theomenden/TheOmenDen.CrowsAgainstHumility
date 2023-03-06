@@ -40,6 +40,8 @@ using TheOmenDen.CrowsAgainstHumility.Services.Hubs;
 using TheOmenDen.CrowsAgainstHumility.Identity.Utilities;
 using TheOmenDen.CrowsAgainstHumility.Utilities;
 using Microsoft.Extensions.Azure;
+using Microsoft.Extensions.Options;
+using TheOmenDen.CrowsAgainstHumility.Services.Clients;
 using TheOmenDen.CrowsAgainstHumility.Twitch.Extensions;
 
 #endregion
@@ -248,6 +250,15 @@ try
         .UseRouting()
         .AddMiddleware<StoreLoggingMiddleware>());
 
+    var captchaSettings = new ReCaptchaSettings
+    {
+        CaptchaUri = builder.Configuration["Recaptcha:CaptchaUri"] ?? String.Empty,
+        SiteKey = builder.Configuration["recaptcha-site"] ?? String.Empty,
+        SecretKey = builder.Configuration["recaptcha-secret"] ?? String.Empty
+    };
+
+    builder.Services.AddSingleton(captchaSettings);
+
     builder.Services.AddTwitchManagementServices(builder.Configuration);
 
     builder.Services.AddCorvidGamesServices();
@@ -257,7 +268,7 @@ try
     builder.Services.AddSingleton<ISessionDetails, SessionDetails>();
 
     builder.Services.AddScoped<CircuitHandler, TrackingCircuitHandler>(sp => new TrackingCircuitHandler(sp.GetRequiredService<ISessionDetails>()));
-
+    
     builder.Services.AddResponseCaching();
 
     builder.Services.AddSignalR(options => options.MaximumReceiveMessageSize = 104_857_600)
@@ -300,6 +311,8 @@ try
             options.MaximumReceiveMessageSize = 104_857_600;
         });
     builder.Services.AddHttpContextAccessor();
+    builder.Services.AddHttpClient<IRecaptchaService, ReCaptchaService>("captchaClient", cfg => cfg.BaseAddress = new Uri(builder.Configuration["Recaptcha:VerifyUri"] ?? String.Empty));
+    builder.Services.AddScoped<IRecaptchaService, ReCaptchaService>();
     builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApplicationUser>>();
     builder.Services.AddScoped<UserInfo>();
     builder.Services.AddScoped<IHostEnvironmentAuthenticationStateProvider>(sp =>
@@ -307,7 +320,7 @@ try
         var provider = (ServerAuthenticationStateProvider)sp.GetRequiredService<AuthenticationStateProvider>();
         return provider;
     });
-
+    
     await using var app = builder.Build();
 
     app.UseResponseCompression();
@@ -349,7 +362,7 @@ try
     app.MapControllers();
     app.MapRazorPages();
     app.MapBlazorHub();
-    app.MapHub<CawChatHub>(CawChatHub.HubUrl);
+    app.MapHub<CawChatHub>(ChatClient.HubUrl);
     app.MapHub<CrowGameHub>(CrowGameHub.HubUrl);
     app.MapFallbackToPage("/_Host");
 

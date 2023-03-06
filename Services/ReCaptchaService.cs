@@ -1,11 +1,12 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.JSInterop;
+using NuGet.Common;
 using TheOmenDen.Shared.Guards;
 
 namespace TheOmenDen.CrowsAgainstHumility.Services;
 
-internal sealed class ReCaptchaService
+internal sealed class ReCaptchaService: IRecaptchaService
 {
     private readonly ReCaptchaSettings _settings;
     private readonly IJSRuntime _jsRuntime;
@@ -31,11 +32,13 @@ internal sealed class ReCaptchaService
     {
         Guard.FromNullOrWhitespace(action, nameof(action));
 
-        var isCaptchaLoaded = await _jsRuntime.InvokeAsync<bool>("isRecaptchaLoaded", cancellationToken, _settings.SiteKey);
+        var uri = $"{_settings.CaptchaUri}{_settings.SiteKey}";
 
-        if (!isCaptchaLoaded)
+        var isCaptchaLoaded = await _jsRuntime.InvokeAsync<bool>("isRecaptchaLoaded", cancellationToken, uri);
+
+        if(!isCaptchaLoaded)
         {
-            await LoadRecaptchaAsync(cancellationToken);
+            await LoadRecaptchaAsync(uri, cancellationToken);
         }
 
         var captchaToken = await _jsRuntime.InvokeAsync<String>("generateCaptchaToken", cancellationToken, _settings.SiteKey,
@@ -50,13 +53,15 @@ internal sealed class ReCaptchaService
 
         try
         {
-            using var httpClient = _httpClientFactory.CreateClient();
+            using var httpClient = _httpClientFactory.CreateClient("captchaClient");
+            
+            using var encodedContent = new FormUrlEncodedContent(new KeyValuePair<string, string>[]
+            {
+                new ("secret", _settings.SecretKey),
+                new ("response", token)
+            });
 
-            var uri = $"{httpClient.BaseAddress}?secret={_settings.SecretKey}&response={token}";
-
-            using var request = new HttpRequestMessage(HttpMethod.Get, uri);
-
-            using var response = await httpClient.SendAsync(request, cancellationToken);
+            using var response = await httpClient.PostAsync(httpClient.BaseAddress, encodedContent, cancellationToken);
 
             response.EnsureSuccessStatusCode();
 
@@ -75,6 +80,6 @@ internal sealed class ReCaptchaService
         }
     }
 
-    private async Task LoadRecaptchaAsync(CancellationToken cancellationToken = default)
-        => await _jsRuntime.InvokeVoidAsync("loadRecaptcha", cancellationToken, _settings.SiteKey);
+    private async Task LoadRecaptchaAsync(String captchaUri, CancellationToken cancellationToken = default)
+        => await _jsRuntime.InvokeVoidAsync("loadJsById", cancellationToken,"recaptchaScript", captchaUri);
 }
