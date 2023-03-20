@@ -1,11 +1,19 @@
-﻿using System.Runtime.CompilerServices;
-using TheOmenDen.CrowsAgainstHumility.Core.Models;
+﻿using TheOmenDen.CrowsAgainstHumility.Core.Models;
+using TheOmenDen.Shared.Specifications;
 
 namespace TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Repositories;
-public interface ICrowGameRepository
+public interface ICrowGameRepository: IAsyncEnumerable<RoomState>
 {
-    Task CreateRoomAsync(CrowGameCreator protoGame, CancellationToken cancellation = default);
-    Task<IEnumerable<CrowGame>> GetCrowGamesAsync(CancellationToken cancellationToken = default);
-    Task<CrowGame?> WithIdAsync(Guid id,CancellationToken cancellationToken = default);
-    IAsyncEnumerable<CrowGame> GetCrowGameStreamAsync(CancellationToken cancellationToken = default);
+    IAsyncEnumerable<RoomState> GetCurrentRoomsAsync(CancellationToken cancellationToken = default);
+
+    IAsyncEnumerable<RoomState> GetCurrentRoomsByCriteriaAsync(Specification<RoomState> roomSpecification,
+        CancellationToken cancellationToken = default);
+
+    Task<RoomState> GetRoomByIdAsync(Guid roomId, CancellationToken cancellationToken = default);
+
+    Task<RoomState> GetRoomByCodeAsync(String code, CancellationToken cancellationToken = default);
+
+    Task UpdateRoomAsync(RoomState roomToUpdate, CancellationToken cancellationToken = default);
+
+
 }

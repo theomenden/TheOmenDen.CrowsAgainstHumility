@@ -1,0 +1,51 @@
+﻿@layout MobileLayout
+@page "/mobile/privacy-policy"
+<SEO Canonical="/privacy-policy"
+     Title="The Omen Den Privacy policy"
+     Description="The Omen Den takes your privacy seriously, and will only use your personal information defined in the secure policy on this page" />
+<Container Fluid
+           Background="Background.Dark"
+           TextColor="TextColor.Light"
+           Shadow="Shadow.Large"
+           Margin="Margin.Is3.FromTop"
+           Padding="Padding.Is2.OnX"
+           Flex="Flex.Column.AlignContent.Center.JustifyContent.Around">
+    <Row Height="Height.Is100">
+        <Column ColumnSize="ColumnSize.IsFull.OnMobile">
+            <LoadingIndicator @ref="_loadingIndicator">
+                <ChildContent>
+                    <Div Margin="Margin.Is3.FromTop.OnMobile"
+                         Padding="Padding.Is2.OnAll.OnMobile"
+                         id="__enzuzo-root-privacy">
+                    </Div>
+                </ChildContent>
+                <IndicatorTemplate>
+                    <Animate Animation="Animations.FadeDownRight" Auto Duration="TimeSpan.FromMilliseconds(500)">
+                        <Div>0
+                            <SpinKit Type="SpinKitType.Chase" Size="100px" />
+                        </Div>
+                    </Animate>
+                </IndicatorTemplate>
+            </LoadingIndicator>
+        </Column>
+    </Row>
+    <Row Margin="Margin.Is2.FromTop.Is3.FromStart"
+         Padding="Padding.Is4.OnX">
+        <Column ColumnSize="ColumnSize.IsFull.OnMobile">
+            <Blazorise.Link To="@CertLink"
+                            onmouseout="tLTC('tl_popupPOSEV')"
+                            ondragstart="return false;"
+                            onmouseover="tLeB(event,'https://secure.trust-provider.com/ttb_searcher/trustlogo?v_querytype=C&v_shortname=POSEV&v_search=https://crowsagainsthumility.app/&x=6&y=5','tl_popupPOSEV')">
+                <Image Source="@ImagePath"
+                       Text="EV Cert Provider: https://secure.trust-provider.com/"
+                       loading="lazy"
+                       onmousedown="return tLKB(event,'https://secure.trust-provider.com/ttb_searcher/trustlogo?v_querytype=W&v_shortname=POSEV&v_search=https://crowsagainsthumility.app/&x=6&y=5');"
+                       oncontextmenu="return tLLB(event);" />
+            </Blazorise.Link>
+        </Column>
+    </Row>
+</Container>
+
+@code {
+
+}

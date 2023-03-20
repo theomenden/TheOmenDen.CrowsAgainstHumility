@@ -1,0 +1,19 @@
+﻿@layout RootLayout
+@inherits LayoutComponentBase
+<Layout>
+    <LayoutHeader Fixed>
+        <CrowHeader />
+    </LayoutHeader>
+    <Layout Sider>
+        <LayoutSider>
+            <LayoutSiderContent>
+                <MobileCrowSider />
+            </LayoutSiderContent>
+        </LayoutSider>
+        <Layout>
+            <LayoutContent Margin="Margin.Is3.FromTop" Padding="Padding.Is4.OnX">
+                @Body
+            </LayoutContent>
+        </Layout>
+    </Layout>
+</Layout>

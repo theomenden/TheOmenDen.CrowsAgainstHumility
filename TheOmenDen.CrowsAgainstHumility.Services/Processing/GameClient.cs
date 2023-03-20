@@ -1,94 +1,63 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
+﻿using System.Resources;
+using System.Runtime.CompilerServices;
+using Discord;
+using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using TheOmenDen.CrowsAgainstHumility.Core.Delegates;
+using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Repositories;
+using TheOmenDen.CrowsAgainstHumility.Core.Models;
 using TheOmenDen.CrowsAgainstHumility.Core.Models.EventArgs;
 using TheOmenDen.Shared.Guards;
 
 namespace TheOmenDen.CrowsAgainstHumility.Services.Processing;
-internal sealed class GameClient: IAsyncDisposable
+
+internal sealed class GameClient
 {
-    public const string HubUrl = "/CrowGame";
-
-    private readonly string _hubUrl;
-
-    private readonly string _username;
-
-    private bool _isStarted;
-
-    private HubConnection _hubConnection;
-
+    private readonly ICrowGameRepository _gameRepository;
     private readonly ILogger<GameClient> _logger;
 
-    public event MessageReceivedEventHandler MessageReceived;
-
-    public GameClient(ILogger<GameClient> logger,string username, string baseUri)
+    public GameClient(ICrowGameRepository gameRepository, ILogger<GameClient> logger)
     {
-        Guard.FromNullOrWhitespace(username, nameof(username));
-        Guard.FromNullOrWhitespace(baseUri, nameof(baseUri));
-
+        _gameRepository = gameRepository;
         _logger = logger;
-
-        _username = username;
-        _hubUrl = $"{baseUri.Trim('/')}{HubUrl}";
     }
 
-    public async Task StartClientAsync()
+    public async IAsyncEnumerable<RoomStateDto> GetAllRoomsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        if (!_isStarted)
+        await foreach (var room in _gameRepository.WithCancellation(cancellationToken))
         {
-            _hubConnection = new HubConnectionBuilder()
-                .WithUrl(_hubUrl)
-                .Build();
-
-            _logger.LogInformation("Calling {start}()", nameof(StartClientAsync));
-
-            _hubConnection.On<string, string>("", (user, message) =>
+            yield return new RoomStateDto(room.Id, Enumerable.Empty<Player>())
             {
-                HandleReceivedMessage(user, message);
-            });
-
-            await _hubConnection.StartAsync();
-
-            _logger.LogInformation("Started Client");
-
-            _isStarted = true;
-
-            await _hubConnection.SendAsync("", _username);
+                Code = room.RoomCode,
+                Name = room.Name,
+            };
         }
     }
 
-    public async Task SendAsync(string message)
+    public async Task<RoomStateDto?> GetRoomByIdAsync(Guid roomId, CancellationToken cancellationToken = default)
     {
-        if (!_isStarted)
+        var roomToGet = await _gameRepository.GetRoomByIdAsync(roomId, cancellationToken);
+
+        return new RoomStateDto(roomToGet.Id, Enumerable.Empty<Player>())
         {
-            throw new InvalidOperationException("Client not started");
-        }
-
-        await _hubConnection.SendAsync("", _username, message);
+            Code = roomToGet.RoomCode,
+            Name = roomToGet.Name,
+            RoomId = roomToGet.Id
+        };
     }
 
-    public async ValueTask StopAsync()
+    public async Task<RoomStateDto?> GetRoomByRoomCodeAsync(String roomCode,
+        CancellationToken cancellationToken = default)
     {
-        if (_isStarted)
+        var roomToGet = await _gameRepository.GetRoomByCodeAsync(roomCode, cancellationToken);
+
+        return new RoomStateDto(roomToGet.Id, Enumerable.Empty<Player>())
         {
-            await _hubConnection.StopAsync();
-
-            await _hubConnection.DisposeAsync();
-        }
-
-        _hubConnection = null;
-        _isStarted = false;
-    }
-
-    private void HandleReceivedMessage(string username, string message)
-    {
-        MessageReceived?.Invoke(this, new MessageReceivedEventArgs(username, message));
-    }
-
-    public ValueTask DisposeAsync()
-    {
-        _logger.LogWarning("Disposing Game");
-        return StopAsync();
+            Code = roomToGet.RoomCode,
+            Name = roomToGet.Name,
+            RoomId = roomToGet.Id
+        };
     }
 }
 

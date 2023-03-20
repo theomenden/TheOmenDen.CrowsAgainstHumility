@@ -1,49 +1,32 @@
-﻿namespace TheOmenDen.CrowsAgainstHumility.Core.Models;
+﻿using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
 
-public sealed class Player : IEquatable<Player>, IComparable<Player>, IComparable
+namespace TheOmenDen.CrowsAgainstHumility.Core.Models;
+
+public sealed record Player : IComparable<Player>, IComparable
 {
     private const int MaxHandSize = 10;
+    
+    public String ConnectionId { get; init; }
 
-    public Player() {}
-    public Player(String connectionId)
-    {
-        ConnectionId = connectionId;
-        Id = Guid.NewGuid();
-    }
+    public GameRoles GameRole { get; init; } = GameRoles.Player;
 
-    public PlayerDto ToPlayerDto() => new(Name, Id, IsConnected);
+    public int AwesomePoints { get; init; } = 2;
 
-    public String ConnectionId { get; set; }
+    public string Name { get; init; } = String.Empty;
 
-    public int AwesomePoints { get; set; } = 2;
+    public string Username { get; init; } = String.Empty;
 
-    public string Name { get; set; } = String.Empty;
+    public WhiteCard? PlayedWhiteCard { get; init; }
 
-    public string Username { get; set; } = String.Empty;
+    public IEnumerable<WhiteCard> Hand { get; init; } = Enumerable.Empty<WhiteCard>();
 
-    public List<WhiteCard> Hand { get; } = new (MaxHandSize);
+    public Int32 DisplayPosition { get; init; } = 0;
 
-    public Guid ConnectionGuid { get; }
+    public Guid Id { get; init;}
 
-    public Int32 DisplayPosition { get; set; } = 0;
+    public bool IsConnected { get; init; }
 
-    public Guid Id { get; set;}
-
-    public bool IsConnected { get; set; }
-
-    public bool IsCardCzar { get; set; } = false;
-    #region IEquatable Implementations
-    public bool Equals(Player? other) => other is not null 
-                                         && (ReferenceEquals(this, other) 
-                                             || ConnectionId == other.ConnectionId);
-
-    public override bool Equals(object? obj) => obj is not null
-        && ReferenceEquals(this, obj) 
-        || obj is Player other 
-        && Equals(other);
-
-    public override int GetHashCode() => ConnectionId.GetHashCode();
-    #endregion
+    public bool IsCardCzar => GameRole == GameRoles.CardTsar;
     #region IComparable Implementations
     public int CompareTo(Player? other)
     {
@@ -71,8 +54,6 @@ public sealed class Player : IEquatable<Player>, IComparable<Player>, IComparabl
     }
     #endregion
     #region Overloaded Operators
-    public static bool operator ==(Player? left, Player? right) => Equals(left, right);
-    public static bool operator !=(Player? left, Player? right) => !Equals(left, right);
     public static bool operator <(Player? left, Player? right) => Comparer<Player>.Default.Compare(left, right) < 0;
     public static bool operator >(Player? left, Player? right) => Comparer<Player>.Default.Compare(left, right) > 0;
     public static bool operator <=(Player? left, Player? right) => Comparer<Player>.Default.Compare(left, right) <= 0;

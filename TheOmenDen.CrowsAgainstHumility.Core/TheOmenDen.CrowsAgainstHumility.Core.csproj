@@ -8,14 +8,14 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.4" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
-    <PackageReference Include="TheOmenDen.Shared" Version="2023.1.15.141" />
+    <PackageReference Include="TheOmenDen.Shared" Version="2023.3.17.2238" />
     <PackageReference Include="TwitchLib" Version="3.5.3" />
-    <PackageReference Include="TwitchLib.Api" Version="3.8.0" />
-    <PackageReference Include="TwitchLib.Api.Core" Version="3.8.0" />
-    <PackageReference Include="TwitchLib.Api.Core.Interfaces" Version="3.8.0" />
-    <PackageReference Include="TwitchLib.Api.Helix" Version="3.8.0" />
+    <PackageReference Include="TwitchLib.Api" Version="3.9.0" />
+    <PackageReference Include="TwitchLib.Api.Core" Version="3.9.0" />
+    <PackageReference Include="TwitchLib.Api.Core.Interfaces" Version="3.9.0" />
+    <PackageReference Include="TwitchLib.Api.Helix" Version="3.9.0" />
     <PackageReference Include="TwitchLib.PubSub" Version="3.2.6" />
   </ItemGroup>
 

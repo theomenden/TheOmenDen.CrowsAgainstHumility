@@ -1,4 +1,3 @@
-@inject TokenProvider TokenProvider
 <CascadingAuthenticationState>
     <Fluxor.Blazor.Web.StoreInitializer />
     <ThemeProvider Theme="@_theme">
@@ -22,57 +21,5 @@
         <PageProgressProvider />
         <NotificationProvider />
         <MessageProvider />
-        </ThemeProvider>
-        </CascadingAuthenticationState>
-        @code {
-
-    private readonly Theme _theme = new()
-        {
-            IsGradient = true,
-            LuminanceThreshold = 170,
-            ColorOptions = new ThemeColorOptions
-            {
-                Primary = "#7A04AB",
-                Secondary = "#FF00A0",
-                Dark = "#120458",
-                Light = "#FE75FE",
-                Link = "#cfe2f3",
-                Warning = "#E2C709"
-            },
-            BackgroundOptions = new ThemeBackgroundOptions
-            {
-                Primary = "#FF00A0",
-                Secondary = "#7A04AB",
-                Dark = "#030011",
-                Light = "#FE75FE",
-                Warning = "#E2C709",
-            },
-            BarOptions = new ThemeBarOptions
-            {
-                DarkColors = new ThemeBarColorOptions
-                {
-                    BackgroundColor = "#030011",
-                    Color = "#ffffff",
-                    ItemColorOptions = new ThemeBarItemColorOptions
-                    {
-                        ActiveBackgroundColor = "#FE42FE",
-                        HoverBackgroundColor = "#7A04AB",
-                        ActiveColor = "#000000",
-                        HoverColor = "#ffffff"
-                    }
-                }
-            }
-        };
-
-    [Parameter] public ApplicationUserState? InitialState { get; set; }
-
-    protected override Task OnInitializedAsync()
-    {
-        TokenProvider.XSRFToken = InitialState?.Xsrf ?? String.Empty;
-        TokenProvider.AccessToken = InitialState?.AccessToken ?? String.Empty;
-        TokenProvider.RefreshToken = InitialState?.RefreshToken ?? String.Empty;
-        TokenProvider.Username = InitialState?.Username ?? String.Empty;
-        TokenProvider.IsAuthenticated = InitialState?.IsAuthenticated ?? false;
-        return base.OnInitializedAsync();
-    }
-}
+    </ThemeProvider>
+</CascadingAuthenticationState>

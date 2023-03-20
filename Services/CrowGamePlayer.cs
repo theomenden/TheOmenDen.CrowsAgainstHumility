@@ -9,15 +9,6 @@ public sealed class CrowGamePlayer : IComparable<CrowGamePlayer>, IEquatable<Cro
     #region Event Handlers
     public event EventHandler<int>? ScoreChanged;
     #endregion
-    #region Constructors
-    internal CrowGamePlayer(PlayerDto player)
-    {
-        Name = player.Name;
-        Id = player.Id;
-        AwesomePoints = 0;
-        IsConnected = player.IsConnected;
-    }
-    #endregion
     #region Properties
     public Guid Id { get; set; }
     public String Name { get; set; }

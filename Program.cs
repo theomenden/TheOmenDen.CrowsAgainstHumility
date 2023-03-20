@@ -1,5 +1,4 @@
 #region Usings
-
 using System.IO.Compression;
 using Blazorise;
 using Blazorise.Bootstrap5;
@@ -7,7 +6,6 @@ using Blazorise.Icons.FontAwesome;
 using Serilog;
 using Serilog.Events;
 using System.Net.Mime;
-using TheOmenDen.CrowsAgainstHumility.Extensions;
 using TheOmenDen.Shared.Logging.Serilog;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using TheOmenDen.CrowsAgainstHumility.Circuits;
@@ -43,6 +41,7 @@ using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Options;
 using TheOmenDen.CrowsAgainstHumility.Services.Clients;
 using TheOmenDen.CrowsAgainstHumility.Twitch.Extensions;
+using TheOmenDen.CrowsAgainstHumility.ViewModels;
 
 #endregion
 #region Bootstrap Logger
@@ -159,6 +158,9 @@ try
         .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"), cookieScheme: "microsoftCookies");
 
     builder.Services.AddHttpClient();
+    builder.Services.AddScoped<RoomViewModel>();
+    builder.Services.AddScoped<ICookie, Cookie>();
+    builder.Services.AddScoped<IClipboardService, ClipboardService>();
     builder.Services.AddScoped<TokenProvider>();
     builder.Services.AddScoped<TokenStateService>();
     var cacheConnectionString = builder.Configuration["CacheConnection"];
@@ -192,9 +194,7 @@ try
         options.IncludeSubDomains = true;
         options.MaxAge = TimeSpan.FromDays(365);
     });
-
-    builder.Services.AddHealthChecks();
-
+    
     var connectionString = builder.Configuration.GetConnectionString("CrowsAgainstAuthority")
                            ?? throw new InvalidOperationException("Connection string 'UserContextConnection' not found.");
 
@@ -207,8 +207,8 @@ try
 
 #if DEBUG
     builder.Services.AddDataProtection()
-            .PersistKeysToFileSystem(new DirectoryInfo(builder.Configuration["Cookies:PersistKeysDirectory"]))
-            .SetApplicationName(builder.Configuration["Cookies:ApplicationName"]);
+            .PersistKeysToFileSystem(new DirectoryInfo(builder.Configuration["Cookies:PersistKeysDirectory"] ?? String.Empty))
+            .SetApplicationName(builder.Configuration["Cookies:ApplicationName"] ?? String.Empty);
 #endif
 
     if (builder.Environment.IsProduction())

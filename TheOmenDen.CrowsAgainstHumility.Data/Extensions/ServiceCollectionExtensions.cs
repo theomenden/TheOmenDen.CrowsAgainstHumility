@@ -25,6 +25,9 @@ public static class ServiceCollectionExtensions
                 .UseLoggerFactory(LoggerFactory);
         });
 
+        services.AddHealthChecks()
+            .AddDbContextCheck<CrowsAgainstHumilityContext>();
+
         return services;
     }
 }

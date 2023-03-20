@@ -36,7 +36,7 @@ public class ApplicationUser: IdentityUser<Guid>
         ? @"img\avatars\avatar-00.png"
         : ImageUrl;
     
-    public virtual ICollection<CrowGamePlayer> CrowGamePlayers { get; set; } = new HashSet<CrowGamePlayer>();
+    public virtual ICollection<RoomState> Rooms { get; set; } = new HashSet<RoomState>();
 
     public virtual ICollection<CawChatMessage> ChatMessagesToUsers { get; set; } = new HashSet<CawChatMessage>();
 

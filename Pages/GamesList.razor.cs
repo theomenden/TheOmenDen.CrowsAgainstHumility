@@ -13,7 +13,7 @@ public partial class GamesList : ComponentBase, IDisposable
 
     [Inject] private IModalService ModalService { get; init; }
 
-    [Inject] private ICrowGameService CrowGameService { get; init; }
+    [Inject] private ICrowGameHubConnectorService CrowGameHubConnectorService { get; init; }
 
     private List<CrowGameDto> _games = new (52);
 

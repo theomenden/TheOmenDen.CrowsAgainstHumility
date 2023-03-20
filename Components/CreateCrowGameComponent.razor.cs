@@ -24,7 +24,7 @@ public partial class CreateCrowGameComponent : ComponentBase, IDisposable, IAsyn
 
     [Inject] private IPlayerVerificationService PlayerVerificationService { get; init; }
 
-    [Inject] private ICrowGameService CrowGameService { get; init; }
+    [Inject] private ICrowGameHubConnectorService CrowGameHubConnectorService { get; init; }
 
     [Inject] private IMessageService MessageService { get; init; }
 
@@ -62,9 +62,6 @@ public partial class CreateCrowGameComponent : ComponentBase, IDisposable, IAsyn
 
     private bool _enabledCustomFilters = false;
     protected override void OnInitialized() => _gameCode = GameCodeGenerator.GenerateGameCodeFromComponent(nameof(CreateCrowGameComponent));
-
-    private Task InitializeNewGame()
-        => StateManager.CreateRoomAsync(_gameName, new CrowRoomSettings());
     
 
     private async Task OnHandleReadData(AutocompleteReadDataEventArgs autocompleteReadDataEventArgs)
@@ -231,8 +228,7 @@ public partial class CreateCrowGameComponent : ComponentBase, IDisposable, IAsyn
         var playerNames = _players.Select(p => p.DisplayName).ToArray();
 
         var newCrowGame = new CrowGameCreator(_packs, currentUser.Id, playerNames , _gameName, _gameCode);
-
-        await CrowGameService.CreateCrowGameAsync(newCrowGame);
+        
     }
 
     private Task OnResetClicked()

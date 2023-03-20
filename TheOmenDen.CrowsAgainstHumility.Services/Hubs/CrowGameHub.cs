@@ -1,206 +1,91 @@
-﻿using Microsoft.AspNetCore.Http.Connections.Features;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.SignalR;
+using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 using TheOmenDen.CrowsAgainstHumility.Core.Models;
-using TheOmenDen.CrowsAgainstHumility.Services.Lobbies;
-using TheOmenDen.CrowsAgainstHumility.Services.Rooms;
+using TheOmenDen.CrowsAgainstHumility.Services.CrowGameBuilder;
 
 namespace TheOmenDen.CrowsAgainstHumility.Services.Hubs;
 public sealed class CrowGameHub : Hub
 {
-    public const string HubUrl = "/games";
-    private static readonly Dictionary<String, Player> ConnectionPlayers = new(10);
+    public const string HubUrl = "/crowGameHub";
 
-    private readonly CrowGameLobby _lobby;
-    private readonly ILogger<CrowGameHub> _logger;
+    private readonly IGameRoomManager _roomManager;
 
-    public CrowGameHub(CrowGameLobby lobby, ILogger<CrowGameHub> logger)
+    public CrowGameHub(IGameRoomManager roomManager)
     {
-        _lobby = lobby;
-        _logger = logger;
-    }
-    #region Methods that Concern Rooms
-    public List<RoomStateDto> GetRooms() => _lobby.GetRooms().ToList();
-
-    public Task<bool> CreateRoom(String roomName, CrowRoomSettings roomSettings,
-        CancellationToken cancellationToken = default)
-    => _lobby.CreateRoom(roomName, roomSettings, cancellationToken);
-
-    public async Task<RoomStateDto?> JoinRoom(String roomName, String roomCode)
-    {
-        var player = GetPlayer(Context.ConnectionId);
-
-        if (player is null)
-        {
-            return null;
-        }
-
-        var newRoom = _lobby.GetRoom(roomName);
-
-        return newRoom is not null 
-            ? await _lobby.JoinRoom(player, newRoom, roomCode) 
-            : null;
+            _roomManager = roomManager ?? throw new ArgumentNullException(nameof(roomManager));
     }
 
-    public async Task<Boolean> LeaveRoom()
+    [HubMethodName(CrowGameHubConnectorService.JoinRoomMethodName)]
+    public async Task JoinRoom(Guid roomId, Player player)
     {
-        var player = GetPlayer(Context.ConnectionId);
+        var roomState = await _roomManager.AddPlayerToRoomAsync(roomId, player, Context.ConnectionId);
 
-        var room = _lobby.GetRoom(player);
-
-        if (player is null || room is null)
-        {
-            return false;
-        }
-
-        await _lobby.LeaveRoom(player, room);
-        await _lobby.AddPlayer(player);
-
-        return true;
+        await Groups.AddToGroupAsync(Context.ConnectionId, roomState.Code);
+        await Clients.Groups(roomState.Code).SendAsync(CrowGameHubConnectorService.RoomUpdatedMethodName, roomState);
     }
-    #endregion
-    #region Connection Methods
-    public override async Task OnConnectedAsync()
+
+    [HubMethodName(CrowGameHubConnectorService.JoinRoomByCodeMethodName)]
+    public async Task JoinRoomByCode(Guid roomId, Player player)
     {
-        var transportType = Context.Features.Get<IHttpTransportFeature>()?.TransportType;
+        var roomState = await _roomManager.AddPlayerToRoomAsync(roomId, player, Context.ConnectionId);
 
-        _logger.LogDebug("OnConnected SignalR TransportType: {TransportType}", transportType);
+        await Groups.AddToGroupAsync(Context.ConnectionId, roomState.Code);
+        await Clients.Groups(roomState.Code).SendAsync(CrowGameHubConnectorService.RoomUpdatedMethodName, roomState);
+    }
 
-        Player? player = null;
+    [HubMethodName(CrowGameHubConnectorService.UpdateRoomMethodName)]
+    public async Task UpdateRoom(RoomOptions roomOptions)
+    {
+        var roomState = await _roomManager.UpdateRoomAsync(roomOptions, Context.ConnectionId);
 
-        lock (ConnectionPlayers)
+        if (!String.IsNullOrWhiteSpace(roomState?.Code))
         {
-            if (!ConnectionPlayers.TryGetValue(Context.ConnectionId, out player))
-            {
-                player = new Player(Context.ConnectionId);
-                ConnectionPlayers.Add(Context.ConnectionId, player);
-            }
+            await Clients.Groups(roomState.Code).SendAsync(CrowGameHubConnectorService.RoomUpdatedMethodName, roomState);
         }
+    }
 
-        if (player is not null)
+    [HubMethodName(CrowGameHubConnectorService.PlayWhiteCardMethodName)]
+    public async Task PlayWhiteCard(WhiteCard card)
+    {
+        var roomState = await _roomManager.PlayWhiteCardAsync(card, Context.ConnectionId);
+
+        if (!String.IsNullOrWhiteSpace(roomState?.Code))
         {
-            await _lobby.AddPlayer(player);
+            await Clients.Groups(roomState.Code).SendAsync(CrowGameHubConnectorService.RoomUpdatedMethodName, roomState);
         }
+    }
 
-        await base.OnConnectedAsync();
+    [HubMethodName(CrowGameHubConnectorService.NextBlackCardMethodName)]
+    public async Task NextBlackCard(Guid roomId, BlackCard blackCard)
+    {
+        var roomState = await _roomManager.NextBlackCardAsync(roomId, blackCard);
+
+        if (!String.IsNullOrWhiteSpace(roomState?.Code))
+        {
+            await Clients.Groups(roomState.Code).SendAsync(CrowGameHubConnectorService.RoomUpdatedMethodName, roomState);
+        }
+    }
+
+    [HubMethodName(CrowGameHubConnectorService.ResetRoomMethodName)]
+    public async Task ResetRoom()
+    {
+        var roomState = await _roomManager.ResetGameBoardAsync(Context.ConnectionId);
+
+        if (!String.IsNullOrWhiteSpace(roomState?.Code))
+        {
+            await Clients.Groups(roomState.Code).SendAsync(CrowGameHubConnectorService.RoomUpdatedMethodName, roomState);
+        }
     }
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        if (exception is not null)
+        var room = await _roomManager.DisconnectAsync(Context.ConnectionId);
+
+        if (!String.IsNullOrWhiteSpace(room?.Code))
         {
-            _logger.LogWarning("Player disconnected with exception {@Ex}", exception);
-        }
-
-        var player = GetPlayer(Context.ConnectionId);
-
-        if (player is null)
-        {
-            await base.OnDisconnectedAsync(exception);
-            return;
-        }
-
-        var room = _lobby.GetRoom(player);
-
-        if (room is not null)
-        {
-            await _lobby.PlayerDisconnected(player, room);
-            await base.OnDisconnectedAsync(exception);
-            return;
-        }
-
-        await _lobby.RemovePlayer(player);
-        lock (ConnectionPlayers)
-        {
-            ConnectionPlayers.Remove(Context.ConnectionId);
+            await Clients.Groups(room.Code).SendAsync(CrowGameHubConnectorService.RoomUpdatedMethodName, room);
         }
 
         await base.OnDisconnectedAsync(exception);
-    }
-
-    public async Task<ReconnectionStateDto> TryToReconnect(String username, Guid connectionId)
-    {
-        Player? existingPlayer;
-        lock (ConnectionPlayers)
-        {
-            existingPlayer = ConnectionPlayers.Values.SingleOrDefault(player => player.ConnectionGuid.Equals(connectionId)
-            || player.Username == username);
-        }
-
-        if (existingPlayer is null || existingPlayer.IsConnected)
-        {
-            return new ReconnectionStateDto(Guid.Empty, null);
-        }
-
-        lock (ConnectionPlayers)
-        {
-            ConnectionPlayers.Remove(Context.ConnectionId);
-            ConnectionPlayers.Remove(existingPlayer.ConnectionId);
-
-            existingPlayer.ConnectionId = Context.ConnectionId;
-            existingPlayer.IsConnected = true;
-
-            ConnectionPlayers.Add(Context.ConnectionId, existingPlayer);
-        }
-
-        var room = _lobby.GetRoom(existingPlayer);
-
-        if (room is null || room.RoomState is CrowRoomStateLobby)
-        {
-            return new ReconnectionStateDto(Guid.Empty, null);
-        }
-
-        await _lobby.PlayerReconnected(existingPlayer, room);
-        return new ReconnectionStateDto(existingPlayer.Id, room.ToRoomStateDto());
-    }
-    #endregion
-    #region Methods that concern game states
-    public async Task<bool> StartGame()
-    {
-        var player = GetPlayer(Context.ConnectionId);
-        var room = _lobby.GetRoom(player);
-
-        if (room is not null && player is not null)
-        {
-           return await _lobby.StartGame(room, player);
-        }
-
-        return false;
-    }
-
-    public void ChooseWhiteCard(int cardIndex)
-    {
-        var player = GetPlayer(Context.ConnectionId);
-        var room = _lobby.GetRoom(player);
-
-        if (room is not null && player is not null)
-        {
-           // room.ChooseWhiteCard(cardIndex, player);
-        }
-    }
-
-    public async Task PlayWhiteCard(WhiteCard card)
-    {
-        var player = GetPlayer(Context.ConnectionId);
-        var room = _lobby.GetRoom(player);
-
-        if (room is not null && player is not null)
-        {
-            room.AddWhiteCardToPlayedWhiteCards(card);
-        }
-    }
-    #endregion
-    
-    private static Player? GetPlayer(String connectionId)
-    {
-        lock (ConnectionPlayers)
-        {
-            if (ConnectionPlayers.TryGetValue(connectionId, out var player))
-            {
-                return player;
-            }
-        }
-
-        return null;
     }
 }

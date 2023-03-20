@@ -8,24 +8,26 @@
 
   <ItemGroup>
     <Folder Include="Validation\" />
-    <Folder Include="Processing\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="3.9.0" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.4" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="7.0.4" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
-    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.1" />
+    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.2" />
+    <PackageReference Include="Polly" Version="7.2.3" />
+    <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
-    <PackageReference Include="TheOmenDen.Shared" Version="2023.1.15.141" />
+    <PackageReference Include="TheOmenDen.Shared" Version="2023.3.17.2238" />
     <PackageReference Include="TwitchLib" Version="3.5.3" />
-    <PackageReference Include="TwitchLib.Api" Version="3.8.0" />
+    <PackageReference Include="TwitchLib.Api" Version="3.9.0" />
     <PackageReference Include="TwitchLib.Client" Version="3.3.1" />
     <PackageReference Include="TwitchLib.PubSub" Version="3.2.6" />
   </ItemGroup>

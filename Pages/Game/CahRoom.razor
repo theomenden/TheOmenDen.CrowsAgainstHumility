@@ -1,0 +1,63 @@
+﻿@inherits GameModelComponentBase<TheOmenDen.CrowsAgainstHumility.ViewModels.RoomViewModel>
+@page "/room/{RoomCode}"
+<PageTitle>Caw Room @ViewModel.RoomStateDto?.Name</PageTitle>
+<Jumbotron>
+    <JumbotronTitle>
+
+    </JumbotronTitle>
+    <JumbotronSubtitle>Current Card Tsar: @ViewModel.RoomStateDto?.CurrentCardTsar?.Username</JumbotronSubtitle>
+    <Divider/>
+    @if (ViewModel.WhiteCardPlayTime is {} whiteCardStartPlayTime)
+    {
+        <Paragraph>
+            Time Remaining to play cards:
+            <Span>
+                <Icon Name="IconName.Hourglass" IconStyle="IconStyle.DuoTone"/>
+                @((DateTime.UtcNow - whiteCardStartPlayTime).ToString(@"mm\:ss"))
+            </Span>
+        </Paragraph>
+    }
+</Jumbotron>
+<Container Fluid>
+    <Row Height="Height.Is100">
+        <Column ColumnSize="ColumnSize.IsQuarter">
+            <ListView TItem="Player"
+                      Data="_players"
+                      TextField="item => item.Username"
+                      ValueField="item => item.ConnectionId"
+                      Mode="ListGroupMode.Static"
+                      MaxHeight="300px">
+                <ItemTemplate>
+                    <Div Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
+                        <Heading Margin="Margin.Is2.FromBottom">@context.Item.Username</Heading>
+                        <Small>@context.Item.AwesomePoints</Small>
+                    </Div>
+                    @DisplayPlayedCardIcon(@context.Item.PlayedWhiteCard)
+                </ItemTemplate>
+            </ListView>
+        </Column>
+        <Column ColumnSize="ColumnSize.Is9">
+            <Row>
+                <Column ColumnSize="ColumnSize.IsFull">
+                    @if (ViewModel.RoomStateDto?.CurrentBlackCard is {} blackCard)
+                    {
+                        <CAHBlack BlackCard="@blackCard" />
+                    }
+                </Column>
+            </Row>
+            <Row>
+                <Column ColumnSize="ColumnSize.IsFull">
+                    @if (_players.Any())
+                    {
+                        
+                        <CAHContainer  />
+                    }
+                    else
+                    {
+                        <Span>Waiting for players to join...</Span>
+                    }
+                </Column>
+            </Row>
+        </Column>
+    </Row>
+</Container>

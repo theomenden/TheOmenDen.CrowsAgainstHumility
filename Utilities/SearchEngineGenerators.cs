@@ -25,12 +25,12 @@ public static class SearchEngineGenerators
                         && !String.IsNullOrWhiteSpace(p?.Namespace)
                         && p.Namespace.StartsWith("TheOmenDen.CrowsAgainstHumility.Pages"));
 
-        var baseurl = GetBaseUrl(context);
+        var baseUrl = GetBaseUrl(context);
         foreach (var routeAttribute in pages
                      .Where(pageType => pageType.CustomAttributes is not null)
                      .SelectMany(pageType => pageType.GetCustomAttributes<RouteAttribute>()))
         {
-            await context.Response.WriteAsync($"{baseurl}{routeAttribute.Template}\n", cancellationToken);
+            await context.Response.WriteAsync($"{baseUrl}{routeAttribute.Template}\n", cancellationToken);
         }
     }
 
@@ -49,13 +49,13 @@ public static class SearchEngineGenerators
             .Select(x => $"{baseUrl}{x.Template}")
             .ToArray();
 
-        var sitemap = new XElement("urlset",
+        var siteMap = new XElement("urlset",
             new XAttribute($"{XNamespace.Xmlns}x", "http://www.sitemaps.org/schemas/sitemap/0.9"),
             urls.Select(url => new XElement("url",
                 new XElement("loc", url),
                 new XElement("lastmod", DateTime.UtcNow.ToString("O")))));
 
-        await context.Response.WriteAsync(sitemap.ToString(), cancellationToken);
+        await context.Response.WriteAsync(siteMap.ToString(), cancellationToken);
     }
 
     private static string GetBaseUrl(HttpContext context)

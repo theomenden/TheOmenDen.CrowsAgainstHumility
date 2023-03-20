@@ -9,7 +9,7 @@ public partial class FilterCardsForCrowGameComponent: ComponentBase
 
     [Parameter] public IEnumerable<Pack> PacksToFilter { get; set; }
 
-    [Inject] private ICrowGameService CrowGameService { get; init; }
+    [Inject] private ICrowGameHubConnectorService CrowGameHubConnectorService { get; init; }
 
     [Inject] private ICardPoolFilteringService CardPoolFilteringService { get; init; }
 

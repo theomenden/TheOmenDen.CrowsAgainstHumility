@@ -15,4 +15,15 @@ public static class Common
         PropertyNameCaseInsensitive = true,
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
+
+    public static readonly String[] MobileProviders = {
+        "android",
+        "webos",
+        "iphone",
+        "ipad",
+        "ipod",
+        "blackberry",
+        "mobile",
+        "opera mini"
+    };
 }

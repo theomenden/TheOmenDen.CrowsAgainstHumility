@@ -2,7 +2,7 @@
     <Div Class="cah-card">
         <Div Class="fullsize-container">
             <Div Class="front">
-                <Paragraph>@_cardDescriptorText</Paragraph>
+                <Paragraph>@BlackCard.Message</Paragraph>
             </Div>
             <Div Class="back">
                 <Span Class="cah-card-text"
@@ -17,6 +17,7 @@
     </Div>
 </Row>
 @code {
-    private String _cardDescriptorText = "Card Text";
+    [Parameter]
+    public BlackCard BlackCard { get; set; }
 }
 

@@ -1,28 +1,29 @@
 ﻿namespace TheOmenDen.CrowsAgainstHumility.Core.Models;
-public sealed class RoomStateDto
+public sealed record RoomStateDto(Guid RoomId, IEnumerable<Player> Players)
 {
-    public RoomStateDto() {}
-
-    public RoomStateDto(string roomName, IEnumerable<PlayerDto> players, CrowRoomSettings roomSettings)
-    {
-        RoomName = roomName;
-        Players = players;
-        RoomSettings = roomSettings;
-    }
-
-    public RoomStateDto(string roomName, IEnumerable<PlayerDto> players, CrowRoomSettings roomSettings, bool isGameInProgress)
-    {
-        RoomName = roomName;
-        Players = players;
-        RoomSettings = roomSettings;
-        IsGameInProgress = isGameInProgress;
-    }
-
-    public string RoomName { get; set; } = String.Empty;
-
-    public IEnumerable<PlayerDto> Players { get; set; } = Enumerable.Empty<PlayerDto>();
-
-    public CrowRoomSettings RoomSettings { get; set; } = new();
-
-    public Boolean IsGameInProgress { get; set; }
+    public IReadOnlyList<Player> CurrentPlayers => Players.Where(player => !player.IsCardCzar).ToList();
+    
+    public Player? CurrentCardTsar { get; init; } = Players.FirstOrDefault(player => player.IsCardCzar);
+    
+    public bool ShouldShowCards { get; init; }
+    
+    public bool ShouldRevealCardsAutomatically { get; init; } = true;
+    
+    public BlackCard CurrentBlackCard { get; init; }
+    
+    public IEnumerable<WhiteCard> WhiteCards { get; init; } = Enumerable.Empty<WhiteCard>();
+    
+    public IEnumerable<BlackCard> BlackCards { get; init; } = Enumerable.Empty<BlackCard>();
+    
+    public IEnumerable<WhiteCard> PlayedWhiteCards { get; init; } = Enumerable.Empty<WhiteCard>();
+    
+    public IEnumerable<BlackCard> PlayedBlackCards { get; init; } = Enumerable.Empty<BlackCard>();
+    
+    public DateTime? WhiteCardTurnTime { get; init; }
+    
+    public DateTime? CardTsarVotingTurnTime { get; init; }
+    
+    public String Name { get; init; } = String.Empty;
+    
+    public String Code { get; init; } = "TEST-1";
 }

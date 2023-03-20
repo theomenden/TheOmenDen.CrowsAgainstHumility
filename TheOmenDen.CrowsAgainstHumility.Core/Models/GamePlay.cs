@@ -1,4 +1,6 @@
-﻿namespace TheOmenDen.CrowsAgainstHumility.Core.Models;
+﻿using TheOmenDen.CrowsAgainstHumility.Core.Models.CrowGames;
+
+namespace TheOmenDen.CrowsAgainstHumility.Core.Models;
 public sealed class GamePlay
 {
     public string HubConnectionId { get; set; }
