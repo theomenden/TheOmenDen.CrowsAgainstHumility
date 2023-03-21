@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using TheOmenDen.CrowsAgainstHumility.Core.Models;
+using TheOmenDen.CrowsAgainstHumility.Core.Models.CrowGames;
 using TheOmenDen.CrowsAgainstHumility.Data.Contexts;
 using TheOmenDen.CrowsAgainstHumility.Data.Models;
 

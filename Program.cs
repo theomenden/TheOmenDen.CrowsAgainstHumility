@@ -28,7 +28,9 @@ using Blazored.SessionStorage;
 using System.Text.Json.Serialization;
 using AspNet.Security.OAuth.Twitch;
 using Azure.Storage.Blobs;
+using Blazorise.FluentValidation;
 using Blazorise.Icons.FontAwesome;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.DataProtection;
@@ -39,6 +41,8 @@ using TheOmenDen.CrowsAgainstHumility.Identity.Utilities;
 using TheOmenDen.CrowsAgainstHumility.Utilities;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Options;
+using TheOmenDen.CrowsAgainstHumility;
+using TheOmenDen.CrowsAgainstHumility.Core.Validators;
 using TheOmenDen.CrowsAgainstHumility.Services.Clients;
 using TheOmenDen.CrowsAgainstHumility.Twitch.Extensions;
 using TheOmenDen.CrowsAgainstHumility.ViewModels;
@@ -101,7 +105,8 @@ try
         .AddBootstrap5Providers()
         .AddBootstrap5Components()
         .AddFontAwesomeIcons()
-        .AddLoadingIndicator();
+        .AddLoadingIndicator()
+        .AddBlazoriseFluentValidation();
 
     builder.Services.AddApplicationInsightsTelemetry(options => options.ConnectionString = appInsightsConnectionString);
 
@@ -293,6 +298,9 @@ try
     });
 
     builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+    builder.Services.AddValidatorsFromAssemblies(new[]
+        { typeof(App).Assembly, typeof(RegisterInputModelValidator).Assembly });
 
     builder.Services.AddScoped<IHtmlSanitizer, HtmlSanitizer>(options =>
     {

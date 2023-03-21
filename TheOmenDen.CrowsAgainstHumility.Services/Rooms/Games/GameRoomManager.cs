@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
+using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Repositories;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 using TheOmenDen.CrowsAgainstHumility.Core.Models;
 using TheOmenDen.Shared.Extensions;
@@ -8,6 +9,7 @@ namespace TheOmenDen.CrowsAgainstHumility.Services.Rooms.Games;
 internal sealed class GameRoomManager : IGameRoomManager
 {
     #region Private Members
+    private readonly IRoomStateRepository _games;
     private readonly ConcurrentDictionary<Guid, SemaphoreSlim> _roomLocks = new();
     private readonly ConcurrentDictionary<Guid, RoomStateDto> _rooms = new();
     private readonly ConcurrentDictionary<string, Guid> _connectionsToRoom = new();
@@ -36,16 +38,17 @@ internal sealed class GameRoomManager : IGameRoomManager
         });
     }
 
-    public Task<RoomStateDto> AddPlayerToRoomByCodeAsync(String roomCode, Player player, string connectionId)
+    public async Task<RoomStateDto> AddPlayerToRoomByCodeAsync(String roomCode, Player player, string connectionId)
     {
+        var room = (await _games.GetRoomByCodeAsync(roomCode));
 
-        _connectionsToRoom.AddOrUpdate(connectionId, roomId, (_, _) => roomId);
+        _connectionsToRoom.AddOrUpdate(connectionId, room.Id, (_, _) => room.Id);
         _connectionsToUser.AddOrUpdate(connectionId, player, (_, _) => player);
 
-        return WithRoomLocking(roomId, () =>
+        return await WithRoomLocking(room.Id, () =>
         {
-            var roomValue = _rooms.AddOrUpdate(roomId,
-                new RoomStateDto(roomId, new[] { player }), (_, roomState) =>
+            var roomValue = _rooms.AddOrUpdate(room.Id,
+                new RoomStateDto(room.Id, new[] { player }), (_, roomState) =>
                 {
                     return roomState with
                     {
@@ -206,7 +209,6 @@ internal sealed class GameRoomManager : IGameRoomManager
 
             return roomState;
         });
-
     public Task<GameRoles> GetNewCardTsarAsync(Guid roomId) =>
         WithRoomLocking(roomId, () =>
             _rooms.TryGetValue(roomId, out var roomState)

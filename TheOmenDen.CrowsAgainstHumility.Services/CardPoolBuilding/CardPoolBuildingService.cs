@@ -43,9 +43,7 @@ internal sealed class CardPoolBuildingService : ICardPoolBuildingService
             {
                 Id = pack.Id,
                 Name = pack.Name,
-                IsOfficialPack = pack.IsOfficialPack,
-                WhiteCardsInPack = pack.WhiteCards.Count,
-                BlackCardsInPack = pack.BlackCards.Count
+                IsOfficialPack = pack.IsOfficialPack
             })
             .AsAsyncEnumerable()
             .WithCancellation(cancellationToken);
@@ -73,9 +71,7 @@ internal sealed class CardPoolBuildingService : ICardPoolBuildingService
                            {
                                Id = pack.Id,
                                Name = pack.Name,
-                               IsOfficialPack = pack.IsOfficialPack,
-                               WhiteCardsInPack = pack.WhiteCards.Count,
-                               BlackCardsInPack = pack.BlackCards.Count
+                               IsOfficialPack = pack.IsOfficialPack
                            })
                            .AsAsyncEnumerable()
                            .WithCancellation(cancellationToken))
@@ -121,9 +117,7 @@ internal sealed class CardPoolBuildingService : ICardPoolBuildingService
             {
                 Id = p.Id,
                 Name = p.Name,
-                IsOfficialPack = p.IsOfficialPack,
-                BlackCardsInPack = p.BlackCards.Count,
-                WhiteCardsInPack = p.WhiteCards.Count
+                IsOfficialPack = p.IsOfficialPack
             })
             .ToArrayAsync(cancellationToken);
 

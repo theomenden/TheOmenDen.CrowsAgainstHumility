@@ -226,9 +226,6 @@ public partial class CreateCrowGameComponent : ComponentBase, IDisposable, IAsyn
         var currentUser = await UserManager.GetUserAsync(authState.User);
 
         var playerNames = _players.Select(p => p.DisplayName).ToArray();
-
-        var newCrowGame = new CrowGameCreator(_packs, currentUser.Id, playerNames , _gameName, _gameCode);
-        
     }
 
     private Task OnResetClicked()

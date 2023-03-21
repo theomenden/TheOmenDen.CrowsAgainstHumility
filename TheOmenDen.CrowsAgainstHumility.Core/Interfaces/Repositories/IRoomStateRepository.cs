@@ -2,7 +2,7 @@
 using TheOmenDen.Shared.Specifications;
 
 namespace TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Repositories;
-public interface ICrowGameRepository: IAsyncEnumerable<RoomState>
+public interface IRoomStateRepository: IAsyncEnumerable<RoomState>
 {
     IAsyncEnumerable<RoomState> GetCurrentRoomsAsync(CancellationToken cancellationToken = default);
 

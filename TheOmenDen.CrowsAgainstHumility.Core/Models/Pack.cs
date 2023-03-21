@@ -14,9 +14,9 @@ public partial class Pack: IComparable<Pack>, IEquatable<Pack>
     [NotMapped]
     public String OfficialPack => IsOfficialPack ? "Official" : String.Empty;
 
-    [NotMapped] public Int32 WhiteCardsInPack { get; set; } = 0;
+    [NotMapped] public Int32 WhiteCardsInPack => WhiteCards?.Count ?? 0;
 
-    [NotMapped] public Int32 BlackCardsInPack { get; set; } = 0;
+    [NotMapped] public Int32 BlackCardsInPack => BlackCards?.Count ?? 0;
 
     public virtual ICollection<BlackCard> BlackCards { get; set; } = new HashSet<BlackCard>();
     public virtual ICollection<WhiteCard> WhiteCards { get; set; } = new HashSet<WhiteCard>();

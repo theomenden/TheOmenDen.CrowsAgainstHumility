@@ -31,6 +31,14 @@ public partial class Register: ComponentBase
 
     private async Task OnRegisterClickedAsync()
     {
+        if (await _validationsReference.ValidateAll())
+        {
+            await AddNewApplicationUserAsync();
+        }
+    }
+
+    private async Task AddNewApplicationUserAsync()
+    {
         try
         {
             DoesHaveErrors = false;
@@ -50,24 +58,7 @@ public partial class Register: ComponentBase
 
             if (createUserResult.Succeeded)
             {
-                await RegistrationService.SeedWithDefaultRolesAsync();
-                await RegistrationService.AddDefaultUserRoleAsync(user);
-
-                switch (UserManager.Options.SignIn.RequireConfirmedEmail)
-                {
-                    case true:
-                        await EmailManager.BuildRegistrationConfirmationEmailAsync(user.Email, user,
-                            NavigationManager.BaseUri);
-
-                        NavigationManager.NavigateTo("register-confirmation");
-                        break;
-                    case false:
-                        await SignInManager.SignInAsync(user, isPersistent: false);
-
-                        NavigationManager.NavigateTo("");
-                        break;
-                }
-
+                await AddDefaultsToUserAsync(user);
                 return;
             }
 
@@ -78,6 +69,27 @@ public partial class Register: ComponentBase
         {
             DoesHaveErrors = true;
             Logger.LogError("Failed to register due to exception @{Ex}", ex);
+        }
+    }
+
+    private async Task AddDefaultsToUserAsync(ApplicationUser user)
+    {
+        await RegistrationService.SeedWithDefaultRolesAsync();
+        await RegistrationService.AddDefaultUserRoleAsync(user);
+
+        switch (UserManager.Options.SignIn)
+        {
+            case { RequireConfirmedEmail: true }:
+                await EmailManager.BuildRegistrationConfirmationEmailAsync(user.Email, user,
+                    NavigationManager.BaseUri);
+
+                NavigationManager.NavigateTo("register-confirmation");
+                break;
+            case { RequireConfirmedEmail: false }:
+                await SignInManager.SignInAsync(user, isPersistent: false);
+
+                NavigationManager.NavigateTo("");
+                break;
         }
     }
 }

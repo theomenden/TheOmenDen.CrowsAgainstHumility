@@ -155,7 +155,7 @@ public partial class RoomViewModel : ViewModelBase
         }
 
         CurrentUserId = player?.Id ?? Guid.Empty;
-        await _crowGameHubConnectorService.JoinRoomAsync(RoomStateDto?.RoomId, player);
+        await _crowGameHubConnectorService.JoinRoomAsync(RoomStateDto?.RoomId ?? Guid.Empty, player);
     }
 
     public async Task ResetGameBoardAsync()

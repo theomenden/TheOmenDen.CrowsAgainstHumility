@@ -33,7 +33,8 @@
                         <Form>
                             <Validations @ref="_validationsReference"
                                          Model="@InputModel"
-                                         Mode="ValidationMode.Manual">
+                                         Mode="ValidationMode.Manual"
+                                         HandlerType="typeof(FluentValidationHandler)">
                                 <Fields>
                                     <Validation>
                                         <Field ColumnSize="ColumnSize.Is12.OnDesktop">

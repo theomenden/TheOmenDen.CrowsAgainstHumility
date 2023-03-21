@@ -14,10 +14,10 @@ namespace TheOmenDen.CrowsAgainstHumility.Services.Processing;
 
 internal sealed class GameClient
 {
-    private readonly ICrowGameRepository _gameRepository;
+    private readonly IRoomStateRepository _gameRepository;
     private readonly ILogger<GameClient> _logger;
 
-    public GameClient(ICrowGameRepository gameRepository, ILogger<GameClient> logger)
+    public GameClient(IRoomStateRepository gameRepository, ILogger<GameClient> logger)
     {
         _gameRepository = gameRepository;
         _logger = logger;

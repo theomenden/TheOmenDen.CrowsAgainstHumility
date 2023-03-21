@@ -1,6 +1,7 @@
 ﻿using Blazorise;
 using TheOmenDen.CrowsAgainstHumility.Components;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
+using TheOmenDen.CrowsAgainstHumility.Core.Models.CrowGames;
 using TheOmenDen.CrowsAgainstHumility.Services.Authentication;
 using TheOmenDen.Shared.Extensions;
 using TheOmenDen.Shared.Utilities;
@@ -15,7 +16,7 @@ public partial class GamesList : ComponentBase, IDisposable
 
     [Inject] private ICrowGameHubConnectorService CrowGameHubConnectorService { get; init; }
 
-    private List<CrowGameDto> _games = new (52);
+    private List<CrowGame> _games = new (52);
 
     private void Start()
     {
@@ -24,7 +25,7 @@ public partial class GamesList : ComponentBase, IDisposable
 
     protected override async Task OnInitializedAsync()
     {
-        _games = await CreateTestGamesAsync().ToListAsync();
+        _games =Enumerable.Empty<CrowGame>().ToList();
 
         await base.OnInitializedAsync();
     }
@@ -38,21 +39,7 @@ public partial class GamesList : ComponentBase, IDisposable
             Centered = true,
             UseModalStructure=false
         });
-
-    private static async IAsyncEnumerable<CrowGameDto> CreateTestGamesAsync()
-    {
-        for (var i = 0; i < ThreadSafeRandom.Global.Next(10,50); i++)
-        {
-            await Task.Delay(100);
-
-            yield return new CrowGameDto(Enumerable.Empty<Pack>(),
-                Enumerable.Empty<Player>()
-                , $"test-room-{i}", GameCodeGenerator.GenerateGameCode(),
-                Guid.NewGuid());
-
-            StringBuilderPoolFactory<GameCodeGenerator>.Remove(nameof(GameCodeGenerator));
-        }
-    }
+    
 
     private void OnGameListChanged(object? sender, EventArgs e) => StateHasChanged();
 

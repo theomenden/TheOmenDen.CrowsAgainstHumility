@@ -8,6 +8,7 @@ using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
 using TheOmenDen.CrowsAgainstHumility.Services.CardPoolBuilding;
 using TheOmenDen.CrowsAgainstHumility.Services.CrowGameBuilder;
+using TheOmenDen.CrowsAgainstHumility.Services.Processing;
 
 namespace TheOmenDen.CrowsAgainstHumility.Services.Extensions;
 public static class ServiceCollectionExtensions
@@ -15,7 +16,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddCorvidGamesServices(this IServiceCollection services)
     {
         services
-            .AddScoped<IUserToPlayerProcessingService, IUserToPlayerProcessingService>()
+            .AddScoped<IUserToPlayerProcessingService, UserToPlayerProcessingService>()
             .AddScoped<ICardPoolBuildingService, CardPoolBuildingService>()
             .AddScoped<ICardPoolFilteringService, CardPoolFilteringService>()
             .AddScoped<ICrowGameHubConnectorService, CrowGameHubConnectorService>();

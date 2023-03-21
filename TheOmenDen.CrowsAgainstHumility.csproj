@@ -89,17 +89,21 @@
     <PackageReference Include="Azure.Storage.Blobs" Version="12.15.0" />
     <PackageReference Include="Azure.Storage.Queues" Version="12.13.0" />
     <PackageReference Include="Blazored.SessionStorage" Version="2.3.0" />
-    <PackageReference Include="Blazorise" Version="1.2.1" />
-    <PackageReference Include="Blazorise.Animate" Version="1.2.1" />
-    <PackageReference Include="Blazorise.Bootstrap5" Version="1.2.1" />
-    <PackageReference Include="Blazorise.Components" Version="1.2.1" />
-    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.2.1" />
-    <PackageReference Include="Blazorise.LoadingIndicator" Version="1.2.1" />
-    <PackageReference Include="Blazorise.Markdown" Version="1.2.1" />
-    <PackageReference Include="Blazorise.QRCode" Version="1.2.1" />
-    <PackageReference Include="Blazorise.SpinKit" Version="1.2.1" />
+    <PackageReference Include="Blazorise" Version="1.2.2" />
+    <PackageReference Include="Blazorise.Animate" Version="1.2.2" />
+    <PackageReference Include="Blazorise.Bootstrap5" Version="1.2.2" />
+    <PackageReference Include="Blazorise.Components" Version="1.2.2" />
+    <PackageReference Include="Blazorise.FluentValidation" Version="1.2.2" />
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.2.2" />
+    <PackageReference Include="Blazorise.LoadingIndicator" Version="1.2.2" />
+    <PackageReference Include="Blazorise.Markdown" Version="1.2.2" />
+    <PackageReference Include="Blazorise.QRCode" Version="1.2.2" />
+    <PackageReference Include="Blazorise.SpinKit" Version="1.2.2" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
     <PackageReference Include="Discord.Net" Version="3.9.0" />
+    <PackageReference Include="FluentValidation" Version="11.5.1" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.2.2" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.1" />
     <PackageReference Include="Fluxor" Version="5.7.0" />
     <PackageReference Include="Fluxor.Blazor.Web" Version="5.7.0" />
     <PackageReference Include="HtmlSanitizer" Version="8.0.645" />
@@ -158,8 +162,8 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
     <PackageReference Include="TheOmenDen.Shared" Version="2023.3.17.2238" />
-    <PackageReference Include="TheOmenDen.Shared.Interfaces" Version="1.11.13.2216" />
-    <PackageReference Include="TheOmenDen.Shared.Logging" Version="2.2.10.2201" />
+    <PackageReference Include="TheOmenDen.Shared.Interfaces" Version="2.3.20.1734" />
+    <PackageReference Include="TheOmenDen.Shared.Logging" Version="2.3.20.1750" />
     <PackageReference Include="TwitchLib" Version="3.5.3" />
     <PackageReference Include="TwitchLib.Api" Version="3.9.0" />
     <PackageReference Include="TwitchLib.Client" Version="3.3.1" />

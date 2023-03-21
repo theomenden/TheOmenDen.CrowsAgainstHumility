@@ -13,7 +13,7 @@ public class RoomState : IEquatable<RoomState>
 
     public Guid GameId { get; set; }
 
-    public virtual CrowGame Game { get; set; }
+    public virtual ICollection<CrowGame> Games { get; set; } = new HashSet<CrowGame>(4);
 
     public virtual ICollection<ApplicationUser> ApplicationUsers { get; set; } = new HashSet<ApplicationUser>(10);
     #region Equals Overloads
@@ -58,7 +58,7 @@ public class RoomState : IEquatable<RoomState>
     }
     #endregion
     #region Operator Overloads
-    public static bool operator ==(RoomState? left, RoomState? right) => Equals(left, right);
-    public static bool operator !=(RoomState? left, RoomState? right) => !Equals(left, right);
+    public static bool operator ==(RoomState? left, RoomState? right) => left?.Equals(right) ?? right is {};
+    public static bool operator !=(RoomState? left, RoomState? right) => !(left == right);
     #endregion
 }
