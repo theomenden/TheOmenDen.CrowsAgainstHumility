@@ -79,7 +79,7 @@ internal sealed class CardPoolBuildingService : ICardPoolBuildingService
             yield return pack;
         }
 
-}
+    }
 
     public async Task<IEnumerable<Pack>> GetPacksByNameAsync(IEnumerable<String> packNames, CancellationToken cancellationToken = default)
     {

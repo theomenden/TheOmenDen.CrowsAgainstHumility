@@ -1,34 +1,18 @@
 ﻿@page "/privacy-policy"
-@inject IJSRuntime JsRunTime
 <SEO Canonical="/privacy-policy"
      Title="The Omen Den Privacy policy"
-     Description="The Omen Den takes your privacy seriously, and will only use your personal information defined in the secure policy on this page"/>
-<Container Fluid
-           Background="Background.Dark"
-           TextColor="TextColor.Light"
-           id="__enzuzo-root-privacy"
-           Shadow="Shadow.Large"
-           Margin="Margin.Is3.OnY"
-           Padding="Padding.Is2.OnX" />
-
-<Blazorise.Link To="@CertLink"
-                onmouseout="tLTC('tl_popupPOSEV')"
-                ondragstart="return false;"
-                onmouseover="tLeB(event,'https://secure.trust-provider.com/ttb_searcher/trustlogo?v_querytype=C&v_shortname=POSEV&v_search=https://crowsagainsthumility.app/&x=6&y=5','tl_popupPOSEV')">
-    <Image Source="@ImagePath"
-           Text="EV Cert Provider: https://secure.trust-provider.com/"
-           loading="lazy"
-           onmousedown="return tLKB(event,'https://secure.trust-provider.com/ttb_searcher/trustlogo?v_querytype=W&v_shortname=POSEV&v_search=https://crowsagainsthumility.app/&x=6&y=5');"
-           oncontextmenu="return tLLB(event);" />
-</Blazorise.Link>
-
-@code {
-    private const string PrivacyScriptUrl = @"https://stores.enzuzo.com/__enzuzo-privacy-app.js?mode=privacy&apiHost=https://stores.enzuzo.com&buttonStyle=%0A%7B%0A%20%20%22buttonWidget%22%3A%20%7B%0A%20%20%20%20%22backgroundColor%22%3A%20%22%23ffffff%22%2C%0A%20%20%20%20%22color%22%3A%20%22%23000000%22%2C%0A%20%20%20%20%22%26%3Ahover%22%3A%20%7B%0A%20%20%20%20%20%20%22backgroundColor%22%3A%20%22%23a4a4a4%22%2C%0A%20%20%20%20%20%20%22color%22%3A%20%22%23000000%22%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A&qt=1663256104966&referral=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJDdXN0b21lcklEIjo2NjY3LCJDdXN0b21lck5hbWUiOiJzaG9waWZ5LXRoZS1vbWVuLWRlbi5teXNob3BpZnkuY29tIiwiQ3VzdG9tZXJMb2dvVVJMIjoiIiwiUm9sZXMiOlsicmVmZXJyYWwiXSwiUHJvZHVjdCI6InNob3BpZnkiLCJpc3MiOiJFbnp1em8gSW5jLiIsIm5iZiI6MTY2MzI1NTg2M30.5ltsDun8hHbVHtim61An_rpsigNtFtMFHaTirBHpnzo";
-    private const string PrivacyScriptId = @"__enzuzo-root-script";
-    private const string ImagePath = @"https://www.positivessl.com/images/seals/positivessl_trust_seal_lg_222x54.png";
-    private const string CertLink = @"javascript:if(window.open('https://secure.trust-provider.com/ttb_searcher/trustlogo?v_querytype=W&v_shortname=POSEV&v_search=https://crowsagainsthumility.app/&x=6&y=5','tl_wnd_credentials'+(new Date()).getTime(),'toolbar=0,scrollbars=1,location=1,status=1,menubar=1,resizable=1,width=374,height=660,left=60,top=120')){};tLlB(tLTB);";
-
-
-    protected override async Task OnAfterRenderAsync(bool firstRender) =>
-        await JsRunTime.InvokeVoidAsync("loadJsById", PrivacyScriptId, PrivacyScriptUrl);
-}
+     Description="The Omen Den takes your privacy seriously, and will only use your personal information defined in the secure policy on this page" />
+<Container>
+    <Row Flex="Flex.JustifyContent.Center.AlignItems.Center"
+         Background="Background.Dark"
+         Margin="Margin.Is4.OnY"
+         Padding="Padding.Is3.OnX">
+        <Column ColumnSize="ColumnSize.Is8.OnFullHD.Is10.OnDesktop.IsFull.OnMobile">
+            <Div TextColor="TextColor.Light"
+                 id="__enzuzo-root-privacy"
+                 Shadow="Shadow.Large"
+                 Padding="Padding.Is2.OnX.Is2.OnY">
+            </Div>
+        </Column>
+    </Row>
+</Container>

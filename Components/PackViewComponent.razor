@@ -1,0 +1,78 @@
+﻿@using TheOmenDen.CrowsAgainstHumility.Core.Enumerations
+<Row Height="Height.Is100">
+    <Column Background="Background.Dark" TextColor="TextColor.Light"
+            ColumnSize="ColumnSize.IsThird.OnFullHD.IsHalf.OnDesktop.IsFull.OnMobile">
+        <ListGroup Background="Background.Dark"
+                   Mode="ListGroupMode.Selectable"
+                   Flush
+                   Padding="Padding.Is2.OnY"
+                   SelectedItemChanged="OnSelectedNode"
+                   Width="Width.Is100"
+                   Scrollable
+                   Class="pack-node-list">
+            <Repeater TItem="PackViewNodeInfo" Items="_nodes">
+                <ListGroupItem Name="@context.Id.ToString()"
+                               Flex="Flex.JustifyContent.Between.AlignItems.Center"
+                               Class="pack-node-list-item">
+                    <Heading Size="HeadingSize.Is5" Margin="Margin.Is1.FromBottom">@context.Text</Heading>
+                    <Badge Color="Color.Primary" Pill>@GetCountByCardType(context)</Badge>
+                </ListGroupItem>
+            </Repeater>
+        </ListGroup>
+    </Column>
+    <Column Background="Background.Dark" TextColor="TextColor.Light"
+            ColumnSize="ColumnSize.IsThird.OnFullHD.IsHalf.OnDesktop.IsFull.OnMobile">
+        @if (_selectedNode?.Children?.Any() == true)
+        {
+            <Field>
+                <FieldLabel>
+                    Black Cards
+                </FieldLabel>
+                <FieldBody>
+                    <ListGroup Background="Background.Dark"
+                               Mode="ListGroupMode.Selectable"
+                               Flush
+                               Padding="Padding.Is2.OnY"
+                               Height="Height.Is50"
+                               Scrollable
+                               Class="pack-node-card-list">
+                        <Repeater TItem="PackViewNodeInfo" Items="_selectedNode.Children.Where(c => c.NodeType == NodeTypes.BlackCard)">
+                            <ListGroupItem Name="@context.Id.ToString()"
+                                           Flex="Flex.JustifyContent.Between.AlignItems.Center"
+                                           Class="pack-node-list-item">
+                                <Heading Size="HeadingSize.Is5" Margin="Margin.Is1.FromBottom">@context.Text</Heading>
+                            </ListGroupItem>
+                        </Repeater>
+                    </ListGroup>
+                </FieldBody>
+            </Field>
+        }
+    </Column>
+    <Column Background="Background.Dark" TextColor="TextColor.Light"
+            ColumnSize="ColumnSize.IsThird.OnFullHD.IsHalf.OnDesktop.IsFull.OnMobile">
+        @if (_selectedNode?.Children?.Any() == true)
+        {
+            <Field>
+                <FieldLabel>
+                    White Cards
+                </FieldLabel>
+                <FieldBody>
+                    <ListGroup Background="Background.Dark"
+                               Mode="ListGroupMode.Selectable"
+                               Flush
+                               Padding="Padding.Is2.OnY"
+                               Scrollable
+                               Class="pack-node-card-list">
+                        <Repeater TItem="PackViewNodeInfo" Items="_selectedNode.Children.Where(c => c.NodeType == NodeTypes.WhiteCard)">
+                            <ListGroupItem Name="@context.Id.ToString()"
+                                           Flex="Flex.JustifyContent.Between.AlignItems.Center"
+                                           Class="pack-node-list-item">
+                                <Heading Size="HeadingSize.Is5" Margin="Margin.Is1.FromBottom">@context.Text</Heading>
+                            </ListGroupItem>
+                        </Repeater>
+                    </ListGroup>
+                </FieldBody>
+            </Field>
+        }
+    </Column>
+</Row>

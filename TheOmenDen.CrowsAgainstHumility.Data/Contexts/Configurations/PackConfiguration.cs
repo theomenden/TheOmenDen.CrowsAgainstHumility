@@ -5,6 +5,8 @@ public partial class PackConfiguration : IEntityTypeConfiguration<Pack>
 {
     public void Configure(EntityTypeBuilder<Pack> entity)
     {
+        entity.ToTable("Packs");
+
         entity.HasIndex(e => e.IsOfficialPack, "IX_Packs_IsOfficialPack");
 
         entity.HasIndex(e => e.Name, "IX_Packs_Name");

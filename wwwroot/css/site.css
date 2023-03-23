@@ -155,33 +155,28 @@
   border-radius: 10px;
 }
 
-.game-creation-list {
-  min-height: 1.25rem;
-  height: fit-content;
-  max-height: calc(250px - 2.85em);
-  overflow-x: hidden;
-  overflow-y: scroll;
-  background-color: transparent;
-}
-.game-creation-list .list-group-item {
-  background-color: transparent;
-  border-width: 2px;
-  border-top-style: inset;
-  border-top-color: black;
+.pack-node-list {
+  margin: 0;
+  padding: 0;
+  max-height: 800px;
 }
 
-:is(.active) .list-group-item-action {
-  background-color: blueviolet;
+.pack-node-card-list {
+  margin: 0;
+  padding: 0;
+  max-height: 300px;
 }
 
-.crow-game-player-list {
-  width: fit-content;
-  overflow-x: hidden;
-  overflow-y: scroll;
-  background-color: transparent;
+.pack-node-list-item {
+  width: 100%;
+  height: 100%;
+  background-color: #cecece;
+  font-weight: bolder !important;
 }
-.crow-game-player-list .list-group-item {
-  background-color: transparent !important;
+
+.pack-node-list-item:hover {
+  cursor: pointer;
+  background-color: #FE75FE !important;
 }
 
 html,

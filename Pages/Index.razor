@@ -5,11 +5,15 @@
 <AuthorizeView>
     <Authorized>
         <Row Display="Display.Flex">
-            <Column ColumnSize="ColumnSize.IsHalf.OnWidescreen.Is8.OnTablet.IsFull.OnMobile">
+            <Column ColumnSize="ColumnSize.IsFull.OnMobile">
                 <Container Fluid
                            VerticalAlignment="VerticalAlignment.Middle"
                            TextAlignment="TextAlignment.Center">
-                    <ChatMessageComponent />
+                    <Button Type="ButtonType.Button" Color="Color.Primary"
+                            Border="Border.Is0.Rounded"
+                            Clicked="ShowGameCreator">
+                        Show Game Creator Screen <Icon Name="IconName.Gamepad" />
+                    </Button>
                 </Container>
             </Column>
         </Row>

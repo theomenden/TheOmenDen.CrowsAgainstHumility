@@ -5,6 +5,11 @@ public partial class BlackCardConfiguration : IEntityTypeConfiguration<BlackCard
 {
     public void Configure(EntityTypeBuilder<BlackCard> entity)
     {
+        entity.ToTable("BlackCards");
+        entity.HasKey(e => e.Id)
+            .IsClustered()
+            .HasName("PK_BlackCards_Id");
+        
         entity.HasIndex(e => e.PackId, "IX_BlackCards_PackId");
 
         entity.Property(e => e.Id).HasDefaultValueSql("(newsequentialid())");

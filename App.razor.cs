@@ -61,8 +61,8 @@ public partial class App : IDisposable, IAsyncDisposable
         {
             return;
         }
-
-        var newPath = $"/mobile/{navPath.Substring(1)}";
+        
+        var newPath = $"/mobile/{navPath[1..]}";
         NavigationManager.NavigateTo(newPath);
     }
     #endregion

@@ -1,6 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using EFCoreSecondLevelCacheInterceptor;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
+using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Repositories;
 using TheOmenDen.CrowsAgainstHumility.Data.Contexts;
+using TheOmenDen.CrowsAgainstHumility.Data.Repositories;
 
 namespace TheOmenDen.CrowsAgainstHumility.Data.Extensions;
 public static class ServiceCollectionExtensions
@@ -13,17 +17,36 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddCorvidDataServices(this IServiceCollection services, String connectionString)
     {
-        services.AddPooledDbContextFactory<CrowsAgainstHumilityContext>(options =>
+        services.AddEFSecondLevelCache(options =>
+                options.UseMemoryCacheProvider(CacheExpirationMode.Absolute, TimeSpan.FromMinutes(30))
+                    .DisableLogging(true)
+                    .CacheQueriesContainingTypes(CacheExpirationMode.Absolute, TimeSpan.FromMinutes(30), 
+                        TableTypeComparison.Contains,
+                        typeof(WhiteCard), 
+                        typeof(BlackCard),
+                        typeof(Pack), 
+                        typeof(FilteredWhiteCardsByPack), 
+                        typeof(FilteredBlackCardsByPack))
+                    .CacheQueriesContainingTableNames(CacheExpirationMode.Absolute, TimeSpan.FromMinutes(30),
+                        TableNameComparison.Contains,
+                        "vw_FilteredWhiteCardsByPack", "vw_FilteredBlackCardsByPack", "BlackCards", "WhiteCards", "Packs")
+                    .SkipCacheInvalidationCommands(commandText =>
+                        commandText.Contains("NEWID()", StringComparison.InvariantCultureIgnoreCase)));
+
+        services.AddPooledDbContextFactory<CrowsAgainstHumilityContext>((serviceProvider, options) =>
         {
-            options.UseSqlServer(connectionString)
+            options.UseSqlServer(connectionString, 
+                    sqlOptions => sqlOptions.CommandTimeout((int)TimeSpan.FromMinutes(3).TotalSeconds))
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
 #if DEBUG
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors()
 #endif
-                .EnableServiceProviderCaching()
+                .AddInterceptors(serviceProvider.GetRequiredService<SecondLevelCacheInterceptor>())
                 .UseLoggerFactory(LoggerFactory);
         });
+
+        services.AddScoped<IPackRepository, PackRepository>();
 
         services.AddHealthChecks()
             .AddDbContextCheck<CrowsAgainstHumilityContext>();

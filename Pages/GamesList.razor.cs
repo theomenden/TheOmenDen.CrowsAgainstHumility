@@ -25,7 +25,7 @@ public partial class GamesList : ComponentBase, IDisposable
 
     protected override async Task OnInitializedAsync()
     {
-        _games =Enumerable.Empty<CrowGame>().ToList();
+        _games = Enumerable.Empty<CrowGame>().ToList();
 
         await base.OnInitializedAsync();
     }

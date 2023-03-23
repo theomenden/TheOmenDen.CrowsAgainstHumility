@@ -178,9 +178,11 @@ try
     builder.Services.AddCorvidTwitchServices(twitchStrings);
 
     builder.Services.AddCorvidDiscordServices();
-    
-    builder.Services.AddCorvidDataServices(builder.Configuration["ConnectionStrings:UserContextConnection"]
-                                           ?? builder.Configuration["ConnectionStrings:CrowsAgainstHumilityDb"]);
+
+    var corvidConnectionString = builder.Configuration["ConnectionStrings:UserContextConnection"]
+                                 ?? builder.Configuration["ConnectionStrings:CrowsAgainstHumilityDb"];
+
+    builder.Services.AddCorvidDataServices(corvidConnectionString!);
 
     builder.Services.AddResponseCompression(options =>
     {

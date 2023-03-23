@@ -99,6 +99,7 @@
     <PackageReference Include="Blazorise.Markdown" Version="1.2.2" />
     <PackageReference Include="Blazorise.QRCode" Version="1.2.2" />
     <PackageReference Include="Blazorise.SpinKit" Version="1.2.2" />
+    <PackageReference Include="Blazorise.TreeView" Version="1.2.2" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
     <PackageReference Include="Discord.Net" Version="3.9.0" />
     <PackageReference Include="FluentValidation" Version="11.5.1" />

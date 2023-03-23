@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using Blazorise;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.JSInterop;
 using TheOmenDen.CrowsAgainstHumility.Circuits;
+using TheOmenDen.CrowsAgainstHumility.Components;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 using TheOmenDen.CrowsAgainstHumility.Events;
 
@@ -29,6 +31,8 @@ public partial class Index : ComponentBase, IDisposable, IAsyncDisposable
     [Inject] private IUserInformationService UserInformationService { get; init; }
 
     [Inject] private ILogger<Index> Logger { get; init; }
+
+    [Inject] private IModalService ModalService { get; init; }
     #endregion
 
     private TrackingCircuitHandler _trackingCircuitHandler;
@@ -82,6 +86,15 @@ public partial class Index : ComponentBase, IDisposable, IAsyncDisposable
         }
     }
 
+    private async Task ShowGameCreator()
+    {
+        await ModalService.Show<CreateCrowGameComponent>("Sample Game Creator", new ModalInstanceOptions
+        {
+            UseModalStructure = false,
+            Size = ModalSize.ExtraLarge
+        });
+        await InvokeAsync(StateHasChanged);
+    }
 
     public ValueTask DisposeAsync()
     {

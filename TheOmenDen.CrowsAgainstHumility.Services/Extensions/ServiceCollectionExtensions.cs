@@ -19,7 +19,8 @@ public static class ServiceCollectionExtensions
             .AddScoped<IUserToPlayerProcessingService, UserToPlayerProcessingService>()
             .AddScoped<ICardPoolBuildingService, CardPoolBuildingService>()
             .AddScoped<ICardPoolFilteringService, CardPoolFilteringService>()
-            .AddScoped<ICrowGameHubConnectorService, CrowGameHubConnectorService>();
+            .AddScoped<ICrowGameHubConnectorService, CrowGameHubConnectorService>()
+            .AddScoped<IPackViewService, PackViewProcessingService>();
         return services;
     }
 

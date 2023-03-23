@@ -7,7 +7,12 @@
      NavigationBreakpoint="Breakpoint.Tablet"
      Shadow="Shadow.Large">
     <BarToggler />
-    <BarBrand Margin="Margin.Is2.FromEnd" Casing="CharacterCasing.Upper" />
+    <BarBrand Flex="Flex.AlignContent.Center.JustifyContent.Center">
+        <BarLink To="">
+            <Image Source="images/logo_without_text_and_tagline.png"
+                   Text="Crows Against Humility Logo" />
+        </BarLink>
+    </BarBrand>
     <BarMenu Margin="Margin.Is3.FromTop">
         <BarStart>
             <BarItem>
@@ -44,32 +49,32 @@
             <BarItem>
                 <BarDropdown>
                     <BarDropdownToggle TextColor="TextColor.Muted">
-                        <BarIcon IconName="IconName.QuestionCircle" Margin="Margin.Is1.FromEnd"/>
+                        <BarIcon IconName="IconName.QuestionCircle" Margin="Margin.Is1.FromEnd" />
                         Support
                     </BarDropdownToggle>
                     <BarDropdownMenu Background="Background.Dark">
                         <BarDropdownItem TextColor="TextColor.Muted"
                                          Clicked="@(() => NavigationManager.NavigateTo("/contactUs"))">
                             Contact Us
-                            <BarIcon IconName="IconName.Mail" Margin="Margin.Is1.FromEnd"/>
+                            <BarIcon IconName="IconName.Mail" Margin="Margin.Is1.FromEnd" />
                         </BarDropdownItem>
-                        <BarDropdownDivider Background="Background.Primary"/>
+                        <BarDropdownDivider Background="Background.Primary" />
                         <BarDropdown>
                             <BarDropdownToggle>
-                                <BarIcon IconName="IconName.Book" Margin="Margin.Is1.FromEnd"/>
+                                <BarIcon IconName="IconName.Book" Margin="Margin.Is1.FromEnd" />
                                 Policies
                             </BarDropdownToggle>
                             <BarDropdownMenu Background="Background.Dark">
                                 <BarDropdownItem TextColor="TextColor.Muted" Clicked="@(() => NavigationManager.NavigateTo("/privacy-policy"))">
-                                    Privacy Policy<BarIcon IconName="IconName.Lock" Margin="Margin.Is1.FromStart"/>
+                                    Privacy Policy<BarIcon IconName="IconName.Lock" Margin="Margin.Is1.FromStart" />
                                 </BarDropdownItem>
-                                <BarDropdownDivider Background="Background.Primary"/>
+                                <BarDropdownDivider Background="Background.Primary" />
                                 <BarDropdownItem TextColor="TextColor.Muted" Clicked="@(() => NavigationManager.NavigateTo("/terms-of-service"))">
-                                    Terms of Service<BarIcon IconName="IconName.UserCheck" Margin="Margin.Is1.FromStart"/>
+                                    Terms of Service<BarIcon IconName="IconName.UserCheck" Margin="Margin.Is1.FromStart" />
                                 </BarDropdownItem>
-                                <BarDropdownDivider Background="Background.Primary"/>
+                                <BarDropdownDivider Background="Background.Primary" />
                                 <BarDropdownItem TextColor="TextColor.Muted" Clicked="@(() => NavigationManager.NavigateTo("/cookie"))">
-                                    Cookie Consent<BarIcon IconName="@("fa-cookie")" Margin="Margin.Is1.FromStart"/>
+                                    Cookie Consent<BarIcon IconName="@("fa-cookie")" Margin="Margin.Is1.FromStart" />
                                 </BarDropdownItem>
                             </BarDropdownMenu>
                         </BarDropdown>

@@ -4,7 +4,6 @@
      ThemeContrast="ThemeContrast.Dark"
      Shadow="Shadow.Large"
      Class="footer">
-    <BarBrand />
     <BarToggler />
     <BarMenu>
         <BarStart>
@@ -23,7 +22,7 @@
                         <DropdownDivider Background="Background.Primary" />
                         <Dropdown Direction="Direction.End">
                             <DropdownToggle>
-                                <BarIcon IconName="IconName.Book" Margin="Margin.Is1.FromEnd"/>
+                                <BarIcon IconName="IconName.Book" Margin="Margin.Is1.FromEnd" />
                                 Policies
                             </DropdownToggle>
                             <DropdownMenu Background="Background.Dark">
@@ -45,13 +44,11 @@
             </BarItem>
         </BarStart>
         <BarBrand Margin="Margin.Is2.FromEnd" Casing="CharacterCasing.Upper">
-            <BarItem>
-                <BarLink To=""
-                         TextWeight="TextWeight.Light"
-                         TextColor="TextColor.White50">
-                    Crows Against Humility
-                </BarLink>
-            </BarItem>
+            <BarLink To="">
+                <Image Source="images/vector-file.svg"
+                       Text="Crows Against Humility Logo"
+                       Style="height: Calc(100% - 3rem); width: 100%;" />
+            </BarLink>
         </BarBrand>
         <BarEnd>
             <BarItem Margin="Margin.Is3.FromEnd">
