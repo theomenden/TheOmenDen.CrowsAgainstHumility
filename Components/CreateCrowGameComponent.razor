@@ -1,12 +1,14 @@
-﻿<ModalHeader Background="Background.Dark" TextColor="TextColor.Light">
+﻿@using TwitchLib.Api.Helix.Models.Users.GetUsers
+<ModalHeader Background="Background.Dark" TextColor="TextColor.Light">
     <ModalTitle>Create your Game</ModalTitle>
-    <CloseButton Class="btn-close-white" />
+    <CloseButton Class="btn-close-white" Shadow="Shadow.Small" />
 </ModalHeader>
-<ModalBody>
+<ModalBody Background="Background.Dark">
     <Row Height="Height.Is100">
         <Column>
-            <Tabs RenderMode="TabsRenderMode.LazyReload" SelectedTab="tab1"
-                  Margin="Margin.Is2.FromTop.Is3.FromBottom">
+            <Tabs RenderMode="TabsRenderMode.LazyLoad"
+                  Margin="Margin.Is2.FromTop.Is3.FromBottom"
+                  Justified>
                 <Items>
                     <Tab Name="tab1">Base Game Information</Tab>
                     <Tab Name="tab2">Expansion Pack Selection</Tab>
@@ -15,14 +17,23 @@
                     <Tab Name="tab5">Finalize</Tab>
                 </Items>
                 <Content>
-                    <TabPanel Name="tab1">
+                    <TabPanel Name="tab1" Height="Height.Is100">
                         <Fields>
                             <Field Horizontal>
                                 <FieldLabel>
                                     Lobby Name
                                 </FieldLabel>
                                 <FieldBody>
-                                    <TextEdit @bind-Text="_createModal.RoomName" />
+                                    <Addons>
+                                        <Addon AddonType="AddonType.Start">
+                                            <AddonLabel>
+                                                <Icon Name="IconName.UserFriends" />
+                                            </AddonLabel>
+                                        </Addon>
+                                        <Addon AddonType="AddonType.Body">
+                                            <TextEdit @bind-Text="_createModal.RoomName" />
+                                        </Addon>
+                                    </Addons>
                                 </FieldBody>
                             </Field>
                             <Field Horizontal>
@@ -30,7 +41,16 @@
                                     Lobby Password
                                 </FieldLabel>
                                 <FieldBody>
-                                    <TextEdit @bind-Text="@_createModal.Password" Role="TextRole.Password" />
+                                    <Addons>
+                                        <Addon AddonType="AddonType.Start">
+                                            <AddonLabel>
+                                                <Icon Name="IconName.Lock" />
+                                            </AddonLabel>
+                                        </Addon>
+                                        <Addon AddonType="AddonType.Body">
+                                            <TextEdit @bind-Text="@_createModal.Password" Role="TextRole.Password" />
+                                        </Addon>
+                                    </Addons>
                                 </FieldBody>
                             </Field>
                             <Field Horizontal>
@@ -38,48 +58,226 @@
                                     Generated Code
                                 </FieldLabel>
                                 <FieldBody>
-                                    <TextEdit Plaintext ReadOnly Text="@_createModal.RoomCode" />
-                                </FieldBody>
-                            </Field>
-                        </Fields>
-                    </TabPanel>
-                    <TabPanel Name="tab2">
-                        <ListView TItem="Pack"
-                                  Data="_packs"
-                                  TextField="item => item.Name"
-                                  ValueField="item => item.Id.ToString()"
-                                  Flush>
-                            <ItemTemplate>
-                                <Div Flex="Flex.JustifyContent.Between.AlignItems.Center" Width="Width.Is100">
-                                    <Heading Margin="Margin.Is2.FromBottom">@context.Item.Name</Heading>
-                                    @if (context.Item.IsOfficialPack)
+                                    <Addons>
+                                        <Addon AddonType="AddonType.Start">
+                                            <AddonLabel>
+                                                <Icon Name="IconName.Key" />
+                                            </AddonLabel>
+                                        </Addon>
+                                        <Addon AddonType="AddonType.Body">
+                                            <TextEdit Disabled ReadOnly Text="@_createModal.RoomCode" />
+                                            </Addon>
+                                            </Addons>
+                                            </FieldBody>
+                                            </Field>
+                                            </Fields>
+                                            </TabPanel>
+                                            <TabPanel Name="tab2" Height="Height.Is100">
+                                            <Row>
+                                            <Column ColumnSize="ColumnSize.IsAuto">
+                                            <Autocomplete TItem="Pack"
+                                              TValue="Guid"
+                                              Data="_packs"
+                                              TextField="item => item.Name"
+                                              ValueField="item => item.Id"
+                                              Placeholder="Search..."
+                                              Filter="AutocompleteFilter.StartsWith"
+                                                    FreeTyping
+                                              SelectionMode="AutocompleteSelectionMode.Multiple"
+                                              CloseOnSelection="false"
+                                                    HighlightSearch
+                                              CustomFilter="@((item, searchValue) => item.Name.IndexOf(searchValue, 0, StringComparison.CurrentCultureIgnoreCase) >= 0)"
+                                              @bind-SelectedValues="_selectedPackIds"
+                                              @bind-SelectedTexts="_selectedPackNames"
+                                                    Virtualize>
+                                    <NotFoundContent>Sorry... @context pack could not be found :( </NotFoundContent>
+                                    <ItemContent>
+                                        <Div Flex="Flex.JustifyContent.Between.AlignItems.Center"
+                                             Height="Height.Is100">
+                                            <Heading Margin="Margin.Is2.FromBottom"
+                                                     Size="HeadingSize.Is5" TextOverflow="TextOverflow.Wrap">@context.Item.Name</Heading>
+                                            @if (context.Item.IsOfficialPack)
+                                            {
+                                                <Badge Color="Color.Primary" Pill>
+                                                <Icon Name="IconName.CheckCircle" />
+                                                <Span Class="visually-hidden">
+                                                    Official Cards Against Humanity Pack
+                                                </Span>
+                                            </Badge>
+                                            }
+                                        </Div>
+                                    </ItemContent>
+                                </Autocomplete>
+                            </Column>
+                            <Column ColumnSize="ColumnSize.IsAuto">
+                                <Div Width="Width.Is100"
+                                     ElementId="#b-animate">
+                                    @if (_selectedPackNames?.Any() == true)
                                     {
-                                        <Badge Color="Color.Primary" Pill>
-                                            <Icon Name="IconName.CheckCircle"/>
-                                            <Span Class="visually-hidden">
-                                                Official Cards Against Humanity Pack
-                                            </Span>
-                                        </Badge>
+                                        <CardGroup Flex="Flex.Row.AlignItems.Start.JustifyContent.Center">
+                                            <Repeater TItem="string" Items="_selectedPackNames">
+                                                <Animate Anchor="#b-animate"
+                                                          Auto
+                                                     Animation="Animations.SlideUp"
+                                                     DelayMilliseconds="500">
+                                                <Card Shadow="Shadow.Default"
+                                                      Margin="Margin.Is3.OnY.Is2.OnX"
+                                                      TextColor="TextColor.Dark">
+                                                    <CardBody>
+                                                        @context
+                                                        @if (IsOfficialPack(context))
+                                                            {
+                                                                <Icon Name="@("fa-badge-check")" TextColor="TextColor.Primary" />
+                                                            }
+                                                        </CardBody>
+                                                    </Card>
+                                                </Animate>
+                                            </Repeater>
+                                        </CardGroup>
                                     }
                                 </Div>
-                            </ItemTemplate>
-                        </ListView>
+                            </Column>
+                        </Row>
+                        <Row>
+                            <Column>
+                                <Buttons Role="ButtonsRole.Toolbar"
+                                         Flex="Flex.Column.JustifyContent.End.AlignItems.Start"
+                                         Margin="Margin.Is2.FromTop.Is3.FromBottom">
+                                    <Button Color="Color.Warning"
+                                            Clicked="AddRandomPackAsync"
+                                            Margin="Margin.Is2.OnY"
+                                            Class="border-dark-bottom-1 rounded-bottom-3 shadow-sm">
+                                        Add a random pack <Icon Name="IconName.Add" />
+                                    </Button>
+                                    <Button Color="Color.Warning"
+                                            Clicked="Add5RandomPacksAsync"
+                                            Margin="Margin.Is2.FromTop.Is1.FromBottom"
+                                            Class="border-dark-bottom-1 rounded-bottom-3 shadow-sm">
+                                        Add 5 Random Packs <Icon Name="IconName.Dice" />
+                                    </Button>
+                                    <Button Color="Color.Info"
+                                            Clicked="AddAllOfficialPacksAsync"
+                                            Margin="Margin.Is2.FromTop.Is1.FromBottom"
+                                            Class="border-dark-bottom-1 rounded-bottom-3 shadow-sm">
+                                        Add All Official Packs <Icon Name="IconName.BalanceScale" />
+                                    </Button>
+                                    <Button Color="Color.Danger"
+                                            Clicked="ClearPacksAsync"
+                                            Margin="Margin.Is2.FromTop.Is1.FromBottom"
+                                            Class="border-dark-bottom-1 rounded-bottom-3 shadow-sm">
+                                        Remove All Packs <Icon Name="IconName.Clear" />
+                                    </Button>
+                                </Buttons>
+                            </Column>
+                            <Column ColumnSize="ColumnSize.IsAuto">
+                                <Paragraph Margin="Margin.Is2.OnY"
+                                           TextColor="TextColor.Light">
+                                    Estimated White Cards: @GetEstimatedWhiteCardCount()
+                                </Paragraph>
+                                <Paragraph Margin="Margin.Is2.OnY"
+                                           TextColor="TextColor.Light">
+                                    Estimated Black Cards: @GetEstimatedBlackCardCount()
+                                </Paragraph>
+                            </Column>
+                        </Row>
                     </TabPanel>
-                    <TabPanel Name="tab3">
+                    <TabPanel Name="tab3" Height="Height.Is100">
+                        <Row>
+                            <Column ColumnSize="ColumnSize.IsThird.OnTablet.IsQuarter.OnDesktop.Is2.OnWidescreen">
+                                <Field>
+                                    <FieldLabel TextColor="TextColor.Warning">
+                                        Players to Include
+                                    </FieldLabel>
+                                    <FieldBody>
+                                        <TextEdit Placeholder="Twitch User Name..." @bind-Text="@_playerToAdd" />
+                                        <Button Color="Color.Primary"
+                                                Border="Border.Is0.OnAll.Rounded"
+                                                Margin="Margin.Is2.FromTop.OnDesktop.Is4.FromTop.OnMobile"
+                                                Clicked="AddPlayerToListAsync">
+                                            Add To List
+                                        </Button>
+                                    </FieldBody>
+                                </Field>
+                            </Column>
+                            <Column ColumnSize="ColumnSize.Is8.OnTablet.Is9.OnDesktop.Is10.OnWidescreen" Height="Height.Is100">
+                                @if (!_players.Any())
+                                {
+                                    <Paragraph TextColor="TextColor.Light"
+                                           TextWeight="TextWeight.Light">
+                                        Add players to your game by their Twitch or Discord Handle
+                                    </Paragraph>
+                                    <Small TextColor="TextColor.Light"
+                                       Class="fst-italic">
+                                        (If adding by discord, please include the numbers in their handle after the # - a.k.a. Discriminator Value)
+                                    </Small>
+                                }
+                                else
+                                {
+                                    <Div ElementId="#list-group-animate-div">
+                                        <CardGroup>
+                                            <Repeater TItem="User" Items="_players">
+                                                <Animate Anchor="#list-group-animate-div"
+                                                     Animation="Animations.FadeUp"
+                                                          Auto
+                                                     DelayMilliseconds="500">
+                                                <Card Background="Background.Transparent"
+                                                      Margin="Margin.Is2.OnX.Is3.OnY"
+                                                      TextColor="TextColor.Light"
+                                                      Shadow="Shadow.Default"
+                                                      Border="Border.Is0.Rounded">
+                                                    <CardBody Background="Background.Transparent"
+                                                              TextColor="TextColor.Light">
+                                                        <Div Flex="Flex.Column">
+                                                            <Text Display="Display.InlineFlex"
+                                                                  Margin="Margin.Is2.FromBottom.OnDesktop.Is4.FromBottom.OnMobile">
+                                                                <Image Text="@context.DisplayName"
+                                                                       Source="@context.ProfileImageUrl"
+                                                                       loading="lazy"
+                                                                       Border="Border.Is2.Light.OnAll.Rounded"
+                                                                       Margin="Margin.Is2.FromEnd.OnDesktop.Is4.FromEnd.OnMobile"
+                                                                       Style="height: 48px; max-height: fit-content; width: 48px; max-width: fit-content;" />
+
+                                                                @context.DisplayName
+                                                                <Icon Name="DeterminePlayerIconName(context?.BroadcasterType ?? String.Empty)"
+                                                                      Style="@DeterminePlayerIconColor(context.BroadcasterType ?? String.Empty)"
+                                                                      TextWeight="TextWeight.Bold"
+                                                                      IconSize="IconSize.Large" />
+                                                            </Text>
+                                                        </Div>
+                                                    </CardBody>
+                                                </Card>
+                                                </Animate>
+                                                </Repeater>
+                                                </CardGroup>
+                                                </Div>
+                                }
+                            </Column>
+                        </Row>
                     </TabPanel>
-                    <TabPanel Name="tab4">
+                    <TabPanel Name="tab4" Height="Height.Is100">
                     </TabPanel>
-                    <TabPanel Name="tab5">
+                    <TabPanel Name="tab5" Height="Height.Is100">
                     </TabPanel>
                 </Content>
             </Tabs>
         </Column>
     </Row>
 </ModalBody>
-<ModalFooter>
+<ModalFooter Background="Background.Dark">
     <Buttons Role="ButtonsRole.Toolbar"
              Flex="Flex.AlignItems.Center.JustifyContent.Between">
-        <Button Color="Color.Primary" Margin="Margin.Is2.OnX">Create Game <Icon Name="IconName.Gamepad" /></Button>
-        <Button Color="Color.Secondary" Margin="Margin.Is2.OnX" Clicked="OnCancelClickedAsync">Cancel</Button>
+        <Button Color="Color.Primary"
+                Margin="Margin.Is2.OnX"
+                Border="Border.Is0.OnTop.Is2.OnBottom.Is1.OnStart.Is1.OnEnd.Dark.OnStart.Dark.OnEnd.Dark.OnBottom.Rounded"
+                Shadow="Shadow.Small">
+            Create Game <Icon Name="IconName.Gamepad" />
+        </Button>
+        <Button Color="Color.Secondary"
+                Margin="Margin.Is2.OnX"
+                Clicked="OnCancelClickedAsync"
+                Border="Border.Is0.OnTop.Is2.OnBottom.Is1.OnStart.Is1.OnEnd.Dark.OnStart.Dark.OnEnd.Dark.OnBottom.Rounded"
+                Shadow="Shadow.Small">
+            Cancel
+        </Button>
     </Buttons>
 </ModalFooter>
