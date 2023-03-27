@@ -6,7 +6,6 @@ using Microsoft.Extensions.Caching.Distributed;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 using TheOmenDen.CrowsAgainstHumility.Services.Helpers;
 using System.Runtime.CompilerServices;
-using TheOmenDen.Shared.Utilities;
 
 namespace TheOmenDen.CrowsAgainstHumility.Services.CardPoolBuilding;
 
@@ -59,8 +58,8 @@ internal sealed class CardPoolBuildingService : ICardPoolBuildingService
     {
         await using var context = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
-        var skippedRows = ThreadSafeRandom.Global.Next(0, 130);
-        var rowsToTake = ThreadSafeRandom.Global.Next(5, 10);
+        var skippedRows = Random.Shared.Next(0, 130);
+        var rowsToTake = Random.Shared.Next(5, 10);
 
         await foreach (var pack in context.Packs
                            .AsNoTracking()

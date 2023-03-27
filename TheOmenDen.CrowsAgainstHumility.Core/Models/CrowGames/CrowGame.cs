@@ -1,43 +1,37 @@
-﻿namespace TheOmenDen.CrowsAgainstHumility.Core.Models.CrowGames;
-public sealed class CrowGame : IEquatable<CrowGame>, IComparable<CrowGame>
+﻿using System.Collections.Concurrent;
+using System.Reflection.Metadata.Ecma335;
+
+namespace TheOmenDen.CrowsAgainstHumility.Core.Models.CrowGames;
+public sealed class CrowGame
 {
-    #region Game Properties
-    public Guid Id { get; set; }
-    public Guid RoomId { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime? StartedAt { get; set; }
-    #endregion
-    #region Navigation Properties
-    public RoomState Room { get; set; }
-    public ICollection<Guid> Packs { get; set; } = new HashSet<Guid>();
-    #endregion
-    #region Overrides
-    public bool Equals(CrowGame? other)
-        => other is not null &&
-           Id == other.Id;
-
-    public override bool Equals(object? obj)
+    #region Constructor
+    public CrowGame(IEnumerable<Pack> packs)
     {
-        if (obj is null)
-        {
-            return false;
-        }
-
-        if (ReferenceEquals(this, obj))
-        {
-            return true;
-        }
-
-        return obj is CrowGame other && Equals(other);
+        IsShown = false;
+        PlayedWhiteCards = new ConcurrentDictionary<int, WhiteCard>();
+        Packs = packs;
     }
-
-    public override int GetHashCode() => HashCode.Combine(Id, CreatedAt);
-
-    public int CompareTo(CrowGame? other) => other is null ? 1 : other.CreatedAt.CompareTo(CreatedAt);
     #endregion
-    #region Operator Overloads
-    public static bool operator ==(CrowGame? lhs, CrowGame? rhs) => lhs?.Equals(rhs) ?? rhs is { };
-
-    public static bool operator !=(CrowGame? lhs, CrowGame? rhs) => !(lhs == rhs);
+    #region Properties
+    public bool IsShown { get; set; }
+    public bool CanClear => PlayedWhiteCards.Any();
+    public bool CanPlayWhiteCard => !IsShown;
+    public IDictionary<int, WhiteCard> PlayedWhiteCards { get; set; }
+    public IEnumerable<Pack> Packs { get; set; } = Enumerable.Empty<Pack>();
+    #endregion
+    #region Public Methods
+    public bool CanShow(IDictionary<WhiteCard, Player> participants)
+        => PlayedWhiteCards.Count is not 0
+           && !IsShown
+           && AllPlayersHavePlayedAWhiteCard(participants);
+    public IEnumerable<WhiteCard> GetWhiteCards() => Packs?.SelectMany(p => p.WhiteCards).ToList() ?? Enumerable.Empty<WhiteCard>();
+    public IEnumerable<BlackCard> GetBlackCards() => Packs?.SelectMany(p => p.BlackCards).ToList() ?? Enumerable.Empty<BlackCard>();
+    #endregion
+    #region Private Methods
+    private bool AllPlayersHavePlayedAWhiteCard(IDictionary<WhiteCard, Player> participants)
+    {
+        var currentPlayers = participants.Values.Where(p => !p.IsCardCzar);
+        return currentPlayers.All(id => PlayedWhiteCards.ContainsKey(id.PlayedWhiteCard));
+    }
     #endregion
 }

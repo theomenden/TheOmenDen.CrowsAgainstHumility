@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
+using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Engines;
+using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Hubs;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 using TheOmenDen.CrowsAgainstHumility.Core.Models;
+using TheOmenDen.CrowsAgainstHumility.Core.Results;
 using TheOmenDen.CrowsAgainstHumility.Services.CrowGameBuilder;
 
 namespace TheOmenDen.CrowsAgainstHumility.Services.Hubs;
@@ -8,84 +12,62 @@ public sealed class CrowGameHub : Hub
 {
     public const string HubUrl = "/crowGameHub";
 
-    private readonly IGameRoomManager _roomManager;
-
-    public CrowGameHub(IGameRoomManager roomManager)
+    #region Injected Services
+    private readonly ICrowGameEngine _crowGameEngine;
+    private readonly ICrowGameEventBroadcaster _eventBroadcaster;
+    private readonly ILogger<CrowGameHub> _logger;
+    #endregion
+    #region Constructors
+    public CrowGameHub(ICrowGameEngine crowGameEngine, ICrowGameEventBroadcaster eventBroadcaster, ILogger<CrowGameHub> logger)
     {
-            _roomManager = roomManager ?? throw new ArgumentNullException(nameof(roomManager));
+        _crowGameEngine = crowGameEngine;
+        _eventBroadcaster = eventBroadcaster;
+        _logger = logger;
     }
+    #endregion
+    #region Connection Methods
+    public async Task Connect(Guid id)
+        => await Groups.AddToGroupAsync(GetPlayerPrivateId(), id.ToString());
 
-    [HubMethodName(CrowGameHubConnectorService.JoinRoomMethodName)]
-    public async Task JoinRoom(Guid roomId, Player player)
+    public void Clear(Guid serverId) => _crowGameEngine.ClearGameBoard(serverId, GetPlayerPrivateId());
+
+    public async Task ClearAsync(Guid serverId, CancellationToken cancellationToken = default)
+        => await _crowGameEngine.ClearGameBoardAsync(serverId, GetPlayerPrivateId(), cancellationToken);
+
+    public ServerCreationResult Create(IEnumerable<Pack> desiredPacks)
     {
-        var roomState = await _roomManager.AddPlayerToRoomAsync(roomId, player, Context.ConnectionId);
-
-        await Groups.AddToGroupAsync(Context.ConnectionId, roomState.Code);
-        await Clients.Groups(roomState.Code).SendAsync(CrowGameHubConnectorService.RoomUpdatedMethodName, roomState);
-    }
-
-    [HubMethodName(CrowGameHubConnectorService.JoinRoomByCodeMethodName)]
-    public async Task JoinRoomByCode(Guid roomId, Player player)
-    {
-        var roomState = await _roomManager.AddPlayerToRoomAsync(roomId, player, Context.ConnectionId);
-
-        await Groups.AddToGroupAsync(Context.ConnectionId, roomState.Code);
-        await Clients.Groups(roomState.Code).SendAsync(CrowGameHubConnectorService.RoomUpdatedMethodName, roomState);
-    }
-
-    [HubMethodName(CrowGameHubConnectorService.UpdateRoomMethodName)]
-    public async Task UpdateRoom(RoomOptions roomOptions)
-    {
-        var roomState = await _roomManager.UpdateRoomAsync(roomOptions, Context.ConnectionId);
-
-        if (!String.IsNullOrWhiteSpace(roomState?.Code))
+        var (wasCreated, serverId, validationMessage) = _crowGameEngine.CreateRoom(desiredPacks);
+        var creationResult = new ServerCreationResult
         {
-            await Clients.Groups(roomState.Code).SendAsync(CrowGameHubConnectorService.RoomUpdatedMethodName, roomState);
-        }
+            WasCreated = wasCreated,
+            ServerId = serverId,
+            ValidationMessage = validationMessage
+        };
+        return creationResult;
     }
 
-    [HubMethodName(CrowGameHubConnectorService.PlayWhiteCardMethodName)]
-    public async Task PlayWhiteCard(WhiteCard card)
+    public async Task<ServerCreationResult> CreateAsync(IEnumerable<Pack> desiredPacks, CancellationToken cancellationToken = default)
     {
-        var roomState = await _roomManager.PlayWhiteCardAsync(card, Context.ConnectionId);
-
-        if (!String.IsNullOrWhiteSpace(roomState?.Code))
+        var (wasCreated, serverId, validationMessage) = await _crowGameEngine.CreateRoomAsync(desiredPacks, cancellationToken);
+        
+        var creationResult = new ServerCreationResult
         {
-            await Clients.Groups(roomState.Code).SendAsync(CrowGameHubConnectorService.RoomUpdatedMethodName, roomState);
-        }
+            WasCreated = wasCreated,
+            ServerId = serverId,
+            ValidationMessage = validationMessage
+        };
+
+        return creationResult;
     }
 
-    [HubMethodName(CrowGameHubConnectorService.NextBlackCardMethodName)]
-    public async Task NextBlackCard(Guid roomId, BlackCard blackCard)
-    {
-        var roomState = await _roomManager.NextBlackCardAsync(roomId, blackCard);
-
-        if (!String.IsNullOrWhiteSpace(roomState?.Code))
-        {
-            await Clients.Groups(roomState.Code).SendAsync(CrowGameHubConnectorService.RoomUpdatedMethodName, roomState);
-        }
-    }
-
-    [HubMethodName(CrowGameHubConnectorService.ResetRoomMethodName)]
-    public async Task ResetRoom()
-    {
-        var roomState = await _roomManager.ResetGameBoardAsync(Context.ConnectionId);
-
-        if (!String.IsNullOrWhiteSpace(roomState?.Code))
-        {
-            await Clients.Groups(roomState.Code).SendAsync(CrowGameHubConnectorService.RoomUpdatedMethodName, roomState);
-        }
-    }
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        var room = await _roomManager.DisconnectAsync(Context.ConnectionId);
-
-        if (!String.IsNullOrWhiteSpace(room?.Code))
-        {
-            await Clients.Groups(room.Code).SendAsync(CrowGameHubConnectorService.RoomUpdatedMethodName, room);
-        }
-
+        await _crowGameEngine.SleepInAllRoomsAsync(GetPlayerPrivateId());
         await base.OnDisconnectedAsync(exception);
     }
+    #endregion
+    #region Private Methods
+    private string GetPlayerPrivateId() => Context.ConnectionId;
+    #endregion
 }
