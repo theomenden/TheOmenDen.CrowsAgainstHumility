@@ -142,6 +142,17 @@
                         </Field>
                     </Validation>
                 </Fields>
+                <Alert @ref="@_captchaAlert" 
+                    TextColor="TextColor.Dark"
+                       TextWeight="TextWeight.Bold"
+                       Background="Background.Danger"
+                       Padding="Padding.Is2.OnX"
+                       Margin="Margin.Is3.FromBottom"
+                       @bind-Visible="_captchaErrorsVisible">
+                    <AlertMessage>ReCaptcha Failed!</AlertMessage>
+                    <AlertDescription>@_captchaErrors</AlertDescription>
+                    <CloseButton />
+                </Alert>
             </Column>
         </Row>
         <Row Width="Width.Is100">
@@ -152,10 +163,11 @@
                             PreventDefaultOnSubmit
                             Color="Color.Primary"
                             Clicked="SubmitContactFormAsync"
-                            Block>
+                            Block
+                            Disabled="@_isDisabled">
                         Send <Icon Name="IconName.Mail" />
                     </Button>
-                    <Button Type="ButtonType.Reset"
+                    <Button Type="@ButtonType.Reset"
                             Color="Color.Secondary"
                             Clicked="ClearContactFormAsync"
                             Block>
@@ -166,3 +178,8 @@
         </Row>
     </Validations>
 </Container>
+<ReCaptcha
+    OnSuccess="SuccessCallback"
+    OnTimeout="TimeoutCallback"
+    OnValidationError="ValidationErrorCallback"
+    OnValidationHandler="ValidationHandlerCallback"/>

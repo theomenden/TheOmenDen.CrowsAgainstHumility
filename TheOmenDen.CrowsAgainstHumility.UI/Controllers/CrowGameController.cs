@@ -1,13 +1,26 @@
-﻿using System.Security.Claims;
+﻿using System.Collections.Concurrent;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
+using TheOmenDen.CrowsAgainstHumility.Core.Models.CrowGames;
+using TheOmenDen.CrowsAgainstHumility.Core.Providers;
 
 namespace TheOmenDen.CrowsAgainstHumility.Controllers;
 public class CrowGameController : Controller
 {
-    public IActionResult Index()
-    {
-        return View();
-    }
+    private readonly IDictionary<string, Tuple<PlayerList, object>> _currentPlayers = new ConcurrentDictionary<string, Tuple<PlayerList, object>>(StringComparer.OrdinalIgnoreCase);
+    private readonly TaskProvider _taskProvider;
+    private ILogger<CrowGameController> _logger;
 
-    private string GetUserId() => User.FindFirstValue(ClaimTypes.NameIdentifier);
+    public CrowGameController(
+        DateTimeProvider? dateTimeProvider,
+        GuidProvider? guidProvider,
+        TaskProvider? taskProvider,
+        ICrowGameConfiguration? configuration,
+        IPlayerListService? playerListService,
+        ILogger<CrowGameController> logger)
+    {
+        _deckProvider = deckProvider;
+        _taskProvider = taskProvider;
+        _logger = logger;
+    }
 }

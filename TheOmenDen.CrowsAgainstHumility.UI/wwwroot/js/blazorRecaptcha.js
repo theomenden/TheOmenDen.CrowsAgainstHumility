@@ -1,18 +1,13 @@
-function isRecaptchaLoaded(key) {
-    try {
-        grecaptcha.execute(key, { action: 'homepage' }).then(function(){
-            return true;
+function renderRecaptcha(dotNetObject, siteKey) {
+    setTimeout(function () {
+        grecaptcha.ready(function() {
+            grecaptcha.execute(siteKey).then(function(token){
+                dotNetObject.invokeMethodAsync('OnRecaptchaResponse', token);
+            });
         });
-        return true;
-    } catch (ex) {
-        console.error(JSON.stringify(ex));
-        return false;
-    }
+    }.bind(this), 1000);
 }
 
-async function generateCaptchaToken(key, action) {
-    return await grecaptcha.execute(key, { action: action })
-        .then(function(token) {
-            return token;
-        });
+function getResponse(widgetId) {
+    return grecaptcha.getResponse(widgetId);
 }

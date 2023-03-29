@@ -1,0 +1,45 @@
+﻿<Card Height="Height.Is100"
+Background ="Background.Dark">
+    <CardBody>
+        <CardTitle Size="5">
+            Game History
+        </CardTitle>
+        <CardSubtitle Size="6"
+            Margin="Margin.Is2.FromBottom"
+            TextColor="TextColor.Muted">
+            @if(_log?.Any() == true)
+            {
+                <Table Borderless Striped Narrow FullWidth Hoverable>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHeaderCell>
+                                Player
+                            </TableHeaderCell>
+                            <TableHeaderCell>
+                                Message
+                            </TableHeaderCell>
+                            <TableHeaderCell>
+                                Timestamp
+                            </TableHeaderCell>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        <Repeater TItem="LogMessage" Items="_log">
+                            <TableRow>
+                                <TableRowCell>
+                                    @context.User
+                                </TableRowCell>
+                                <TableRowCell>
+                                    @context.Message
+                                </TableRowCell>
+                                <TableRowCell>
+                                    @ToLocalTime(@context.Timestamp).ToString("T")
+                                </TableRowCell>
+                            </TableRow>
+                        </Repeater>
+                    </TableBody>
+                </Table>
+            }
+        </CardSubtitle>
+    </CardBody>
+</Card>

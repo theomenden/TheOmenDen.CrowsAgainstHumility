@@ -70,11 +70,13 @@
     <Content Remove="bundleconfig.json" />
     <Content Remove="C:\Users\andre\.nuget\packages\theomenden.shared.logging\1.11.13.2247\contentFiles\any\net7.0\omenden-jsonapi.ico" />
     <Content Remove="compilerconfig.json" />
+    <Content Remove="Components\Game\CrowGameLogComponent.razor" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="bundleconfig.json" />
     <None Include="compilerconfig.json" />
+    <None Include="Components\Game\CrowGameLogComponent.razor" />
   </ItemGroup>
 
   <ItemGroup>
@@ -121,7 +123,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="7.0.4" />
+    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.31.2" />
     <PackageReference Include="Microsoft.Azure.SignalR" Version="1.21.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="7.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.4">
@@ -207,5 +211,13 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Components\Game\CrowGameLogComponent.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Components\Game\CrowGameLogComponent.razor" />
   </ItemGroup>
 </Project>

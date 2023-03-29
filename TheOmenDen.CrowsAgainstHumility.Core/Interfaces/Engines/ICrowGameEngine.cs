@@ -25,7 +25,7 @@ public interface ICrowGameEngine
     #region Asynchronous Methods
     Task KickAsync(Guid id, string initiatingPlayerPrivateId, int playerPublicIdToRemove, CancellationToken cancellationToken = default);
     Task SleepInAllRoomsAsync(string playerPrivateId, CancellationToken cancellationToken = default);
-    Task<(bool wasCreated, Guid? serverId, string? validationMessages)> CreateRoomAsync(IList<WhiteCard> whiteCards, IList<BlackCard> blackCards, CancellationToken cancellationToken = default);
+    Task<(bool wasCreated, Guid? serverId, string? validationMessages)> CreateRoomAsync(IEnumerable<Pack> packs, CancellationToken cancellationToken = default);
     Task<Player> JoinRoomAsync(Guid id, Guid recoveryId, string playerName, string playerPrivateId, GameRoles playerType, CancellationToken cancellationToken = default);
     Task PlayWhiteCardAsync(Guid serverId, string playerPrivateId, CancellationToken cancellationToken = default);
     Task ClearGameBoardAsync(Guid serverId, string playerPrivateId, CancellationToken cancellationToken = default);

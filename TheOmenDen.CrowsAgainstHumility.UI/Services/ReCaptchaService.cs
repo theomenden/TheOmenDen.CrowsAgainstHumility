@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using Microsoft.JSInterop;
 using NuGet.Common;
+using TheOmenDen.CrowsAgainstHumility.Core.Models.Captchas;
 using TheOmenDen.Shared.Guards;
 
 namespace TheOmenDen.CrowsAgainstHumility.Services;
@@ -27,27 +28,7 @@ internal sealed class ReCaptchaService: IRecaptchaService
         _httpClientFactory = httpClientFactory; 
     }
 
-    public async ValueTask<String> GenerateCaptchaTokenAsync(String? action,
-        CancellationToken cancellationToken = default)
-    {
-        Guard.FromNullOrWhitespace(action, nameof(action));
-
-        var uri = $"{_settings.CaptchaUri}{_settings.SiteKey}";
-
-        var isCaptchaLoaded = await _jsRuntime.InvokeAsync<bool>("isRecaptchaLoaded", cancellationToken, uri);
-
-        if(!isCaptchaLoaded)
-        {
-            await LoadRecaptchaAsync(uri, cancellationToken);
-        }
-
-        var captchaToken = await _jsRuntime.InvokeAsync<String>("generateCaptchaToken", cancellationToken, _settings.SiteKey,
-            action);
-
-        return captchaToken;
-    }
-
-    public async ValueTask<bool> VerifyCaptchaAsync(String? token, CancellationToken cancellationToken = default)
+    public async Task<CaptchaResponseDto> VerifyCaptchaAsync(String? token, CancellationToken cancellationToken = default)
     {
         Guard.FromNullOrWhitespace(nameof(token), token);
 
@@ -71,12 +52,12 @@ internal sealed class ReCaptchaService: IRecaptchaService
                 JsonSerializer.DeserializeAsync<CaptchaResponseDto>(responseContent, SerializerOptions,
                     cancellationToken);
 
-            return deserializedCaptchaResponse is { Success: true, Score: >= 0.5 };
+            return deserializedCaptchaResponse!;
         }
         catch (Exception ex)
         {
             _logger.LogWarning("Connection failed captcha: {@Ex}", ex);
-            return false;
+            throw;
         }
     }
 

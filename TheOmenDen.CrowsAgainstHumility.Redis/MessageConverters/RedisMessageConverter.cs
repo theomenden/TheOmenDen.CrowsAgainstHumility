@@ -68,10 +68,11 @@ internal sealed class RedisMessageConverter : IRedisMessageConverter
 
         data = ReadString(data, out var messageSubtype);
 
-        var result = new NodeMessage(parseResult);
-
-        result.SenderNodeId = senderNodeId;
-        result.RecipientNodeId = recipientNodeId;
+        var result = new NodeMessage(parseResult)
+        {
+            SenderNodeId = senderNodeId,
+            RecipientNodeId = recipientNodeId
+        };
 
         if (result.MessageType == NodeMessageTypes.InitializePlayers ||
             result.MessageType == NodeMessageTypes.LobbyCreated)
@@ -111,16 +112,13 @@ internal sealed class RedisMessageConverter : IRedisMessageConverter
 
         var messageType = NodeMessageTypes.ParseFromValue(data[0]);
 
-        if (!NodeMessageTypes.ReadOnlyEnumerationList.Contains(messageType))
-        {
-            throw new ArgumentException("Invalid message format", nameof(message));
-        }
-
-        return new NodeMessage(messageType)
-        {
-            SenderNodeId = senderNodeId,
-            RecipientNodeId = recipientNodeId
-        };
+        return !NodeMessageTypes.ReadOnlyEnumerationList.Contains(messageType)
+            ? throw new ArgumentException("Invalid message format", nameof(message))
+            : new NodeMessage(messageType)
+            {
+                SenderNodeId = senderNodeId,
+                RecipientNodeId = recipientNodeId
+            };
     }
     #region Private Static Methods
     private static object? DetermineMessageSubType(string? messageSubtype, ReadOnlySpan<byte> data)

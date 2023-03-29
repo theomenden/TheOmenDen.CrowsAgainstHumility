@@ -1,45 +1,80 @@
-﻿function loadJs(sourceUrl) {
-	if (sourceUrl.Length === 0) {
-		console.error("Invalid source URL");
-		return;
+﻿loaded = [];
+function loadJs(sourceUrl) {
+	if(loaded[sourceUrl]) {
+		console.info(`${sourceUrl} already loaded`);
+
+		return new this.Promise(function(resolve, reject) {
+			resolve();
+		});
 	}
 
-	const tag = document.createElement('script');
-	tag.src = sourceUrl;
-	tag.type = "text/javascript";
-	tag.async = "async";
-    tag.defer = "defer";
+	return new Promise(function(resolve, reject) {	
+		const tag = document.createElement('script');
 
-	tag.onload = function () {
-		console.log("Script loaded successfully");
-	}
+		if(sourceUrl ==='https://www.google.com/recaptcha/api.js') {
+			tag.src = sourceUrl + '?render=explicit';
+		}
 
-	tag.onerror = function () {
-		console.error("Failed to load script");
-	}
+        tag.async = true;
+        tag.defer = true;
+        tag.src = sourceUrl;
+        tag.type = "text/javascript";
 
-	document.body.appendChild(tag);
+		console.info(`${sourceUrl} created`);
+
+		loaded[sourceUrl] = true;
+
+		tag.onload = function () {
+			console.info(`${sourceUrl} loaded`);
+            resolve(sourceUrl);
+        };
+
+		tag.onerror = function () {
+			console.error(`${sourceUrl} failed to load`);
+            reject(sourceUrl);
+        };
+
+		document.body.appendChild(tag);
+	});
 }
 
 function loadJsById(scriptId, sourceUrl) {
-	if (sourceUrl.Length === 0) {
-        console.error("Invalid source URL");
-    }
+	if(loaded[sourceUrl]) {
+		console.info(`${sourceUrl} already loaded`);
 
-	const tag = document.createElement('script');
-	tag.src = sourceUrl;
-	tag.type = "text/javascript";
-	tag.id = scriptId;
-    tag.async = "async";
-    tag.defer = "defer";
-
-	tag.onload = function () {
-		console.log("Script loaded successfully");
+		return new this.Promise(function(resolve, reject) {
+			resolve();
+		});
 	}
 
-	tag.onerror = function () {
-		console.error("Failed to load script");
-	}
+	return new Promise(function(resolve, reject) {	
+		const tag = document.createElement('script');
 
-	document.body.appendChild(tag);
+		if(sourceUrl ==='https://www.google.com/recaptcha/api.js') {
+			tag.src = sourceUrl + '?render=explicit';
+		}
+
+        tag.async = true;
+        tag.defer = true;
+		tag.id = scriptId;
+        tag.src = sourceUrl;
+        tag.type = "text/javascript";
+
+		console.info(`${scriptId} created`);
+
+		loaded[sourceUrl] = true;
+
+		tag.onload = function () {
+			console.info(`${scriptId} loaded`);
+            resolve(sourceUrl);
+        };
+
+		tag.onerror = function () {
+			console.error(`${scriptId} failed to load`);
+            reject(sourceUrl);
+        };
+
+		document.body.appendChild(tag);
+	});
 }
+
