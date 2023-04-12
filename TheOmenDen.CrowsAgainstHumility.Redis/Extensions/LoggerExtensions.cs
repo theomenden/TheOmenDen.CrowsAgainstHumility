@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 namespace TheOmenDen.CrowsAgainstHumility.Redis.Extensions;
 public static class LoggerExtensions
 {

@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using Microsoft.JSInterop;
 using NuGet.Common;
 using TheOmenDen.CrowsAgainstHumility.Core.Models.Captchas;
+using TheOmenDen.CrowsAgainstHumility.Core.Models.Settings;
 using TheOmenDen.Shared.Guards;
 
 namespace TheOmenDen.CrowsAgainstHumility.Services;

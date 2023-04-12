@@ -1,13 +1,12 @@
-﻿namespace TheOmenDen.CrowsAgainstHumility.Core.Models.EventArgs;
+﻿using TheOmenDen.CrowsAgainstHumility.Core.Messages;
+
+namespace TheOmenDen.CrowsAgainstHumility.Core.Models.EventArgs;
 public sealed class MessageReceivedEventArgs : System.EventArgs
 {
-    public MessageReceivedEventArgs(String username, String message)
+    public MessageReceivedEventArgs(Message message)
     {
-        Username = username;
         Message = message;
     }
-
-    public String Username { get; set; }
-
-    public String Message { get; set; }
+    
+    public Message Message { get; }
 }

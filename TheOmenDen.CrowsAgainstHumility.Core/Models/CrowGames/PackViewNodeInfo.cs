@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
+﻿using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
 
 namespace TheOmenDen.CrowsAgainstHumility.Core.Models.CrowGames;
 public sealed class PackViewNodeInfo

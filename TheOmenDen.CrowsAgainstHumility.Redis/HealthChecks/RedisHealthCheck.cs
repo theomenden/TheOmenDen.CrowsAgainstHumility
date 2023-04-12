@@ -1,36 +1,35 @@
-using Microsoft.Extensions.Diagnostics.HealthChecks;
+﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using StackExchange.Redis;
+using TheOmenDen.CrowsAgainstHumility.Azure.Configuration;
 
-public sealed class RedisHealthCheck : IHealthCheck, IDisposable
+namespace TheOmenDen.CrowsAgainstHumility.Redis.HealthChecks;
+public sealed class RedisHealthCheck : IHealthCheck, IDisposable, IAsyncDisposable
 {
     private readonly IAzureCrowGameConfiguration _configuration;
-    private readonly object _redisLock = new object();
-    private ConnectionMultiplexer? _multiplexer;
-    private bool _disposed;
+    private readonly object _redisLock = new();
+    private ConnectionMultiplexer? _redis;
+    private bool _isDisposed;
 
-    public RedisHealthCheck(IAzureCrowGameConfiguration configuration)
-    {
-        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-    }
+    public RedisHealthCheck(IAzureCrowGameConfiguration configuration) => _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
     private string ConnectionString
     {
         get
         {
-            var connectionString = _configuration.RedisConnectionString;
+            var connectionString = _configuration.ServiceBusConnectionString!;
 
-            if (connectionString.StartsWith("REDIS:", StringComparison.OrdinalIgnoreCase))
+            if (connectionString.StartsWith("REDIS:", StringComparison.Ordinal))
             {
-                connectionString = connectionString.Substring(6);
+                connectionString = connectionString[6..];
             }
-            return connectionString ?? String.Empty;
+            return connectionString;
         }
     }
 
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
-        CancellationToken cancellationToken = default)
+
+    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new CancellationToken())
     {
-        if (_disposed)
+        if (_isDisposed)
         {
             throw new ObjectDisposedException(nameof(RedisHealthCheck));
         }
@@ -39,60 +38,78 @@ public sealed class RedisHealthCheck : IHealthCheck, IDisposable
         {
             var redis = await Connect();
             await redis.GetDatabase().PingAsync();
-            return HealthCheckResult.Healthy("Redis connection is healthy.");
+            return HealthCheckResult.Healthy("Redis Connection is healthy.");
         }
         catch (Exception ex)
         {
-            return HealthCheckResult.Unhealthy("Redis connection is unhealthy.", ex);
+            return HealthCheckResult.Unhealthy("Redis Connection is unhealthy.", ex);
         }
     }
 
     private async Task<ConnectionMultiplexer> Connect()
     {
-        if (_multiplexer is not null)
+        if (_redis is not null)
         {
-            return _multiplexer;
+            return _redis;
         }
 
         var redis = await ConnectionMultiplexer.ConnectAsync(ConnectionString);
 
-        var keepConnection = false;
+        var shouldKeepConnection = false;
 
         lock (_redisLock)
         {
-            if (_multiplexer is null)
+            if (_redis is null)
             {
-                _multiplexer = redis;
-                keepConnection = true;
+                _redis = redis;
+                shouldKeepConnection = true;
             }
         }
 
-        if (keepConnection)
+        if (shouldKeepConnection)
         {
-            return _multiplexer;
+            return _redis;
         }
 
         await redis.CloseAsync();
         await redis.DisposeAsync();
 
-        return _multiplexer;
+        return _redis;
     }
 
+    #region Disposal Methods
     public void Dispose()
     {
-        if (_disposed)
+        if (_isDisposed)
         {
             return;
         }
 
         lock (_redisLock)
         {
-            if (_multiplexer is not null)
+            if (_redis is not null)
             {
-                _multiplexer.Dispose();
-                _multiplexer = null;
+                _redis.Dispose();
+                _redis = null;
             }
         }
-        _disposed = true;
+
+        _isDisposed = true;
+        GC.SuppressFinalize(this);
     }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_isDisposed || _redis is null)
+        {
+            return;
+        }
+
+        await _redis.DisposeAsync();
+        _redis = null;
+
+        _isDisposed = true;
+        GC.SuppressFinalize(this);
+    }
+    #endregion
 }

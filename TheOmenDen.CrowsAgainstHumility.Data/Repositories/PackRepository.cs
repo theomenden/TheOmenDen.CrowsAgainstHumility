@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
+using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Cards;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Repositories;
 using TheOmenDen.CrowsAgainstHumility.Data.Contexts;
 using TheOmenDen.Shared.Specifications;
-using TwitchLib.EventSub.Core.Models.ChannelGoals;
 
 namespace TheOmenDen.CrowsAgainstHumility.Data.Repositories;
 internal sealed class PackRepository : IPackRepository
@@ -88,9 +88,62 @@ internal sealed class PackRepository : IPackRepository
 
         return from pack in packs
                join whiteCard in whiteCards
-                   on pack.Id equals whiteCard.PackId 
+                   on pack.Id equals whiteCard.PackId
                    into gwc
                join blackCard in blackCards
+                   on pack.Id equals blackCard.PackId
+                   into gbc
+               select new Pack
+               {
+                   Id = pack.Id,
+                   IsOfficialPack = pack.IsOfficialPack,
+                   Name = pack.Name,
+                   Description = pack.Description,
+                   BlackCards = gbc,
+                   WhiteCards = gwc,
+               };
+    }
+
+    public async Task<IEnumerable<Pack>> GetAllPacksBySpecificationAsync(Specification<Pack> specification,
+        CancellationToken cancellationToken = default)
+    {
+        await using var context = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+
+        var packsQuery = context.Packs.Where(specification.ToExpression())
+            .Select(p => new Pack
+            {
+                IsOfficialPack = p.IsOfficialPack,
+                Name = p.Name,
+                Description = p.Description,
+                Id = p.Id
+            });
+
+        var whiteCardQuery = from whiteCard in context.vw_FilteredWhiteCardsByPack
+            join pack in packsQuery
+                on whiteCard.PackId equals pack.Id
+            select new WhiteCard
+            {
+                CardText = whiteCard.CardText,
+                Id = whiteCard.Id,
+                PackId = whiteCard.PackId
+            };
+
+        var blackCardQuery = from blackCard in context.vw_FilteredBlackCardsByPack
+            join pack in packsQuery
+                on blackCard.PackId equals pack.Id
+            select new BlackCard
+            {
+                PickAnswersCount = blackCard.PickAnswersCount,
+                Id = blackCard.Id,
+                PackId = blackCard.PackId,
+                Message = blackCard.Message
+            };
+        
+        return from pack in packsQuery
+               join whiteCard in whiteCardQuery
+                   on pack.Id equals whiteCard.PackId
+                   into gwc
+               join blackCard in blackCardQuery
                    on pack.Id equals blackCard.PackId
                    into gbc
                select new Pack
@@ -108,15 +161,70 @@ internal sealed class PackRepository : IPackRepository
     {
         await using var context = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
 
-        var query = context.Packs
-            .AsNoTracking()
-            .Include(p => p.WhiteCards)
-            .Include(p => p.BlackCards)
-            .Where(specification.ToExpression());
+        var packsQuery = context.Packs.Where(specification.ToExpression())
+            .Select(p => new Pack
+            {
+                IsOfficialPack = p.IsOfficialPack,
+                Name = p.Name,
+                Description = p.Description,
+                Id = p.Id
+            });
 
-        await foreach (var pack in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
+        var whiteCardQuery = from whiteCard in context.vw_FilteredWhiteCardsByPack
+            join pack in packsQuery
+                on whiteCard.PackId equals pack.Id
+            select new WhiteCard
+            {
+                CardText = whiteCard.CardText,
+                Id = whiteCard.Id,
+                PackId = whiteCard.PackId
+            };
+
+        var blackCardQuery = from blackCard in context.vw_FilteredBlackCardsByPack
+            join pack in packsQuery
+                on blackCard.PackId equals pack.Id
+            select new BlackCard
+            {
+                PickAnswersCount = blackCard.PickAnswersCount,
+                Id = blackCard.Id,
+                PackId = blackCard.PackId,
+                Message = blackCard.Message
+            };
+
+        var finalQuery = from pack in packsQuery
+            join whiteCard in whiteCardQuery
+                on pack.Id equals whiteCard.PackId
+                into gwc
+            join blackCard in blackCardQuery
+                on pack.Id equals blackCard.PackId
+                into gbc
+            select new Pack
+            {
+                Id = pack.Id,
+                IsOfficialPack = pack.IsOfficialPack,
+                Name = pack.Name,
+                Description = pack.Description,
+                BlackCards = gbc,
+                WhiteCards = gwc,
+            };
+
+        await foreach (var resolvedPack in finalQuery.AsAsyncEnumerable().WithCancellation(cancellationToken))
         {
-            yield return pack;
+            yield return resolvedPack;
         }
+    }
+
+    public IEnumerator<Pack> GetEnumerator()
+    {
+        using var context = _dbContextFactory.CreateDbContext();
+
+        var query = context.Packs.ToList();
+
+        return query.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }

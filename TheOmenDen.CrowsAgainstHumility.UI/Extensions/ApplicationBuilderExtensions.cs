@@ -1,4 +1,5 @@
-﻿using TheOmenDen.CrowsAgainstHumility.Middleware;
+﻿using Microsoft.Azure.Cosmos;
+using TheOmenDen.CrowsAgainstHumility.Middleware;
 
 namespace TheOmenDen.CrowsAgainstHumility.Extensions;
 public static class ApplicationBuilderExtensions

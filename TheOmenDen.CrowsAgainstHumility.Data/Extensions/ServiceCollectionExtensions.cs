@@ -46,10 +46,11 @@ public static class ServiceCollectionExtensions
                 .UseLoggerFactory(LoggerFactory);
         });
 
-        services.AddScoped<IPackRepository, PackRepository>();
-
         services.AddHealthChecks()
+            .AddSqlServer(connectionString)
             .AddDbContextCheck<CrowsAgainstHumilityContext>();
+
+        services.AddScoped<IPackRepository, PackRepository>();
 
         return services;
     }

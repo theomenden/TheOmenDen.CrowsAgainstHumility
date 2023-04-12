@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 using System.Reactive.Subjects;
-using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Redis;
-using TheOmenDen.CrowsAgainstHumility.Core.Models.Azure;
+using TheOmenDen.CrowsAgainstHumility.Azure.Configuration;
+using TheOmenDen.CrowsAgainstHumility.Azure.Interfaces;
+using TheOmenDen.CrowsAgainstHumility.Azure.Messages;
 using TheOmenDen.CrowsAgainstHumility.Redis.Extensions;
+using TheOmenDen.CrowsAgainstHumility.Redis.MessageConverters;
 
 namespace TheOmenDen.CrowsAgainstHumility.Redis.ServiceBus;
 internal class RedisServiceBus : IServiceBus, IDisposable
@@ -18,12 +20,12 @@ internal class RedisServiceBus : IServiceBus, IDisposable
     private string? _connectionString;
     private string? _channel;
     private RedisChannel _redisChannel;
-    private ConnectionMultiplexer _redis;
+    private ConnectionMultiplexer? _redis;
     private ISubscriber? _subscriber;
     private bool _isSubscribed;
     #endregion
     #region Constructors and Finializer
-    public RedisServiceBus(IRedisMessageConverter messageConverter, ICrowsAgainstHumilityConfiguration configuration,
+    public RedisServiceBus(IRedisMessageConverter messageConverter, IAzureCrowGameConfiguration configuration,
         ILogger<RedisServiceBus> logger)
     {
         MessageConverter = messageConverter;
@@ -37,8 +39,8 @@ internal class RedisServiceBus : IServiceBus, IDisposable
     }
     #endregion
     #region Public Properties
-    public IRedisMessageConverter MessageConverter { get; init; }
-    public ICrowsAgainstHumilityConfiguration Configuration { get; init; }
+    public IRedisMessageConverter MessageConverter { get; private set; }
+    public IAzureCrowGameConfiguration Configuration { get; private set; }
     public IObservable<NodeMessage> ObservableMessages => _observableMessages;
     #endregion
     #region IServiceBus Implementations
@@ -91,7 +93,7 @@ internal class RedisServiceBus : IServiceBus, IDisposable
         await CreateSubscriptionAsync(_redisChannel, _channel, nodeId);
     }
 
-    public async Task UnRegisterAsync(CancellationToken cancellationToken = default)
+    public async Task UnregisterAsync(CancellationToken cancellationToken = default)
     {
         if (_isSubscribed && _subscriber is not null)
         {
@@ -180,7 +182,7 @@ internal class RedisServiceBus : IServiceBus, IDisposable
     {
         if (disposing)
         {
-            UnRegisterAsync().Wait();
+            UnregisterAsync().Wait();
         }
     }
     #endregion

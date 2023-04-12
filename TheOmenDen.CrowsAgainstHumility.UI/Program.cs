@@ -29,24 +29,21 @@ using System.Text.Json.Serialization;
 using AspNet.Security.OAuth.Twitch;
 using Azure.Storage.Blobs;
 using Blazorise.FluentValidation;
-using Blazorise.Icons.FontAwesome;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Identity.Web;
-using TheOmenDen.CrowsAgainstHumility.Services.Hubs;
 using TheOmenDen.CrowsAgainstHumility.Identity.Utilities;
 using TheOmenDen.CrowsAgainstHumility.Utilities;
-using Microsoft.Extensions.Azure;
-using Microsoft.Extensions.Options;
 using TheOmenDen.CrowsAgainstHumility;
+using TheOmenDen.CrowsAgainstHumility.Azure.CosmosDb.Extensions;
+using TheOmenDen.CrowsAgainstHumility.Core.Models.Settings;
 using TheOmenDen.CrowsAgainstHumility.Core.Validators;
-using TheOmenDen.CrowsAgainstHumility.Services.Clients;
 using TheOmenDen.CrowsAgainstHumility.Twitch.Extensions;
 using TheOmenDen.CrowsAgainstHumility.ViewModels;
-
 #endregion
 #region Bootstrap Logger
 Log.Logger = new LoggerConfiguration()
@@ -113,7 +110,10 @@ try
 
     builder.Services.AddApplicationInsightsTelemetry(options => options.ConnectionString = appInsightsConnectionString);
 
-    var twitchStrings = new TwitchStrings(builder.Configuration["twitch-key"], builder.Configuration["twitch-clientId"]);
+    var twitchKey = builder.Configuration["twitch-key"] ?? String.Empty;
+    var twitchClient = builder.Configuration["twitch-clientId"] ?? String.Empty;
+
+    var twitchStrings = new TwitchStrings(twitchKey, twitchClient);
 
     builder.Services.AddSingleton(twitchStrings);
 
@@ -125,10 +125,11 @@ try
         })
         .AddTwitter(options =>
         {
-            var twitterKeys = new TwitterStrings(
-                builder.Configuration["twitter-key"],
-                builder.Configuration["twitter-secret"],
-                builder.Configuration["twitter-bearer"]);
+            var twitterKey = builder.Configuration["twitter-key"] ?? String.Empty;
+            var twitterSecret = builder.Configuration["twitter-secret"] ?? String.Empty;
+            var twitterBearer = builder.Configuration["twitter-bearer"] ?? String.Empty;
+
+            var twitterKeys = new TwitterStrings(twitterKey, twitterSecret, twitterBearer);
 
             options.ConsumerKey = twitterKeys.Key;
             options.ConsumerSecret = twitterKeys.Secret;
@@ -142,10 +143,9 @@ try
         })
         .AddDiscord(options =>
         {
-            var discordKeys = new DiscordStrings(
-                builder.Configuration["discord-clientId"],
-                builder.Configuration["discord-secret"]
-                );
+            var discordClient = builder.Configuration["discord-clientId"] ?? String.Empty;
+            var discordSecret = builder.Configuration["discord-secret"] ?? String.Empty;
+            var discordKeys = new DiscordStrings(discordClient, discordSecret);
 
             options.ClientId = discordKeys.Id;
             options.ClientSecret = discordKeys.Secret;
@@ -165,6 +165,14 @@ try
         })
         .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"), cookieScheme: "microsoftCookies");
 
+
+    var socketsHttpHandler = new SocketsHttpHandler
+    {
+        PooledConnectionLifetime = TimeSpan.FromMinutes(5)
+    };
+
+    builder.Services.AddSingleton(socketsHttpHandler);
+
     builder.Services.AddHttpClient();
     builder.Services.AddScoped<RoomViewModel>();
     builder.Services.AddScoped<ICookie, Cookie>();
@@ -177,10 +185,6 @@ try
     {
         options.Configuration = cacheConnectionString ?? String.Empty;
     });
-
-    builder.Services.AddCorvidTwitchServices(twitchStrings);
-
-    builder.Services.AddCorvidDiscordServices();
 
     var corvidConnectionString = builder.Configuration["ConnectionStrings:UserContextConnection"]
                                  ?? builder.Configuration["ConnectionStrings:CrowsAgainstHumilityDb"];
@@ -204,7 +208,7 @@ try
         options.IncludeSubDomains = true;
         options.MaxAge = TimeSpan.FromDays(365);
     });
-    
+
     var connectionString = builder.Configuration.GetConnectionString("CrowsAgainstAuthority")
                            ?? throw new InvalidOperationException("Connection string 'UserContextConnection' not found.");
 
@@ -271,14 +275,12 @@ try
 
     builder.Services.AddTwitchManagementServices(builder.Configuration);
 
-    builder.Services.AddCorvidGamesServices();
-
     builder.Services.AddSingleton<CrowGameService>();
 
     builder.Services.AddSingleton<ISessionDetails, SessionDetails>();
 
     builder.Services.AddScoped<CircuitHandler, TrackingCircuitHandler>(sp => new TrackingCircuitHandler(sp.GetRequiredService<ISessionDetails>()));
-    
+
     builder.Services.AddResponseCaching();
 
     builder.Services.AddSignalR(options => options.MaximumReceiveMessageSize = 104_857_600)
@@ -315,6 +317,8 @@ try
         return sanitizer;
     });
 
+    builder.Services.AddCorvidCosmosServices(builder.Configuration["ConnectionStrings:omenden-cosmosdb"]);
+    
     builder.Services.AddServerSideBlazor()
 #if DEBUG
         .AddCircuitOptions(options => options.DetailedErrors = true)
@@ -333,7 +337,7 @@ try
         var provider = (ServerAuthenticationStateProvider)sp.GetRequiredService<AuthenticationStateProvider>();
         return provider;
     });
-    
+
     await using var app = builder.Build();
 
     app.UseResponseCompression();
@@ -375,8 +379,6 @@ try
     app.MapControllers();
     app.MapRazorPages();
     app.MapBlazorHub();
-    app.MapHub<CawChatHub>(ChatClient.HubUrl);
-    app.MapHub<CrowGameHub>(CrowGameHub.HubUrl);
     app.MapFallbackToPage("/_Host");
 
     await app.RunAsync();

@@ -1,5 +1,6 @@
 ﻿using Azure.Messaging.ServiceBus.Administration;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using TheOmenDen.CrowsAgainstHumility.Core.Models.Azure;
 
 namespace TheOmenDen.CrowsAgainstHumility.Azure.HealthChecks;
 internal sealed class AzureServiceBusHealthCheck: IHealthCheck

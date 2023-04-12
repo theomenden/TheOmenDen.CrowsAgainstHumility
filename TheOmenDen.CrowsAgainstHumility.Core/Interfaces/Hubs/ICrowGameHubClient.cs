@@ -15,7 +15,7 @@ public interface ICrowGameHubClient
     Task KickPlayer(Guid serverId, string initiatingPlayerPrivateId, int kickedPlayerPublicId, CancellationToken cancellationToken = default);
     Task ShowPlayedWhiteCards(Guid serverId, CancellationToken cancellationToken = default);
     Task UnPlayCard(Guid serverId, string playerPrivateId, CancellationToken cancellationToken = default);
-    Task PlayCard(Guid serverId, string playerPrivateId, WhiteCard card, CancellationToken cancellationToken = default)
+    Task PlayCard(Guid serverId, string playerPrivateId, WhiteCard card, CancellationToken cancellationToken = default);
     Task ChooseWinningCard(Guid serverId, string playerPrivateId, WhiteCard card, CancellationToken cancellationToken = default);
     #endregion
     #region Synchronous Methods

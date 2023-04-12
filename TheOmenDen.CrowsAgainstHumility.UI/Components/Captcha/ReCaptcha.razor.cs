@@ -4,6 +4,7 @@ using Microsoft.JSInterop;
 using TheOmenDen.CrowsAgainstHumility.Bootstrapping;
 using TheOmenDen.CrowsAgainstHumility.Core.Exceptions;
 using TheOmenDen.CrowsAgainstHumility.Core.Models.Captchas;
+using TheOmenDen.CrowsAgainstHumility.Core.Models.Settings;
 using TheOmenDen.CrowsAgainstHumility.Events;
 using TheOmenDen.CrowsAgainstHumility.Exceptions;
 

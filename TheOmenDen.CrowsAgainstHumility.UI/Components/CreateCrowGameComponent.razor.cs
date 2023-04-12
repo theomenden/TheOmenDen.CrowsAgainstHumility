@@ -131,6 +131,8 @@ public partial class CreateCrowGameComponent : ComponentBase, IDisposable, IAsyn
         }
 
         _playerToAdd = String.Empty;
+
+        await InvokeAsync(StateHasChanged);
     }
 
     private static String DeterminePlayerIconName(string broadcasterType)

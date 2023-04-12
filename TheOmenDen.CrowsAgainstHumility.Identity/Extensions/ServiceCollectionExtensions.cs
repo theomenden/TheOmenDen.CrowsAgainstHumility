@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Identity;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Repositories;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 using TheOmenDen.CrowsAgainstHumility.Identity.Contexts;
 using TheOmenDen.CrowsAgainstHumility.Identity.Repositories;
 using TheOmenDen.CrowsAgainstHumility.Identity.Services;
+using ApplicationUser = TheOmenDen.CrowsAgainstHumility.Core.Models.ApplicationUser;
 
 namespace TheOmenDen.CrowsAgainstHumility.Identity.Extensions;
 public static class ServiceCollectionExtensions
@@ -44,6 +46,7 @@ public static class ServiceCollectionExtensions
             })
             .AddDefaultTokenProviders()
             .AddEntityFrameworkStores<AuthDbContext>()
+            .AddUserStore<ApplicationUserStore>()
             .AddSignInManager();
 
         services.Configure<IdentityOptions>(options =>
@@ -73,7 +76,6 @@ public static class ServiceCollectionExtensions
             .AddScoped<IUserRegistrationService, UserRegistrationService>()
             .AddScoped<IEmailConfigurationRepository, EmailConfigurationRepository>()
             .AddScoped<IEmailConfigurationService, EmailConfigurationService>()
-            .AddScoped<IRoomStateRepository,RoomStateRepository>()
             .AddScoped<IExternalAuthenticationService, ExternalAuthenticationService>();
 
         return services;

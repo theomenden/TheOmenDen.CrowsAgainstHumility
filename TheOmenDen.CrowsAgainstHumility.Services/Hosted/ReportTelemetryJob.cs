@@ -1,32 +1,34 @@
 ﻿using Microsoft.ApplicationInsights;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Abstractions;
+using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Repositories;
 
 namespace TheOmenDen.CrowsAgainstHumility.Services.Hosted;
 public class ReportTelemetryJob : IHostedService, IDisposable, IAsyncDisposable
 {
-    #region Private members
+    #region Constants
+    private const string ReportPlayersMetricName = "players";
+    private const string ReportSessionsMetricName = "sessions";
+    #endregion
+    #region Private Members
     private Timer? _timer;
-    private readonly IServerStore _serverStore;
+    private static readonly TimeSpan RunFrequency = TimeSpan.FromMinutes(10);
+    #endregion
+    #region Injected Services
+    private readonly ICrowGameServerStore _serverStore;
     private readonly TelemetryClient _telemetryClient;
     #endregion
-    #region Private Constants
-    private static readonly TimeSpan RunFrequency = TimeSpan.FromMinutes(10);
-    private const string ReportPlayersMetricName = "players";
-    private const string ReportSessionsMetricName = "sesssions";
-    #endregion
     #region Constructors
-    public ReportTelemetryJob(IServerStore serverStore, TelemetryClient telemetryClient)
+    public ReportTelemetryJob(ICrowGameServerStore serverStore, TelemetryClient telemetryClient)
     {
         _serverStore = serverStore;
         _telemetryClient = telemetryClient;
     }
     #endregion
-    #region Public Methods
-
+    #region IHostedService Implementations
     public Task StartAsync(CancellationToken cancellationToken)
     {
         _timer = new Timer(_ => RunJob(), null, TimeSpan.Zero, RunFrequency);
+        return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
@@ -36,7 +38,6 @@ public class ReportTelemetryJob : IHostedService, IDisposable, IAsyncDisposable
     }
     #endregion
     #region Private Methods
-
     private void RunJob()
     {
         ReportSessions();
@@ -45,13 +46,13 @@ public class ReportTelemetryJob : IHostedService, IDisposable, IAsyncDisposable
 
     private void ReportSessions()
     {
-        var allSessions = _serverStore.GetAll().Count();
+        var allSessions = _serverStore.All().Count() ?? 0;
         _telemetryClient.TrackMetric(ReportSessionsMetricName, allSessions);
     }
 
     private void ReportPlayers()
     {
-        var allPlayers = _serverStore.GetAll().Sum(server => server.Players.Count());
+        var allPlayers = _serverStore.All().Sum(server => server.Players.Count());
         _telemetryClient.TrackMetric(ReportPlayersMetricName, allPlayers);
     }
     #endregion
@@ -70,12 +71,12 @@ public class ReportTelemetryJob : IHostedService, IDisposable, IAsyncDisposable
         }
     }
 
-    public ValueTask DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
-        _ = _timer?.DisposeAsync();
-        GC.SuppressFinalize(this);
-        return ValueTask.CompletedTask;
+        if (_timer is not null)
+        {
+            await _timer.DisposeAsync();
+        }
     }
     #endregion
-
 }

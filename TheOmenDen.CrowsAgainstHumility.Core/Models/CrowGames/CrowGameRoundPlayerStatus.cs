@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TheOmenDen.CrowsAgainstHumility.Core.Models.CrowGames;
+﻿namespace TheOmenDen.CrowsAgainstHumility.Core.Models.CrowGames;
 public class CrowGameRoundPlayerStatus
 {
     public CrowGameRoundPlayerStatus(string memberName, bool hasPlayed)
