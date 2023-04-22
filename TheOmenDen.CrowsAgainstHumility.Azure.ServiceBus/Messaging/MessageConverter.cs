@@ -5,6 +5,7 @@ using Azure.Messaging.ServiceBus;
 using TheOmenDen.CrowsAgainstHumility.Azure.ServiceBus.Messaging.Messages;
 using TheOmenDen.CrowsAgainstHumility.Azure.ServiceBus.Nodes;
 using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
+using TwitchLib.PubSub.Models.Responses.Messages.AutomodCaughtMessage;
 
 namespace TheOmenDen.CrowsAgainstHumility.Azure.ServiceBus.Messaging;
 internal sealed class MessageConverter : IMessageConverter
@@ -17,92 +18,80 @@ internal sealed class MessageConverter : IMessageConverter
     private static readonly BinaryData _emptyBinaryData = new(Array.Empty<byte>());
     private static readonly JsonSerializerOptions _jsonSerializerOptions = new() { NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals };
 
-    public async ValueTask<ServiceBusMessage> ConvertToServiceBusMessageAsync(NodeMessage message, CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(nameof(message));
-        cancellationToken.ThrowIfCancellationRequested();
-
-        var messageBody = message.Data is not null
-                ? await ConvertToMessageBodyAsync(message.DataToByteArray())
-                : _emptyBinaryData;
-
-
-        var resolvedServiceMessage = new ServiceBusMessage(messageBody)
-        {
-            ApplicationProperties =
-            {
-                [MessageType] = message.MessageType.Name,
-                [SenderId] = message.SenderNodeId,
-                [RecipientId] = message.RecipientNodeId
-            }
-        };
-
-        if (message.Data is not null)
-        {
-            resolvedServiceMessage.ApplicationProperties[MessageSubType] = message.Data.GetType().Name;
-        }
-
-        return resolvedServiceMessage;
-    }
-
-    public async ValueTask<NodeMessage<LobbyMessage>> ConvertToNodeMessageAsync(ServiceBusReceivedMessage message, CancellationToken cancellationToken = default)
+    public async ValueTask<ServiceBusMessage> ConvertToServiceBusMessageAsync(ObjectNodeMessage message, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(message);
-        cancellationToken.ThrowIfCancellationRequested();
+
+        var messageBody = message.Data is not null
+            ? await ConvertToMessageBodyAsync(message.DataToByteArray())
+            : _emptyBinaryData;
+
+        return new ServiceBusMessage(messageBody)
+        {
+            ApplicationProperties =
+           {
+               [MessageType] = message.MessageType.ToString(),
+               [MessageSubType] = message.Data?.GetType()?.Name ?? String.Empty,
+               [SenderId] = message.SenderNodeId,
+               [RecipientId] = message.RecipientNodeId,
+           }
+        };
+    }
+
+    public async ValueTask<ObjectNodeMessage> ConvertToNodeMessageAsync(ServiceBusReceivedMessage message, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(message);
 
         var messageType = NodeMessageTypes.Parse((string)message.ApplicationProperties[MessageType], true);
-
         var messageSubType = String.Empty;
 
-        var senderId = (string)message.ApplicationProperties[SenderId];
-        var recipientId = (string)message.ApplicationProperties[RecipientId];
-        
         if (message.ApplicationProperties.TryGetValue(MessageSubType, out var messageSubTypeObject))
         {
             messageSubType = (string)messageSubTypeObject;
         }
 
-        if (String.Equals(messageSubType, nameof(LobbyMemberMessage), StringComparison.OrdinalIgnoreCase))
-        {
-            return new NodeMessage<LobbyMessage>(
-                messageType, 
-                senderId, 
-                recipientId,
-                await ConvertFromMessageBodyAsync<LobbyMemberMessage>(message.Body, cancellationToken));
-        }
+        var senderNodeId = (string)message.ApplicationProperties[SenderId];
+        var recipientNodeId = (string)message.ApplicationProperties[RecipientId];
 
-        if (String.Equals(messageSubType, nameof(LobbyMemberWhiteCardMessage), StringComparison.OrdinalIgnoreCase))
-        {
-            return new NodeMessage<LobbyMessage>(
-                messageType,
-                senderId,
-                recipientId,
-                await ConvertFromMessageBodyAsync<LobbyMemberWhiteCardMessage>(message.Body, cancellationToken));
-        }
+        object? data = null;
 
-        if (String.Equals(messageSubType, nameof(LobbyWhiteCardPlayedMessage), StringComparison.OrdinalIgnoreCase))
-        {
-            return new NodeMessage<LobbyMessage>(
-                messageType,
-                senderId,
-                recipientId,
-                await ConvertFromMessageBodyAsync<LobbyWhiteCardPlayedMessage>(message.Body, cancellationToken));
-        }
-
-        if (String.Equals(messageSubType, nameof(LobbyRoundTimerMessage), StringComparison.OrdinalIgnoreCase))
-        {
-            return new NodeMessage<LobbyMessage>(
-                messageType,
-                senderId,
-                recipientId,
-                await ConvertFromMessageBodyAsync<LobbyRoundTimerMessage>(message.Body, cancellationToken));
-        }
-
-        return new NodeMessage<LobbyMessage>(
-            messageType,
-            senderId,
-            recipientId,
-            await ConvertFromMessageBodyAsync<LobbyMessage>(message.Body, cancellationToken));
+        messageType
+            .When(NodeMessageTypes.PlayerList, NodeMessageTypes.RequestPlayerList)
+                .ThenAwait(async () =>
+            {
+                data = await ConvertFromMessageBodyAsync<string[]>(message.Body, cancellationToken);
+            })
+            .When(NodeMessageTypes.LobbyCreated, NodeMessageTypes.InitializePlayers)
+                .ThenAwait(async () =>
+            {
+                data = await ConvertFromMessageBodyAsync(message.Body, cancellationToken);
+            })
+            .When(NodeMessageTypes.PlayerList)
+                .ThenAwait(async () =>
+            {
+                if (String.Equals(messageSubType, nameof(LobbyMemberMessage), StringComparison.OrdinalIgnoreCase))
+                {
+                    data = await ConvertFromMessageBodyAsync<LobbyMemberMessage>(message.Body, cancellationToken);
+                }
+                else if (String.Equals(messageSubType, nameof(LobbyMemberWhiteCardMessage), StringComparison.OrdinalIgnoreCase))
+                {
+                    data = await ConvertFromMessageBodyAsync<LobbyMemberWhiteCardMessage>(message.Body, cancellationToken);
+                }
+                else if (String.Equals(messageSubType, nameof(LobbyWhiteCardPlayedMessage), StringComparison.OrdinalIgnoreCase))
+                {
+                    data = await ConvertFromMessageBodyAsync<LobbyWhiteCardPlayedMessage>(message.Body, cancellationToken);
+                }
+                else if (String.Equals(messageSubType, nameof(LobbyRoundTimerMessage), StringComparison.OrdinalIgnoreCase))
+                {
+                    data = await ConvertFromMessageBodyAsync<LobbyRoundTimerMessage>(message.Body, cancellationToken);
+                }
+                else
+                {
+                    data = await ConvertFromMessageBodyAsync<LobbyMessage>(message.Body, cancellationToken);
+                }
+            });
+        
+        return new ObjectNodeMessage(messageType, senderNodeId, recipientNodeId, data);
     }
 
     private static async Task<BinaryData> ConvertToMessageBodyAsync(byte[] data)
