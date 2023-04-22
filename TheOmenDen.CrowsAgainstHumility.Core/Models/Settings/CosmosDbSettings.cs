@@ -5,5 +5,6 @@ public sealed class CosmosDbSettings
     public string EndpointUrl { get; set; }
     public string PrimaryKey { get; set; }
     public string DatabaseName { get; set; }
+    public string ContainerName { get; set; }
     public List<ContainerInfo> Containers { get; set; }
 }

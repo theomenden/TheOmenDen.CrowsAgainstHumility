@@ -28,6 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Core.DTO\TheOmenDen.CrowsAgainstHumility.Core.DTO.csproj" />
+    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Core.Transformation\TheOmenDen.CrowsAgainstHumility.Core.Transformation.csproj" />
     <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Core\TheOmenDen.CrowsAgainstHumility.Core.csproj" />
   </ItemGroup>
 

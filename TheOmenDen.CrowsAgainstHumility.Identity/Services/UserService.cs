@@ -1,5 +1,6 @@
 ﻿using TheOmenDen.CrowsAgainstHumility.Core.Auth.ViewModels;
 using TheOmenDen.CrowsAgainstHumility.Core.Criteria;
+using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Identity;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Repositories;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 using TheOmenDen.CrowsAgainstHumility.Core.Results;

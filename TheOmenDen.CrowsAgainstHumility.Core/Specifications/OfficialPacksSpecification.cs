@@ -1,5 +1,5 @@
 ﻿using System.Linq.Expressions;
-using TheOmenDen.CrowsAgainstHumility.Core.Models;
+using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Cards;
 using TheOmenDen.Shared.Specifications;
 
 namespace TheOmenDen.CrowsAgainstHumility.Core.Specifications;

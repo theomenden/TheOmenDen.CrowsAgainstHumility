@@ -1,262 +1,192 @@
-﻿using System.Collections;
-using System.Collections.Concurrent;
-using System.Globalization;
+﻿using System.Collections.Concurrent;
 using System.Net;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.Json;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Extensions.Logging;
-using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Repositories;
-using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Settings;
-using TheOmenDen.CrowsAgainstHumility.Core.Models.CrowGames;
+using TheOmenDen.CrowsAgainstHumility.Azure.CosmosDb.Extensions;
+using TheOmenDen.CrowsAgainstHumility.Core.DTO.ViewModels;
+using TheOmenDen.CrowsAgainstHumility.Core.Engine.Game;
+using TheOmenDen.CrowsAgainstHumility.Core.Engine.Models;
+using TheOmenDen.CrowsAgainstHumility.Core.Engine.Stores;
 using TheOmenDen.CrowsAgainstHumility.Core.Models.Settings;
 using TheOmenDen.CrowsAgainstHumility.Core.Providers;
-using TheOmenDen.CrowsAgainstHumility.Core.Serialization;
-using TheOmenDen.Shared.Extensions;
 
 namespace TheOmenDen.CrowsAgainstHumility.Azure.CosmosDb.Repositories;
-internal sealed class CosmosLobbyRepository : ICrowGameServerStore
+internal sealed class CosmosLobbyRepository: IServerStore
 {
-    private const char SpecialCharacter = '%';
-    private const string FileExtension = ".json";
-
     private readonly IDictionary<Guid, CrowGameServer> _servers;
-    private readonly ICrowGameConfiguration _configuration;
-    private readonly PlayerListSerializer _serializer;
-    private readonly DateTimeProvider _dateTimeProvider;
-    private readonly Lazy<char[]> _invalidCharacters;
+    private readonly IGuidProvider _guidProvider;
+    private readonly IDateTimeProvider _dateTimeProvider;
     private readonly ILogger<CosmosLobbyRepository> _logger;
-    private readonly Lazy<Container> _container;
-    
-    internal CosmosLobbyRepository(CosmosClient client)
-    {
-        _container = new(client.GetContainer("CrowsAgainstHumility", "CrowGames"));
-        _servers = new ConcurrentDictionary<Guid, CrowGameServer>();
-    }
+    private readonly Container _container;
 
-    public CosmosLobbyRepository(
-        IFilePlayerListRepositorySettings settings,
-        ICrowGameConfiguration configuration,
-        PlayerListSerializer serializer,
-        DateTimeProvider dateTimeProvider,
+    public CosmosLobbyRepository(CosmosClient client,
+        CosmosDbSettings settings,
         ILogger<CosmosLobbyRepository> logger,
-        CosmosClient client)
-    : this(client)
+        IGuidProvider? guidProvider,
+        IDateTimeProvider? dateTimeProvider)
     {
-        ArgumentNullException.ThrowIfNull(settings);
-        ArgumentNullException.ThrowIfNull(logger);
-        _servers = new ConcurrentDictionary<Guid, CrowGameServer>();
-        _configuration = configuration ?? new CrowGameConfiguration();
-        _serializer = serializer ?? new(dateTimeProvider, GuidProvider);
-        _dateTimeProvider = dateTimeProvider ?? DateTimeProvider.Default;
-        _invalidCharacters = new Lazy<char[]>(GetInvalidCharacters);
         _logger = logger;
-
-        StringBuilderPoolFactory<CosmosLobbyRepository>.Create(nameof(CosmosLobbyRepository));
+        _container = client.GetContainer(settings.DatabaseName, settings.ContainerName) ?? throw new ArgumentException(nameof(_container));
+        _servers = new ConcurrentDictionary<Guid, CrowGameServer>();
+        _guidProvider = guidProvider ?? GuidProvider.Default;
+        _dateTimeProvider = dateTimeProvider ?? DateTimeProvider.Default;
     }
 
-    #region Public Properties
-    public IEnumerable<string> LobbyNames { get; } = Enumerable.Empty<string>();
-
-    public GuidProvider GuidProvider { get; } = GuidProvider.Default;
-    #endregion
-    public async Task<CrowGameServer> CreateAsync(Deck deck, CancellationToken cancellationToken = default)
+    public async Task<CrowGameServer> CreateServerAsync(CreateCrowGameViewModel configuration, CancellationToken cancellationToken = default)
     {
-        CrowGameServer? server = null;
+
+        var newServerId = _guidProvider.NewGuid();
+        
+        var newServer = new CrowGameServer(newServerId,configuration.Name,configuration.Code, new ConcurrentDictionary<string, Player>(), new CrowGameSession(configuration.DesiredCards), _dateTimeProvider.UtcNow);
+        _servers.Add(newServerId, newServer);
         try
         {
-            var initializedContainer = _container.Value;
+           var cosmosResponse = await _container.CreateItemAsync(newServer, new PartitionKey(newServer.Code), cancellationToken: cancellationToken);
 
-            var newServerId = GuidProvider.NewGuid();
-            server = new CrowGameServer(newServerId, deck);
-            _servers.Add(newServerId, server);
-            await initializedContainer.CreateItemAsync(server, new PartitionKey(server.LobbyCode), cancellationToken: cancellationToken);
-
-            return server;
+           if (cosmosResponse.StatusCode >= HttpStatusCode.BadRequest)
+           {
+               throw new InvalidOperationException();
+           }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Unable to add server '{ServerName}' due to : {Ex}", newServer.Name, ex.Message);
+            throw;
         }
 
+        return newServer;
+    }
+
+    public async Task<bool> RemoveServerAsync(CrowGameServer serverToRemove, CancellationToken cancellationToken = default)
+    {
+        if (!_servers.Remove(serverToRemove.Id))
+        {
+            return false; //At this point, the server should be removed from both Cosmos and our local store.
+        }
+
+        try
+        {
+            var cosmosResponse = await _container.DeleteItemAsync<CrowGameServer>(serverToRemove.Code, new PartitionKey(), cancellationToken: cancellationToken);
+
+            if (cosmosResponse.StatusCode >= HttpStatusCode.BadRequest)
+            {
+                throw new InvalidOperationException();
+            }
+        }
         catch (Exception e)
         {
-            _logger.LogError("Could not create lobby with code {LobbyCode} due to exception {@Ex}", server?.LobbyCode, e);
-            return server;
+            _logger.LogError("Could not remove the server '{Server}' from the Cosmos Repo, due to {Exception}", serverToRemove.Code, e.Message);
+            return false;
         }
+
+        return true;
     }
-
-    public async Task<CrowGameServer> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<CrowGameServer> GetServerByIdAsync(Guid serverId, CancellationToken cancellationToken = default)
     {
-        _servers.TryGetValue(id, out var server);
-
-        return server ?? throw new InvalidOperationException($"Server could not be found by Id: {id}");
-    }
-
-    public async Task<CrowGameServer> GetByLobbyCodeAsync(string lobbyCode, CancellationToken cancellationToken = default)
-    {
-        if (_servers.Any(s => s.Value.LobbyCode == lobbyCode))
+        if (_servers.TryGetValue(serverId, out var result))
         {
-            return _servers.First(s => s.Value.LobbyCode == lobbyCode)
-                .Value;
+            return result;
         }
 
-        var initializedContainer = _container.Value;
-        var containerResponse = await initializedContainer.ReadItemAsync<CrowGameServer>(
-            id: lobbyCode,
-            partitionKey: new PartitionKey(lobbyCode),
-            cancellationToken: cancellationToken);
-
-        return containerResponse.StatusCode is >= HttpStatusCode.OK and < HttpStatusCode.BadRequest
-            ? containerResponse.Resource
-            : throw new InvalidOperationException($"Could not retrieve server with lobby code {lobbyCode}");
-    }
-
-    public async Task<IEnumerable<CrowGameServer>> GetAllAsync(CancellationToken cancellationToken = default)
-    {
-        if (_servers.Any())
+        try
         {
-            return _servers.Values.ToArray();
+            var cosmosResponse = await _container.ReadItemAsync<CrowGameServer>(serverId.ToString(), new PartitionKey(),
+                cancellationToken: cancellationToken);
+
+            result = cosmosResponse.Resource;
+
+            _servers.TryAdd(result.Id, result);
         }
-        var initializedContainer = _container.Value;
-
-        using var linqFeed = initializedContainer.GetItemQueryIterator<CrowGameServer>();
-
-        // Convert to feed iterator
-
-        var crowGames = Enumerable.Empty<CrowGameServer>().ToList();
-
-        while (linqFeed.HasMoreResults)
+        catch (Exception ex)
         {
-            var response = await linqFeed.ReadNextAsync(cancellationToken: cancellationToken);
-
-            // Iterate query results
-            crowGames.AddRange(response.Resource);
+            _logger.LogError("Could not find lobby with Id '{LobbyId}", serverId);
+            throw;
         }
 
-        return crowGames;
-    }
-
-    public async IAsyncEnumerable<CrowGameServer?> GetAllAsyncStream([EnumeratorCancellation]CancellationToken cancellationToken = default)
-    {
-        if (_servers.Any())
-        {
-            foreach (var server in _servers)
-            {
-                yield return server.Value;
-            }
-        }
-        var initializedContainer = _container.Value;
-
-        using var linqFeed = initializedContainer.GetItemQueryStreamIterator(queryText: "SELECT * FROM CrowGames;");
-
-        // Convert to feed iterator
-        
-        while (linqFeed.HasMoreResults)
-        {
-            var response = await linqFeed.ReadNextAsync(cancellationToken: cancellationToken);
-
-            await foreach (var deserialized in JsonSerializer.DeserializeAsyncEnumerable<CrowGameServer>(
-                               response.Content, JsonSerializerOptions.Default, cancellationToken))
-            {
-                yield return deserialized;
-            }
-        }
-    }
-
-    public async Task RemoveAsync(CrowGameServer server, CancellationToken cancellationToken = default)
-    {
-        if (!_servers.Remove(server.Id))
-        {
-            _logger.LogError("Server may have already been deleted with lobby code {LobbyCode}", server.LobbyCode);
-        }
-
-        var initializedContainer = _container.Value;
-
-        var cosmosResponse = await initializedContainer.DeleteItemAsync<CrowGameServer>(server.LobbyCode, new PartitionKey(server.LobbyCode), cancellationToken: cancellationToken);
-
-
-        if (cosmosResponse.StatusCode is >= HttpStatusCode.OK and < HttpStatusCode.BadRequest)
-        {
-            _logger.LogInformation("Server was removed for lobby {LobbyCode}", server.LobbyCode);
-        }
-    }
-
-    #region Private Methods
-    private string GetFileName(string lobbyName)
-    {
-        var result = StringBuilderPoolFactory<CosmosLobbyRepository>.Get(nameof(CosmosLobbyRepository)) ??
-                     new StringBuilder();
-
-        var invalidChars = _invalidCharacters.Value;
-
-        foreach (var c in lobbyName)
-        {
-            var isSpecial = Array.BinarySearch(invalidChars, c, Comparer<char>.Default) >= 0;
-            isSpecial = isSpecial || (c is not ' ' && Char.IsWhiteSpace(c));
-
-            if (!isSpecial)
-            {
-                result.Append(c);
-                continue;
-            }
-
-            result.Append(SpecialCharacter);
-            result.Append(Convert.ToInt32(c).ToString("X4", CultureInfo.InvariantCulture));
-        }
-
-        return result.ToString();
-    }
-    #endregion
-    #region Private Static Methods
-
-    private static string GetLobbyName(string fileName)
-    {
-        var result = StringBuilderPoolFactory<CosmosLobbyRepository>.Get(nameof(CosmosLobbyRepository)) ?? new StringBuilder();
-        return result.ToString();
-    }
-    private static char[] GetInvalidCharacters()
-    {
-        var invalidFileCharacters = Path.GetInvalidFileNameChars();
-        var result = new char[invalidFileCharacters.Length + 1];
-        result[0] = SpecialCharacter;
-        invalidFileCharacters.CopyTo(result, 1);
-        Array.Sort(result, Comparer<char>.Default);
         return result;
     }
-    #endregion
-    #region Interface Implementations
-    public IEnumerator<CrowGameServer> GetEnumerator()
+
+    public async Task<CrowGameServer> GetServerByCodeAsync(string code, CancellationToken cancellationToken = default)
     {
-        var initializedContainer = _container.Value;
-        var serverEnumerator = initializedContainer
-            .GetItemLinqQueryable<CrowGameServer>()
-            .GetEnumerator();
-
-        return serverEnumerator;
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
-
-    public async IAsyncEnumerator<CrowGameServer> GetAsyncEnumerator(CancellationToken cancellationToken = new CancellationToken())
-    {
-        var initializedContainer = _container.Value;
-        
-        using var linqFeed = initializedContainer.GetItemQueryStreamIterator(queryText: "SELECT * FROM CrowGames;");
-
-        // Convert to feed iterator
-
-        while (linqFeed.HasMoreResults)
+        var server = _servers.Values.FirstOrDefault(s => String.Equals(s.Code, code, StringComparison.OrdinalIgnoreCase));
+        if (server is not null)
         {
-            var response = await linqFeed.ReadNextAsync(cancellationToken: cancellationToken);
+            _logger.LoadLobby(server.Id.ToString());
+            return server;
+        }
 
-            await foreach (var deserialized in JsonSerializer.DeserializeAsyncEnumerable<CrowGameServer>(
-                               response.Content, JsonSerializerOptions.Default, cancellationToken))
-            {
-                yield return deserialized;
-            }
+        try
+        {
+            var cosmosResponse =
+                await _container.ReadItemAsync<CrowGameServer>(code, new PartitionKey(),
+                    cancellationToken: cancellationToken);
+
+            server = cosmosResponse.Resource;
+
+            return server;
+        }
+        catch(Exception ex) 
+        {
+            _logger.LogError("Could not find lobby with code: '{Code}'", code);
+            throw;
+        }
+
+    }
+
+    public async Task<int> GetTotalSessionsAsync(CancellationToken cancellationToken = default)
+    {
+        var totalServers = _servers.Count;
+
+        try
+        {
+            var cosmosQuery = _container.GetItemLinqQueryable<CrowGameServer>();
+
+            var count = (await cosmosQuery.CountAsync(cancellationToken)).Resource;
+
+            totalServers = totalServers > count ? totalServers : count;
+        }
+        catch
+        {
+            totalServers = 0;
+        }
+
+        return totalServers;
+    }
+
+    public Task<int> GetTotalPlayersAsync(CancellationToken cancellationToken = default)
+    {
+        var totalPlayers = _servers.Values.Sum(s => s.Players.Count);
+
+        try
+        {
+            var cosmosQuery = _container.GetItemLinqQueryable<CrowGameServer>();
+            
+            var count = cosmosQuery.Sum(p => p.Players.Count);
+
+            totalPlayers = totalPlayers > count ? totalPlayers : count;
+        }
+        catch
+        {
+            totalPlayers = 0;
+        }
+
+        return Task.FromResult(totalPlayers);
+    }
+
+    public async IAsyncEnumerable<CrowGameServer> GetAllServersAsyncStream([EnumeratorCancellation]CancellationToken cancellationToken = default)
+    {
+        var query = _container.GetItemLinqQueryable<CrowGameServer>();
+
+        var feedIterator = query.Where(s => s.CurrentSession.CanPlay)
+            .ToFeedIterator();
+
+        await foreach (var server in feedIterator
+                           .ToAsyncEnumerable()
+                           .WithCancellation(cancellationToken))
+        {
+            yield return server;
         }
     }
-    #endregion
 }

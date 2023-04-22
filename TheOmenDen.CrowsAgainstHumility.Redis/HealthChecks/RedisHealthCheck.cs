@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using StackExchange.Redis;
-using TheOmenDen.CrowsAgainstHumility.Azure.Configuration;
+using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Settings;
 
-namespace TheOmenDen.CrowsAgainstHumility.Redis.HealthChecks;
+namespace TheOmenDen.CrowsAgainstHumility.Azure.Redis.HealthChecks;
 public sealed class RedisHealthCheck : IHealthCheck, IDisposable, IAsyncDisposable
 {
     private readonly IAzureCrowGameConfiguration _configuration;
@@ -27,7 +27,7 @@ public sealed class RedisHealthCheck : IHealthCheck, IDisposable, IAsyncDisposab
     }
 
 
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new CancellationToken())
+    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new())
     {
         if (_isDisposed)
         {
@@ -36,7 +36,7 @@ public sealed class RedisHealthCheck : IHealthCheck, IDisposable, IAsyncDisposab
 
         try
         {
-            var redis = await Connect();
+            var redis = await ConnectAsync();
             await redis.GetDatabase().PingAsync();
             return HealthCheckResult.Healthy("Redis Connection is healthy.");
         }
@@ -46,7 +46,7 @@ public sealed class RedisHealthCheck : IHealthCheck, IDisposable, IAsyncDisposab
         }
     }
 
-    private async Task<ConnectionMultiplexer> Connect()
+    private async Task<ConnectionMultiplexer> ConnectAsync()
     {
         if (_redis is not null)
         {

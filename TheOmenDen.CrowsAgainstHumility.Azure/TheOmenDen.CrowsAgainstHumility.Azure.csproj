@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Core\TheOmenDen.CrowsAgainstHumility.Core.csproj" />
-    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Services\TheOmenDen.CrowsAgainstHumility.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>

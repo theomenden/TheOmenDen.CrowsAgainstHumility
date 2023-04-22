@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using TheOmenDen.CrowsAgainstHumility.Core.Constants;
+using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Identity;
 
 namespace TheOmenDen.CrowsAgainstHumility.Identity.Utilities;
 public sealed class Registration

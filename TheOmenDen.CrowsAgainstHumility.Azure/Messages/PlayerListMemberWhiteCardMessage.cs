@@ -1,4 +1,5 @@
-﻿using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
+﻿using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Cards;
+using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
 using TheOmenDen.CrowsAgainstHumility.Core.Models;
 
 namespace TheOmenDen.CrowsAgainstHumility.Azure.Messages;

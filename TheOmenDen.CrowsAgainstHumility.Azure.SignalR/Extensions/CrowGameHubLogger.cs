@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using TheOmenDen.CrowsAgainstHumility.Core.Models.CrowGames;
+using TheOmenDen.CrowsAgainstHumility.Core.DTO.Models.Cards;
 
 namespace TheOmenDen.CrowsAgainstHumility.Azure.SignalR.Extensions;
 internal static class CrowGameHubLogger

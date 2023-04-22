@@ -1,4 +1,6 @@
-﻿namespace TheOmenDen.CrowsAgainstHumility.Core.Models;
+﻿using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Identity;
+
+namespace TheOmenDen.CrowsAgainstHumility.Core.Models;
 public class CawChatMessage : IEqualityComparer<CawChatMessage>, IComparable<CawChatMessage>
 {
     #region Properties

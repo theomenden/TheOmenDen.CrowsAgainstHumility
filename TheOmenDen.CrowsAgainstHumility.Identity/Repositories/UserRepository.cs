@@ -1,6 +1,7 @@
 ﻿using TheOmenDen.CrowsAgainstHumility.Core.Auth.InputModels;
 using TheOmenDen.CrowsAgainstHumility.Core.Auth.ViewModels;
 using TheOmenDen.CrowsAgainstHumility.Core.Criteria;
+using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Identity;
 using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Repositories;
 using TheOmenDen.CrowsAgainstHumility.Core.Results;
@@ -161,9 +162,7 @@ internal sealed class UserRepository : IUserRepository
         {
             return false;
         }
-
-        user.NotificationType = notificationType;
-
+        
         await context.SaveChangesAsync(cancellationToken);
 
         return true;

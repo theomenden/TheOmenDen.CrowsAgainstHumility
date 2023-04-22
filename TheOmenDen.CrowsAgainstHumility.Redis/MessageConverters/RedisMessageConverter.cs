@@ -6,7 +6,7 @@ using StackExchange.Redis;
 using TheOmenDen.CrowsAgainstHumility.Azure.Messages;
 using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
 
-namespace TheOmenDen.CrowsAgainstHumility.Redis.MessageConverters;
+namespace TheOmenDen.CrowsAgainstHumility.Azure.Redis.MessageConverters;
 internal sealed class RedisMessageConverter : IRedisMessageConverter
 {
     private static readonly JsonSerializerOptions JsonSerializerOptions = new()

@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using TheOmenDen.CrowsAgainstHumility.Azure.Interfaces;
-using TheOmenDen.CrowsAgainstHumility.Redis.HealthChecks;
-using TheOmenDen.CrowsAgainstHumility.Redis.ServiceBus;
+using TheOmenDen.CrowsAgainstHumility.Azure.Redis.HealthChecks;
+using TheOmenDen.CrowsAgainstHumility.Azure.Redis.ServiceBus;
 
-namespace TheOmenDen.CrowsAgainstHumility.Redis.Extensions;
+namespace TheOmenDen.CrowsAgainstHumility.Azure.Redis.Extensions;
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddCorvidRedisCaching(this IServiceCollection services, string connectionString)
@@ -11,7 +11,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IServiceBus, RedisServiceBus>();
 
         services.AddHealthChecks()
-            .AddCheck<RedisHealthCheck>("Redis", tags: new []{"Azure", "Redis"});
+            .AddCheck<RedisHealthCheck>("Redis", tags: new[] { "Azure", "Redis" });
 
         return services;
     }

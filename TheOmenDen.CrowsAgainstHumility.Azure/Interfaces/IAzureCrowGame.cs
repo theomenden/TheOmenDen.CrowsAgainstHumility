@@ -1,5 +1,4 @@
-﻿using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Engines;
-using TheOmenDen.CrowsAgainstHumility.Core.Models.CrowGames;
+﻿using TheOmenDen.CrowsAgainstHumility.Azure.Messages;
 using TheOmenDen.CrowsAgainstHumility.Core.Providers;
 
 namespace TheOmenDen.CrowsAgainstHumility.Azure.Interfaces;

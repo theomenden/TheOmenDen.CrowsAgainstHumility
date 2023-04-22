@@ -1,4 +1,6 @@
-﻿namespace TheOmenDen.CrowsAgainstHumility.Identity.Contexts.Configurations;
+﻿using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Identity;
+
+namespace TheOmenDen.CrowsAgainstHumility.Identity.Contexts.Configurations;
 internal class ApplicationRoleConfiguration: IEntityTypeConfiguration<ApplicationRole>
 {
     public void Configure(EntityTypeBuilder<ApplicationRole> entity)

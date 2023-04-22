@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
+using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Identity;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 
 namespace TheOmenDen.CrowsAgainstHumility.Identity.Services;

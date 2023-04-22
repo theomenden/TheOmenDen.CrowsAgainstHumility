@@ -1,5 +1,5 @@
-﻿using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
-using TheOmenDen.CrowsAgainstHumility.Core.Models.CrowGames;
+﻿using TheOmenDen.CrowsAgainstHumility.Core.DTO.Models.Players;
+using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
 
 namespace TheOmenDen.CrowsAgainstHumility.Services.Managers;
 internal static class ServerManager
@@ -54,9 +54,7 @@ internal static class ServerManager
     internal static (bool couldBeRemoved, Observer? removedPlayer) TryRemovePlayer(CrowGameServer server,
         int playerPublicId)
     {
-        var player = server.Players.Where(kvp => kvp.Value.PublicId == playerPublicId)
-            .Select(kvp => kvp.Value)
-            .FirstOrDefault();
+        var player = server.Players.Where(kvp => kvp.Value)
 
         if (player is null)
         {

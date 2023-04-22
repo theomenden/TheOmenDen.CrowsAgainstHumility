@@ -82,10 +82,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNet.Security.OAuth.Discord" Version="7.0.0" />
-    <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="7.0.0" />
-    <PackageReference Include="AspNet.Security.OAuth.Patreon" Version="7.0.0" />
-    <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="7.0.0" />
+    <PackageReference Include="AspNet.Security.OAuth.Discord" Version="7.0.2" />
+    <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="7.0.2" />
+    <PackageReference Include="AspNet.Security.OAuth.Patreon" Version="7.0.2" />
+    <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="7.0.2" />
     <PackageReference Include="AspNetCore.HealthChecks.AzureStorage" Version="6.1.2" />
     <PackageReference Include="AspNetCore.HealthChecks.CosmosDb" Version="6.1.0" />
     <PackageReference Include="AspNetCore.HealthChecks.Publisher.ApplicationInsights" Version="6.0.2" />
@@ -151,8 +151,8 @@
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.5" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Identity.Web" Version="2.7.0" />
-    <PackageReference Include="Microsoft.Identity.Web.UI" Version="2.7.0" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="2.9.0" />
+    <PackageReference Include="Microsoft.Identity.Web.UI" Version="2.9.0" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -199,8 +199,7 @@
     <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Identity\TheOmenDen.CrowsAgainstHumility.Identity.csproj" />
     <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Core\TheOmenDen.CrowsAgainstHumility.Core.csproj" />
     <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Data\TheOmenDen.CrowsAgainstHumility.Data.csproj" />
-    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Redis\TheOmenDen.CrowsAgainstHumility.Redis.csproj" />
-    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Services\TheOmenDen.CrowsAgainstHumility.Services.csproj" />
+    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Redis\TheOmenDen.CrowsAgainstHumility.Azure.Redis.csproj" />
     <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Twitch\TheOmenDen.CrowsAgainstHumility.Twitch.csproj" />
   </ItemGroup>
 

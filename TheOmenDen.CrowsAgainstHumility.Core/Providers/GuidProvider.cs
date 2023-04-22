@@ -1,6 +1,6 @@
 ﻿namespace TheOmenDen.CrowsAgainstHumility.Core.Providers;
-public class GuidProvider
+public sealed class GuidProvider : IGuidProvider
 {
     public static GuidProvider Default { get; } = new();
-    public virtual Guid NewGuid() => Guid.NewGuid();
+    public Guid NewGuid() => Guid.NewGuid();
 }

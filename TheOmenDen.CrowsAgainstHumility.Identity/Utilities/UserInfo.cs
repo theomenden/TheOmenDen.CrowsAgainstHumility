@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Identity;
+
 namespace TheOmenDen.CrowsAgainstHumility.Identity.Utilities;
 public sealed class UserInfo
 {

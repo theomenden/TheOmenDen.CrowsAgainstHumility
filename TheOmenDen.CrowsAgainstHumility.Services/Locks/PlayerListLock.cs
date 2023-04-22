@@ -1,25 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Locks;
-using TheOmenDen.CrowsAgainstHumility.Core.Models.CrowGames;
-using TheOmenDen.CrowsAgainstHumility.Core.Resources;
+﻿using TheOmenDen.CrowsAgainstHumility.Core.DTO.Models.Players;
 
 namespace TheOmenDen.CrowsAgainstHumility.Services.Locks;
-internal sealed class PlayerListLock: IPlayerListLock
+
+public interface ILobbyLock : IDisposable, IAsyncDisposable
 {
+    Lobby Lobby { get; }
+    void Lock();
+    Task LockAsync(CancellationToken cancellationToken = default);
+}
+
+internal class PlayerListLock: ILobbyLock
+{
+    private readonly SemaphoreSlim _semaphore = new (1,1);
     private readonly object _lockObject;
     private bool _isLocked;
 
-    public PlayerListLock(PlayerList players, object lockObject)
+    public PlayerListLock(Lobby players, object lockObject)
     {
-        Players = players;
+        Lobby = players;
         _lockObject = lockObject;
     }
 
-    public PlayerList Players { get; private set; }
+    public Lobby Lobby { get; private set; }
 
 
     public void Lock()
@@ -36,21 +38,51 @@ internal sealed class PlayerListLock: IPlayerListLock
         }
     }
 
-    public void Dispose()
+    public async Task LockAsync(CancellationToken cancellationToken = default)
     {
         if (_isLocked)
         {
-            Monitor.Exit(_lockObject);
+            await Task.CompletedTask;
+            return;
         }
+
+        using var semaphore = new SemaphoreSlim(1, 1);
+
+        try
+        {
+            _isLocked = await semaphore.WaitAsync(10_000,cancellationToken);
+        }
+        finally
+        {
+            semaphore.Release();
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(disposing:true);
+        GC.SuppressFinalize(this);
     }
 
     public ValueTask DisposeAsync()
     {
-        if (_isLocked)
+        Dispose(disposing:true);
+        return ValueTask.CompletedTask;
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_isLocked)
         {
-            Monitor.Exit(_lockObject);
+            return;
         }
 
-        return ValueTask.CompletedTask;
+        if (!disposing)
+        {
+            return;
+        }
+
+        Monitor.Exit(_lockObject);
+        _semaphore.Dispose();
     }
 }

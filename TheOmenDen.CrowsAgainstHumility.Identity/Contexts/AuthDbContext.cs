@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using TheOmenDen.CrowsAgainstHumility.Core.Models.CrowGames;
+using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Identity;
 
 #nullable disable
 namespace TheOmenDen.CrowsAgainstHumility.Identity.Contexts;
@@ -19,12 +19,6 @@ public sealed class AuthDbContext: IdentityDbContext<ApplicationUser, Applicatio
     }
 
     public DbSet<EmailConfiguration> EmailConfigurations { get; set; }
-
-    public DbSet<CrowGame> Games { get; set; }
-
-    public DbSet<CrowGameServer> GameServers { get; set; }
-
-    public DbSet<RoomState> Rooms { get; set; }
 
     public DbSet<CawChatMessage> ChatMessages { get; set; }
 }

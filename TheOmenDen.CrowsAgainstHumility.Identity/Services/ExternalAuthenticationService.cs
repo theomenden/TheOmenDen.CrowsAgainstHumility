@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication;
+using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Identity;
 using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 using TheOmenDen.Shared.Extensions;
@@ -134,7 +135,6 @@ public sealed class ExternalAuthenticationService : IExternalAuthenticationServi
                 UserName = userName,
                 Email = userEmailClaim.Value,
                 EmailConfirmed = true,
-                NotificationType = NotificationType.Participating
             };
 
             try

@@ -1,4 +1,6 @@
-﻿namespace TheOmenDen.CrowsAgainstHumility.Data.Contexts.Configurations;
+﻿using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Cards;
+
+namespace TheOmenDen.CrowsAgainstHumility.Data.Contexts.Configurations;
 internal partial class FilteredBlackCardsByPackConfiguration: IEntityTypeConfiguration<FilteredBlackCardsByPack>
 {
     public void Configure(EntityTypeBuilder<FilteredBlackCardsByPack> entity)

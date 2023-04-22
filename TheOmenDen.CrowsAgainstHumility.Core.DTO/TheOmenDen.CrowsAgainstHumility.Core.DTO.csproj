@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -7,7 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Core\TheOmenDen.CrowsAgainstHumility.Core.csproj" />
+    <PackageReference Include="TheOmenDen.Shared" Version="2023.3.25.112" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Core.DAO\TheOmenDen.CrowsAgainstHumility.Core.DAO.csproj" />
   </ItemGroup>
 
 </Project>

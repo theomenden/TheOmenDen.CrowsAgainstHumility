@@ -7,7 +7,6 @@ using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 using TheOmenDen.CrowsAgainstHumility.Identity.Contexts;
 using TheOmenDen.CrowsAgainstHumility.Identity.Repositories;
 using TheOmenDen.CrowsAgainstHumility.Identity.Services;
-using ApplicationUser = TheOmenDen.CrowsAgainstHumility.Core.Models.ApplicationUser;
 
 namespace TheOmenDen.CrowsAgainstHumility.Identity.Extensions;
 public static class ServiceCollectionExtensions

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TheOmenDen.CrowsAgainstHumility.Core.Models;
+﻿namespace TheOmenDen.CrowsAgainstHumility.Core.Models;
 public sealed class EmailNotification
 {
     public Int32 Id { get; set; }

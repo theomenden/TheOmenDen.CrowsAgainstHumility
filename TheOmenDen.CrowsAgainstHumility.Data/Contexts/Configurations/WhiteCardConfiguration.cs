@@ -1,4 +1,6 @@
-﻿namespace TheOmenDen.CrowsAgainstHumility.Data.Contexts.Configurations;
+﻿using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Cards;
+
+namespace TheOmenDen.CrowsAgainstHumility.Data.Contexts.Configurations;
 
 public partial class WhiteCardConfiguration : IEntityTypeConfiguration<WhiteCard>
 {

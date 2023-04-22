@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-namespace TheOmenDen.CrowsAgainstHumility.Redis.Extensions;
+
+namespace TheOmenDen.CrowsAgainstHumility.Azure.Redis.Extensions;
 public static class LoggerExtensions
 {
     #region Constants

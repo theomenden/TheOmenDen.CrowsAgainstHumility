@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using TheOmenDen.CrowsAgainstHumility.Core.Constants;
+using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Identity;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 
 namespace TheOmenDen.CrowsAgainstHumility.Identity.Services;

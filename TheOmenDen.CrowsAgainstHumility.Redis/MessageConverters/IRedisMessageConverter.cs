@@ -1,7 +1,7 @@
 ﻿using StackExchange.Redis;
 using TheOmenDen.CrowsAgainstHumility.Azure.Messages;
 
-namespace TheOmenDen.CrowsAgainstHumility.Redis.MessageConverters;
+namespace TheOmenDen.CrowsAgainstHumility.Azure.Redis.MessageConverters;
 public interface IRedisMessageConverter
 {
     RedisValue ConvertToRedisMessage(NodeMessage message);

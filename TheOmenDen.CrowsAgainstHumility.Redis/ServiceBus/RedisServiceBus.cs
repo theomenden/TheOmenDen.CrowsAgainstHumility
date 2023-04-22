@@ -1,13 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 using System.Reactive.Subjects;
-using TheOmenDen.CrowsAgainstHumility.Azure.Configuration;
-using TheOmenDen.CrowsAgainstHumility.Azure.Interfaces;
-using TheOmenDen.CrowsAgainstHumility.Azure.Messages;
-using TheOmenDen.CrowsAgainstHumility.Redis.Extensions;
-using TheOmenDen.CrowsAgainstHumility.Redis.MessageConverters;
+using TheOmenDen.CrowsAgainstHumility.Azure.Redis.Extensions;
+using TheOmenDen.CrowsAgainstHumility.Azure.Redis.MessageConverters;
 
-namespace TheOmenDen.CrowsAgainstHumility.Redis.ServiceBus;
+namespace TheOmenDen.CrowsAgainstHumility.Azure.Redis.ServiceBus;
 internal class RedisServiceBus : IServiceBus, IDisposable
 {
     #region Constants
@@ -142,7 +139,7 @@ internal class RedisServiceBus : IServiceBus, IDisposable
         _logger.MessageReceived(_channel, nodeId, messageId);
 
         if (nodeMessage.SenderNodeId == nodeId
-            || (nodeMessage.RecipientNodeId is not null && nodeMessage.RecipientNodeId != nodeId))
+            || nodeMessage.RecipientNodeId is not null && nodeMessage.RecipientNodeId != nodeId)
         {
             return;
         }
@@ -162,7 +159,7 @@ internal class RedisServiceBus : IServiceBus, IDisposable
     private string GetConnectionString()
     {
         var connectionString = Configuration.ServiceBusConnectionString!;
-        
+
         if (connectionString.StartsWith("REDIS:", StringComparison.Ordinal))
         {
             connectionString = connectionString.Substring(6);

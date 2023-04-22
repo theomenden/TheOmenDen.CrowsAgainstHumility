@@ -1,7 +1,7 @@
 ﻿using TheOmenDen.CrowsAgainstHumility.Core.Auth.ViewModels;
 using TheOmenDen.CrowsAgainstHumility.Core.Criteria;
+using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Identity;
 using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
-using TheOmenDen.CrowsAgainstHumility.Core.Models;
 using TheOmenDen.CrowsAgainstHumility.Core.Results;
 
 namespace TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Repositories;

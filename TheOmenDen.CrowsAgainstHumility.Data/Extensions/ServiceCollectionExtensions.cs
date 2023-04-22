@@ -1,8 +1,7 @@
 ﻿using EFCoreSecondLevelCacheInterceptor;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
-using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Repositories;
+using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Cards;
 using TheOmenDen.CrowsAgainstHumility.Data.Contexts;
 using TheOmenDen.CrowsAgainstHumility.Data.Repositories;
 

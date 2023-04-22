@@ -1,4 +1,5 @@
-﻿using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
+﻿using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Identity;
+using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
 using TheOmenDen.CrowsAgainstHumility.Identity.Converters;
 
 namespace TheOmenDen.CrowsAgainstHumility.Identity.Contexts.Configurations;

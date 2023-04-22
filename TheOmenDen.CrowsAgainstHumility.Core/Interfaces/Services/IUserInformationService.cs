@@ -1,4 +1,5 @@
-﻿using TheOmenDen.CrowsAgainstHumility.Core.Models;
+﻿using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Identity;
+using TheOmenDen.CrowsAgainstHumility.Core.Models;
 
 namespace TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
 public interface IUserInformationService

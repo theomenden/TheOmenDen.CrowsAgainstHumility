@@ -1,4 +1,5 @@
-﻿using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Settings;
+﻿using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Cards;
+using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Settings;
 
 namespace TheOmenDen.CrowsAgainstHumility.Core.Models.Settings;
 public class CrowGameConfiguration : ICrowGameConfiguration

@@ -1,58 +1,51 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
-using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Engines;
-using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Hubs;
-using TheOmenDen.CrowsAgainstHumility.Core.Models;
-using TheOmenDen.CrowsAgainstHumility.Core.Models.CrowGames;
+using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Cards;
+using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Identity;
+using TheOmenDen.CrowsAgainstHumility.Core.DTO.ViewModels;
+using TheOmenDen.CrowsAgainstHumility.Core.Engine.Engine;
+using TheOmenDen.CrowsAgainstHumility.Core.Transformation.Mappers;
 
 namespace TheOmenDen.CrowsAgainstHumility.Azure.SignalR.Hubs;
 public class CrowGameHub: Hub
 {
+    private static readonly Lazy<PlayerMapper> _mapper = new(() => new());
     private readonly ICrowGameEngine _crowGameEngine;
-    private readonly ICrowGameEventBroadcaster _eventBroadcaster;
-    private readonly ILogger<CrowGameHub> _logger;
-
-    public CrowGameHub(ICrowGameEngine crowGameEngine, ICrowGameEventBroadcaster eventBroadcaster, ILogger<CrowGameHub> logger)
+    private readonly ICrowGameHubBroadcaster _eventBroadcaster;
+    
+    public CrowGameHub(ICrowGameEngine crowGameEngine, ICrowGameHubBroadcaster eventBroadcaster)
     {
         _crowGameEngine = crowGameEngine;
         _eventBroadcaster = eventBroadcaster;
-        _logger = logger;
     }
 
-    public async Task Connect(Guid id, CancellationToken cancellationToken = default)
-        => await Groups.AddToGroupAsync(GetPlayerPrivateId(), id.ToString(), cancellationToken: cancellationToken);
-
-    public void Kick(Guid id, string initiatingPlayerPrivateId, int playerPublicIdToRemove)
-        => _crowGameEngine.Kick(id, initiatingPlayerPrivateId, playerPublicIdToRemove);
-
-    public Member Join(Guid id, Guid recoveryId, string playerName, GameRoles type)
+    public Task Connect(Guid serverId, CancellationToken cancellationToken) => Groups.AddToGroupAsync(GetPlayerConnectionId(), serverId.ToString(), cancellationToken);
+    public Task KickPlayer(Guid serverId, string initiatingPlayerConnectionId, int playerPublicIdToRemove, CancellationToken cancellationToken = default) => _crowGameEngine.KickAsync(serverId, initiatingPlayerConnectionId, playerPublicIdToRemove, cancellationToken);
+    public Task PlayCard(Guid serverId, string playerConnectionId, WhiteCard playedCard, CancellationToken cancellationToken = default) => _crowGameEngine.PlayCardAsync(serverId, playerConnectionId, playedCard, cancellationToken);
+    public Task UnPlayCard(Guid serverId, string playerConnectionId, CancellationToken cancellationToken = default) => _crowGameEngine.RedactWhiteCardAsync(serverId, playerConnectionId, cancellationToken);
+    public Task ClearBoard(Guid serverId, CancellationToken cancellationToken = default) => _crowGameEngine.ClearCardsAsync(serverId, GetPlayerConnectionId(), cancellationToken);
+    public Task ShowCards(Guid serverId, CancellationToken cancellationToken = default) => _crowGameEngine.ShowCardsAsync(serverId, GetPlayerConnectionId(), cancellationToken);
+    public async Task<PlayerViewModel> ChangePlayerType(Guid serverId, Core.Engine.Enumerations.GameRoles type, CancellationToken cancellationToken = default)
     {
-        var joinedPlayer = _crowGameEngine.JoinRoom(id, recoveryId, playerName, GetPlayerPrivateId(), type);
-        return joinedPlayer.Map(true);
+        var updatedPlayer = await _crowGameEngine.ChangePlayerTypeAsync(serverId, GetPlayerConnectionId(), type, cancellationToken);
+        return _mapper.Value.PlayerToPlayerViewModelWithPrivateId(updatedPlayer);
     }
-
-    public void PlayWhiteCard(Guid serverId, string playerId, WhiteCard playedCard) =>
-        _crowGameEngine.PlayWhiteCard(serverId, playerId, playedCard);
-
-    public void UnPlayWhiteCard(Guid serverId, string playerId)
-    => _crowGameEngine.RedactPlayedWhiteCard(serverId, playerId);
-
-    public void Clear(Guid serverId) => _crowGameEngine.ClearGameBoard(serverId, GetPlayerPrivateId());
-
-    public void Show(Guid serverId) => _crowGameEngine.ShowWhiteCards(serverId, GetPlayerPrivateId());
-
-    public Member ChangePlayerType(Guid serverId, GameRoles newType)
+    public async Task<ServerCreationResult> Create(CrowGameInputViewModel crowGameConfiguration, CancellationToken cancellationToken = default)
     {
-        var updatedPlayer = _crowGameEngine.ChangePlayerType(serverId, GetPlayerPrivateId(), newType);
-        return updatedPlayer.Map(includePrivateId: true);
-    }
+        var (wasCreated, serverId, validationMessage) = await _crowGameEngine.CreateServerAsync(crowGameConfiguration, cancellationToken);
 
+        return new ServerCreationResult(wasCreated, serverId, validationMessage);
+    }
+    public async Task<PlayerViewModel> Join(Guid serverId, Guid recoveryId, string playerName, Core.Engine.Enumerations.GameRoles type, CancellationToken cancellationToken = default)
+    {
+        var joinedPlayer = await _crowGameEngine.JoinRoomAsync(serverId, recoveryId, playerName, GetPlayerConnectionId(), type, cancellationToken);
+        return _mapper.Value.PlayerToPlayerViewModelWithPrivateId(joinedPlayer);
+    }
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        await _crowGameEngine.SleepInAllRoomsAsync(GetPlayerPrivateId());
+        await _crowGameEngine.SetPlayerAsleepInAllRoomsAsync(GetPlayerConnectionId());
         await base.OnDisconnectedAsync(exception);
     }
 
-    private string GetPlayerPrivateId() => Context.ConnectionId;
+    private string GetPlayerConnectionId() => Context.ConnectionId;
 }
