@@ -10,7 +10,7 @@ using TheOmenDen.CrowsAgainstHumility.Core.Engine.Processors;
 using TheOmenDen.CrowsAgainstHumility.Core.Engine.Stores;
 
 namespace TheOmenDen.CrowsAgainstHumility.Core.Engine.Engine;
-internal sealed class CrowGameEngine : ICrowGameEngine
+public class CrowGameEngine : ICrowGameEngine
 {
     #region Private fields
     private const int MaximumPlayerNameLength = 30;
@@ -142,7 +142,7 @@ internal sealed class CrowGameEngine : ICrowGameEngine
         var player = ServerManager.GetPlayer(server, playerConnectionId);
         if (SessionManager.HasPlayedACard(server.CurrentSession, player.PublicId))
         {
-            throw new CannotChangePlayerTypeException($"Cannot change from playertype '{GameRoles.Player}', when player has voted");
+            throw new CannotChangePlayerTypeException($"Cannot change from player type '{GameRoles.Player}', when player has voted");
         }
 
         ServerManager.ChangePlayerType(player, newRole);

@@ -1,20 +1,10 @@
 ﻿using Blazorise;
-using Blazorise.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using TheOmenDen.CrowsAgainstHumility.Core.Constants;
 using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
-using TheOmenDen.CrowsAgainstHumility.Core.Models;
-using TheOmenDen.CrowsAgainstHumility.Core.Models.CrowGames;
-using TheOmenDen.CrowsAgainstHumility.Data.Contexts;
 using TheOmenDen.CrowsAgainstHumility.Services;
-using TheOmenDen.CrowsAgainstHumility.Services.Authentication;
-using TheOmenDen.Shared.Enumerations.Structs;
-using TheOmenDen.Shared.Extensions;
-using TwitchLib.Api.Helix;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 #nullable disable
 namespace TheOmenDen.CrowsAgainstHumility.Components;
@@ -29,8 +19,6 @@ public partial class CreateCrowGameComponent : ComponentBase, IDisposable, IAsyn
     [Inject] private IMessageService MessageService { get; init; }
 
     [Inject] private IModalService ModalService { get; init; }
-
-    [Inject] private IPackViewService PackViewService { get; init; }
 
     [Inject] private IPlayerVerificationService PlayerVerificationService { get; init; }
 
@@ -47,13 +35,10 @@ public partial class CreateCrowGameComponent : ComponentBase, IDisposable, IAsyn
     private readonly List<User> _players = new(10);
     #endregion
     #region Crow Game Input Models
-    private readonly CreateCrowGameInputModel _createModal = new();
     #endregion
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _createModal.RoomCode = GameCodeGenerator.GenerateGameCodeFromComponent(nameof(CreateCrowGameComponent));
-        _packs = (await PackViewService.GetPacksForGameCreationAsync()).ToArray();
     }
 
     #region Pack Manipulation Methods

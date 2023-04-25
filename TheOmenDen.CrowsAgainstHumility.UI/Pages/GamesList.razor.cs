@@ -1,8 +1,7 @@
 ﻿using Blazorise;
 using TheOmenDen.CrowsAgainstHumility.Components;
+using TheOmenDen.CrowsAgainstHumility.Core.Engine.Game;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
-using TheOmenDen.CrowsAgainstHumility.Core.Models.CrowGames;
-using TheOmenDen.CrowsAgainstHumility.Services.Authentication;
 using TheOmenDen.Shared.Extensions;
 using TheOmenDen.Shared.Utilities;
 
@@ -13,10 +12,8 @@ public partial class GamesList : ComponentBase, IDisposable
     [Inject] public NavigationManager Navigation { get; init; }
 
     [Inject] private IModalService ModalService { get; init; }
-
-    [Inject] private ICrowGameHubConnectorService CrowGameHubConnectorService { get; init; }
-
-    private List<CrowGame> _games = new (52);
+    
+    private List<CrowGameServer> _games = new (52);
 
     private void Start()
     {
@@ -25,7 +22,7 @@ public partial class GamesList : ComponentBase, IDisposable
 
     protected override async Task OnInitializedAsync()
     {
-        _games = Enumerable.Empty<CrowGame>().ToList();
+        _games = Enumerable.Empty<CrowGameServer>().ToList();
 
         await base.OnInitializedAsync();
     }

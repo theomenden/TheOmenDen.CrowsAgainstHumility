@@ -78,7 +78,7 @@ internal class AzureServiceBus : IServiceBus, IDisposable, IAsyncDisposable
         }
         catch (Exception ex)
         {
-            _logger.SendErrorMessage(ex);
+            _logger.ErrorSendingMessage(ex);
         }
     }
 
@@ -248,7 +248,7 @@ internal class AzureServiceBus : IServiceBus, IDisposable, IAsyncDisposable
 
     private Task ProcessErrorAsync(ProcessErrorEventArgs errorEventArgs)
     {
-        _logger.ErrorProcess(errorEventArgs.Exception, _topicName, _nodeId, errorEventArgs.ErrorSource);
+        _logger.ErrorProcessing(errorEventArgs.Exception, _topicName, _nodeId, errorEventArgs.ErrorSource);
         return Task.CompletedTask;
     }
 
@@ -317,7 +317,7 @@ internal class AzureServiceBus : IServiceBus, IDisposable, IAsyncDisposable
             return;
         }
 
-        _logger.MessageReceieved(_topicName, _nodeId, message.MessageId);
+        _logger.MessageReceived(_topicName, _nodeId, message.MessageId);
 
         try
         {
@@ -336,7 +336,7 @@ internal class AzureServiceBus : IServiceBus, IDisposable, IAsyncDisposable
         }
         catch (Exception ex)
         {
-            _logger.ErrorProccessMessage(ex, _topicName, _nodeId, message.MessageId);
+            _logger.ErrorProcessingMessage(ex, _topicName, _nodeId, message.MessageId);
             await messageEventArgs.AbandonMessageAsync(message, null, cancellationToken);
         }
 

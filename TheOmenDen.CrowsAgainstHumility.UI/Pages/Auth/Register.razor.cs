@@ -50,8 +50,7 @@ public partial class Register: ComponentBase
                 FirstName = InputModel.FirstName,
                 LastName = InputModel.LastName,
                 UserName = InputModel.Username,
-                Email = InputModel.Email,
-                NotificationType = _selectedNotificationValue ?? Core.Enumerations.NotificationType.Ignore
+                Email = InputModel.Email
             };
 
             var createUserResult = await UserManager.CreateAsync(user, InputModel.Password);

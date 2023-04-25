@@ -15,8 +15,5 @@ internal class ApplicationUserConfiguration: IEntityTypeConfiguration<Applicatio
 
         entity.Property(e => e.Id)
             .HasDefaultValueSql("(newsequentialId())");
-
-        entity.Property(e => e.NotificationType)
-            .HasConversion<EnumerationBaseConverter<NotificationType,Int32>>();
     }
 }

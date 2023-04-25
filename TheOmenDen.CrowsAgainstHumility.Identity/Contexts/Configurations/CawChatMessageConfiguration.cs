@@ -28,17 +28,5 @@ internal sealed class CawChatMessageConfiguration: IEntityTypeConfiguration<CawC
         entity.HasIndex(e => e.FromUserId)
             .HasDatabaseName("IX_CawChat_FromUserId")
             .IncludeProperties(e => e.Message);
-        
-        entity.HasOne(e => e.FromUser)
-            .WithMany(p => p.ChatMessagesFromUsers)
-            .HasForeignKey(d => d.FromUserId)
-            .HasConstraintName("FK_Chat_User_FromUserId")
-            .OnDelete(DeleteBehavior.ClientSetNull);
-
-        entity.HasOne(e => e.ToUser)
-            .WithMany(p => p.ChatMessagesToUsers)
-            .HasForeignKey(d => d.ToUserId)
-            .HasConstraintName("FK_Chat_User_ToUserId")
-            .OnDelete(DeleteBehavior.ClientSetNull);
     }
 }

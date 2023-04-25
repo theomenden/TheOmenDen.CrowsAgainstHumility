@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Azure.Messaging.ServiceBus;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Logging;
 using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
 
 namespace TheOmenDen.CrowsAgainstHumility.Azure.ServiceBus.Extensions;
@@ -82,5 +84,90 @@ internal static class LoggerExtensions
     public static void NodeMessageReceived(this ILogger logger, string nodeId, string? senderNodeId, string? recipientNodeId, NodeMessageTypes type) => _nodeMessageReceived(logger, nodeId, senderNodeId, recipientNodeId, type, null);
     public static void RetryRequestLobbyList(this ILogger logger, string nodeId) => _retryRequestLobbyList(logger, nodeId, null);
     public static void CrowGameAzureNodeInitialized(this ILogger logger, string nodeId) => _crowGameAzureNodeInitialized(logger, nodeId, null);
+    #endregion
+}
+
+internal static class ServiceBusLoggerExtensions
+{
+    #region Constants
+    private const int BaseEventId = 1600;
+    #endregion
+    #region Private Actions
+    private static readonly Action<ILogger, Exception?> _sendMessage = LoggerMessage.Define(
+        LogLevel.Debug,
+        new EventId(BaseEventId + 1, nameof(SendMessage)),
+        "Message sent to Azure Service Bus.");
+    private static readonly Action<ILogger, Exception?> _errorSendingMessage = LoggerMessage.Define(
+        LogLevel.Error,
+        new EventId(BaseEventId + 2, nameof(ErrorSendingMessage)),
+        "Error sending message to Azure Service Bus.");
+    private static readonly Action<ILogger, string, string, Exception?> _subscriptionCreated = LoggerMessage.Define<string, string>(
+        LogLevel.Debug,
+        new EventId(BaseEventId + 3, nameof(SubscriptionCreated)),
+            "Service Bus Subscription was created (Topic: {Topic}, NodeID: {NodeId})");
+    private static readonly Action<ILogger, string?, string?, Exception?> _subscriptionDeleted = LoggerMessage.Define<string?, string?>(
+            LogLevel.Debug,
+            new EventId(BaseEventId + 4, nameof(SubscriptionDeleted)),
+            "Service Bus Subscription was deleted (Topic: {Topic}, NodeID: {NodeId})");
+    private static readonly Action<ILogger, string?, string?, string?, Exception?> _messageReceived = LoggerMessage.Define<string?, string?, string?>(
+            LogLevel.Debug,
+            new EventId(BaseEventId + 5, nameof(MessageReceived)),
+            "Service Bus Message was received (Topic: {Topic}, NodeID: {NodeId}, MessageID: {MessageId})"
+        );
+    private static readonly Action<ILogger, string?, string?, string?, Exception?> _messageProcessed = LoggerMessage.Define<string?, string?, string?>(
+        LogLevel.Information,
+        new EventId(BaseEventId + 6, nameof(MessageProcessed)),
+        "Service Bus Message was processed (Topic: {Topic}, NodeID: {NodeId}, MessageID: {MessageId})");
+    private static readonly Action<ILogger, string?, string?, string?, Exception?> _errorProcessingMessage = LoggerMessage.Define<string?, string?, string?>(
+        LogLevel.Error,
+        new EventId(BaseEventId + 7, nameof(ErrorProcessingMessage)),
+        "Service Bus Message processing failed (Topic: {Topic}, NodeID: {NodeId}, MessageID: {MessageId})"
+        );
+    private static readonly Action<ILogger, string?, string?, ServiceBusErrorSource, Exception?> _errorProcessing = LoggerMessage.Define<string?, string?, ServiceBusErrorSource>(
+        LogLevel.Error,
+        new EventId(BaseEventId + 8, nameof(ErrorProcessing)),
+        "Service Bus Processing failed (Topic {Topic}, NodeID: {NodeId}, MessageID: {MessageId}"
+        );
+    private static readonly Action<ILogger, string?, Exception?> _errorSubscriptionsMaintenance = LoggerMessage.Define<string?>(
+        LogLevel.Error,
+        new EventId(BaseEventId + 9, nameof(ErrorSubscriptionsMaintenance)),
+        "Service Bus Subscriptions maintenance failed for NodeID: {NodeId}"
+        );
+    private static readonly Action<ILogger, string?, string?, string?, Exception?> _subscriptionAliveMessageReceived = LoggerMessage.Define<string?, string?, string?>(
+        LogLevel.Debug,
+        new EventId(BaseEventId + 10, nameof(SubscriptionAliveMessageReceived)),
+        "Service Bus Subscription is alive:(Topic: {Topic}, NodeID: {NodeId}, SubscriptionID: {SubscriptionId})"
+        );
+    private static readonly Action<ILogger, string?, Exception?> _subscriptionAliveSent = LoggerMessage.Define<string?>(
+        LogLevel.Debug,
+        new EventId(BaseEventId + 11, nameof(SubscriptionAliveSent)),
+        "Notification sent indicating NodeID: \"{NodeId}\" is alive."
+        );
+    private static readonly Action<ILogger, string?, string?, Exception?> _inactiveSubscriptionDeleted =
+        LoggerMessage.Define<string?, String?>(
+            LogLevel.Debug,
+            new EventId(BaseEventId + 12, nameof(InactiveSubscriptionDeleted)),
+            "Service Bus Subscription \"{SubscriptionId}\" was deleted due to inactivity by Node \"{NodeId}\"."
+            );
+    private static readonly Action<ILogger, string?, string?, string, Exception?> _subscriptionDeleteFailed = LoggerMessage.Define<string?, string?, string>(
+        LogLevel.Warning,
+        new EventId(BaseEventId + 13, nameof(SubscriptionDeleteFailed)),
+        "Deletion of Service Bus Subscription (Topic: {Topic}, NodeID: {SubscriptionId}) Failed with Error: {Error}"
+        );
+    #endregion
+    #region Public Extensions
+    public static void SendMessage(this ILogger logger) => _sendMessage(logger, null);
+    public static void SubscriptionCreated(this ILogger logger, string topicName, string nodeId) => _subscriptionCreated(logger, topicName, nodeId, null);
+    public static void ErrorSendingMessage(this ILogger logger, Exception exception) => _errorSendingMessage(logger, exception);
+    public static void SubscriptionDeleted(this ILogger logger, string? topicName, string? nodeId) => _subscriptionDeleted(logger, topicName, nodeId, null);
+    public static void MessageReceived(this ILogger logger, string? topicName, string? nodeId, string? messageId) => _messageReceived(logger, topicName, nodeId, messageId, null);
+    public static void MessageProcessed(this ILogger logger, string? topicName, string? nodeId, string? messageId) => _messageProcessed(logger, topicName, nodeId, messageId, null);
+    public static void ErrorProcessingMessage(this ILogger logger, Exception exception, string? topicName, string? nodeId, string? messageId) => _errorProcessingMessage(logger, topicName, nodeId, messageId, exception);
+    public static void ErrorProcessing(this ILogger logger, Exception exception, string? topicName, string? nodeId, ServiceBusErrorSource errorSource) => _errorProcessing(logger, topicName, nodeId, errorSource, exception);
+    public static void ErrorSubscriptionsMaintenance(this ILogger logger, Exception exception, string? nodeId) => _errorSubscriptionsMaintenance(logger, nodeId, exception);
+    public static void SubscriptionAliveMessageReceived(this ILogger logger, string? topicName, string? nodeId, string? subscriptionId) => _subscriptionAliveMessageReceived(logger, topicName, nodeId, subscriptionId, null);
+    public static void SubscriptionAliveSent(this ILogger logger, string? nodeId) => _subscriptionAliveSent(logger, nodeId, null);
+    public static void InactiveSubscriptionDeleted(this ILogger logger, string? nodeId, string? subscriptionId) => _inactiveSubscriptionDeleted(logger, subscriptionId, nodeId, null);
+    public static void SubscriptionDeleteFailed(this ILogger logger, Exception exception, string? topicName, string? subscriptionId) => _subscriptionDeleteFailed(logger, topicName, subscriptionId, exception.Message, null);
     #endregion
 }

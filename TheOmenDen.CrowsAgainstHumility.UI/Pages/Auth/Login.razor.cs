@@ -33,10 +33,6 @@ public partial class Login : ComponentBase
     [Inject] private TokenProvider TokenProvider { get; init; }
 
     [Inject] private SignInManager<ApplicationUser> SignInManager { get; init; }
-
-    [Inject] private TwitchStrings TwitchStrings { get; init; }
-
-    [Inject] private TwitchAPI TwitchAPI { get; init; }
     #endregion
     #region Private fields
 

@@ -83,6 +83,38 @@ internal sealed class CosmosLobbyRepository: IServerStore
 
         return true;
     }
+
+    public async IAsyncEnumerable<bool> RemoveAllServersAsyncStream([EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        _servers.Clear();
+
+        var query = _container.GetItemLinqQueryable<CrowGameServer>();
+
+        var feedIterator = query
+            .Where(s => s.CurrentSession.CanPlay)
+            .ToFeedIterator();
+
+        await foreach (var server in feedIterator
+                           .ToAsyncEnumerable()
+                           .WithCancellation(cancellationToken))
+        {
+            bool isDeleted;
+            try
+            {
+                await _container.DeleteItemAsync<CrowGameServer>(server.Code, PartitionKey.None,
+                    cancellationToken: cancellationToken);
+                isDeleted = true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation("Server could have already been removed from Cosmos: {@Ex}", ex);
+                isDeleted = false;
+            }
+
+            yield return isDeleted;
+        }
+    }
+
     public async Task<CrowGameServer> GetServerByIdAsync(Guid serverId, CancellationToken cancellationToken = default)
     {
         if (_servers.TryGetValue(serverId, out var result))

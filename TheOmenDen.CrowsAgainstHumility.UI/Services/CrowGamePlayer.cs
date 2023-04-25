@@ -1,4 +1,6 @@
-﻿namespace TheOmenDen.CrowsAgainstHumility.Services;
+﻿using TheOmenDen.CrowsAgainstHumility.Core.Engine.Models;
+
+namespace TheOmenDen.CrowsAgainstHumility.Services;
 
 public sealed class CrowGamePlayer : IComparable<CrowGamePlayer>, IEquatable<CrowGamePlayer>
 {
@@ -59,7 +61,7 @@ public sealed class CrowGamePlayer : IComparable<CrowGamePlayer>, IEquatable<Cro
         obj is not null
         && (
             ReferenceEquals(this, obj)
-            || (obj is PlayerDto playerDto && Id.Equals(playerDto.Id))
+            || (obj is Player playerDto && Id.Equals(playerDto.RecoveryId))
             || obj is CrowGamePlayer other && Equals(other)
             );
 

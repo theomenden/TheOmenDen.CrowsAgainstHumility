@@ -1,5 +1,5 @@
-﻿using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Hubs;
-using TheOmenDen.CrowsAgainstHumility.Core.Results;
+﻿using TheOmenDen.CrowsAgainstHumility.Azure.SignalR.Clients;
+using TheOmenDen.CrowsAgainstHumility.Core.DTO.ViewModels;
 using TheOmenDen.CrowsAgainstHumility.Utilities;
 
 namespace TheOmenDen.CrowsAgainstHumility.Components.Game;
@@ -9,7 +9,7 @@ public partial class CrowGameLogComponent: ComponentBase
     [Parameter] public ICrowGameHubClient HubClient { get; set; }
     [Parameter] public EventCallback<ICrowGameHubClient> HubClientChanged {get; set; }
 
-    private DropOutStack<LogMessage> _log = new (20);
+    private readonly DropOutStack<LogMessage> _log = new (20);
 
     private TimeZoneInfo _localTimeZoneInfo = TimeZoneInfo.Local;
 

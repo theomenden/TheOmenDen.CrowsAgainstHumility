@@ -19,7 +19,6 @@ using TheOmenDen.CrowsAgainstHumility.Data.Extensions;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using TheOmenDen.CrowsAgainstHumility.Email.Extensions;
 using TheOmenDen.CrowsAgainstHumility.Services;
-using TheOmenDen.CrowsAgainstHumility.Services.Extensions;
 using TheOmenDen.CrowsAgainstHumility.Identity.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -43,7 +42,6 @@ using TheOmenDen.CrowsAgainstHumility.Azure.CosmosDb.Extensions;
 using TheOmenDen.CrowsAgainstHumility.Core.Models.Settings;
 using TheOmenDen.CrowsAgainstHumility.Core.Validators;
 using TheOmenDen.CrowsAgainstHumility.Twitch.Extensions;
-using TheOmenDen.CrowsAgainstHumility.ViewModels;
 #endregion
 #region Bootstrap Logger
 Log.Logger = new LoggerConfiguration()
@@ -174,7 +172,6 @@ try
     builder.Services.AddSingleton(socketsHttpHandler);
 
     builder.Services.AddHttpClient();
-    builder.Services.AddScoped<RoomViewModel>();
     builder.Services.AddScoped<ICookie, Cookie>();
     builder.Services.AddScoped<IClipboardService, ClipboardService>();
     builder.Services.AddScoped<TokenProvider>();

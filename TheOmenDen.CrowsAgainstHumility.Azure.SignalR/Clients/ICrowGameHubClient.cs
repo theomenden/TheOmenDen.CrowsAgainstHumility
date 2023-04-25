@@ -4,7 +4,7 @@ using TheOmenDen.CrowsAgainstHumility.Core.Engine.Enumerations;
 
 namespace TheOmenDen.CrowsAgainstHumility.Azure.SignalR.Clients;
 
-internal interface ICrowGameHubClient
+public interface ICrowGameHubClient
 {
     string? ConnectionId { get; }
     Task Connect(Guid serverId, CancellationToken cancellationToken = default);

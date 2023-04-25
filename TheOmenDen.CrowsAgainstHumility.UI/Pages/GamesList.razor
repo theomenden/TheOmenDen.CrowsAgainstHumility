@@ -32,7 +32,7 @@
                    Margin="Margin.Is2.FromTop.OnDesktop.Is4.FromTop.OnMobile"
                    ElementId="#crowGameList"
                    Width="Width.Is100">
-            <Repeater TItem="CrowGame" Items="_games">
+            <Repeater TItem="CrowGameServer" Items="_games">
                 <Animate Anchor="#crowGameList"
                          Auto
                          Animation="Animations.FadeUpLeft">
@@ -47,15 +47,15 @@
                             <Heading Margin="Margin.Is2.FromBottom.Is2.FromEnd.OnTablet.Is4.FromEnd.OnMobile"
                                      Size="HeadingSize.Is3"
                                      TextWeight="TextWeight.Light">
-                                @context.Room.Name
+                                @context.Name
                             </Heading>
-                            <Small TextColor="TextColor.Muted" TextWeight="TextWeight.Bold">@context.Room.RoomCode</Small>
+                            <Small TextColor="TextColor.Muted" TextWeight="TextWeight.Bold">@context.Code</Small>
                             <Button Color="Color.Primary"
                                     Margin="Margin.Is2.OnX.OnWidescreen.Is4.FromStart.OnTablet.Is5.FromStart.OnMobile">
                                 Join Game
                                 <sup>
                                     <Badge Color="Color.Secondary" Pill>
-                                        @context.Room.ApplicationUsers.Count() / 10
+                                        @context.Players.Count() / 10
                                     </Badge>
                                 </sup>
                             </Button>

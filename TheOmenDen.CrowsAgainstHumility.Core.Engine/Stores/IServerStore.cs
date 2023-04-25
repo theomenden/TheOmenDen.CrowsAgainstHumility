@@ -11,4 +11,5 @@ public interface IServerStore
     Task<int> GetTotalPlayersAsync(CancellationToken cancellationToken = default);
     IAsyncEnumerable<CrowGameServer> GetAllServersAsyncStream(CancellationToken cancellationToken = default);
     Task<bool> RemoveServerAsync(CrowGameServer serverToRemove, CancellationToken cancellationToken = default);
+    IAsyncEnumerable<bool> RemoveAllServersAsyncStream(CancellationToken cancellationToken = default);
 }

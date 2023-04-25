@@ -18,7 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Azure.ServiceBus\TheOmenDen.CrowsAgainstHumility.Azure.ServiceBus.csproj" />
     <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Core\TheOmenDen.CrowsAgainstHumility.Core.csproj" />
   </ItemGroup>
 

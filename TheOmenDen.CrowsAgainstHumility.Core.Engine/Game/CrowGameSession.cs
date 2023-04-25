@@ -20,13 +20,13 @@ public sealed class CrowGameSession
     public Deck CardSet { get; set; }
     public IDictionary<int, WhiteCard> PlayedCards { get; set; }
 
-    public bool CanShow(IDictionary<string, Player> participants)
-        => false;
+    public bool CanShow(IDictionary<string, Player> participants) => false;
 
     private bool AllAwakeParticipantsPlayed(IDictionary<string, Player> participants)
     {
         var awakeParticipants = participants.Values
-            .Where(p => p.Type == GameRoles.Player && p.Mode == PlayerMode.Awake)
+            .Where(p => p.Type == GameRoles.Player 
+                        && p.Mode == PlayerMode.Awake)
             .Select(p => p.PublicId);
         return awakeParticipants.All(id => PlayedCards.ContainsKey(id));
     }
