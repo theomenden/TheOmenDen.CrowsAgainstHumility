@@ -6,9 +6,12 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using TheOmenDen.CrowsAgainstHumility.Core.Auth.InputModels;
+using TheOmenDen.CrowsAgainstHumility.Core.Models.Settings;
 using TheOmenDen.CrowsAgainstHumility.Extensions;
 using TheOmenDen.CrowsAgainstHumility.Identity.Extensions;
 using TheOmenDen.CrowsAgainstHumility.Services;
+using TheOmenDen.Shared.Components.Enumerations;
+using TheOmenDen.Shared.Components.Options;
 using TwitchLib.Api;
 #endregion
 namespace TheOmenDen.CrowsAgainstHumility.Pages.Auth;
@@ -21,6 +24,10 @@ public partial class Login : ComponentBase
     #endregion
     #region Injected Members
     [Inject] private TokenStateService TokenStateService { get; init; }
+
+    [Inject] private ReCaptchaSettings ReCaptchaSettings { get; init; }
+
+    [Inject] private IRecaptchaService CaptchaService { get; init; }
 
     [Inject] private ILogger<Login> Logger { get; init; }
 
@@ -40,10 +47,22 @@ public partial class Login : ComponentBase
     private Validations _validationsRef;
     private List<AuthenticationScheme> _externalProviders = new(5);
     private LoadingIndicator _loadingIndicator;
+    private CaptchaRenderParameters _captchaParameters;
+    private string _captchaUnverifiedToken = String.Empty;
     #endregion
     protected LoginInputModel Input { get; set; } = new();
 
     protected Boolean HasErrors { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _captchaParameters = CaptchaRenderParameters.Default with
+        {
+            Theme = CaptchaThemes.Dark
+        };
+
+        base.OnInitialized();
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -75,11 +94,14 @@ public partial class Login : ComponentBase
     {
         await _loadingIndicator.Show();
 
+        var captchaResponse = await CaptchaService.VerifyCaptchaAsync(_captchaUnverifiedToken);
+        
         try
         {
             HasErrors = false;
 
-            if (await _validationsRef.ValidateAll())
+            if (await _validationsRef.ValidateAll()
+                && captchaResponse.Success)
             {
                 var user = await UserManager.FindByEmailAsync(Input.Email);
 
@@ -120,6 +142,24 @@ public partial class Login : ComponentBase
         };
 
         return String.Format(ClassListForIcons, result.ToLowerInvariant());
+    }
+
+    private Task OnCallbackAsync(string token)
+    {
+        _captchaUnverifiedToken = token;
+        return Task.CompletedTask;
+    }
+
+    private Task OnErrorAsync(string error)
+    {
+        Logger.LogInformation("[Captcha Demo]Error: {Error}", error);
+        return Task.CompletedTask;
+    }
+
+    private Task OnExpiredAsync()
+    {
+        Logger.LogInformation("[Captcha Demo] Expired At: {Time}", DateTime.UtcNow.ToShortTimeString());
+        return Task.CompletedTask;
     }
 
     private static String GetExternalLoginUrl(AuthenticationScheme authenticationScheme)

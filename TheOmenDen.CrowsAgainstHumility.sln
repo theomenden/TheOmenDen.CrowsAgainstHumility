@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheOmenDen.CrowsAgainstHumi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheOmenDen.CrowsAgainstHumility.Core.DAO", "TheOmenDen.CrowsAgainstHumility.Core.DAO\TheOmenDen.CrowsAgainstHumility.Core.DAO.csproj", "{885FF602-DCF3-4662-BF0C-5A1A9646B231}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheOmenDen.CrowsAgainstHumility.Core.Engine", "TheOmenDen.CrowsAgainstHumility.Core.Engine\TheOmenDen.CrowsAgainstHumility.Core.Engine.csproj", "{E9977CB8-8FED-40D2-ACC1-68B17DB354B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheOmenDen.Shared.Components", "..\theomenden\TheOmenDen.Shared.Components\TheOmenDen.Shared.Components\TheOmenDen.Shared.Components.csproj", "{525B4BAA-2E96-4FC3-845E-6559867215C1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -95,10 +95,10 @@ Global
 		{885FF602-DCF3-4662-BF0C-5A1A9646B231}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{885FF602-DCF3-4662-BF0C-5A1A9646B231}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{885FF602-DCF3-4662-BF0C-5A1A9646B231}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E9977CB8-8FED-40D2-ACC1-68B17DB354B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E9977CB8-8FED-40D2-ACC1-68B17DB354B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E9977CB8-8FED-40D2-ACC1-68B17DB354B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E9977CB8-8FED-40D2-ACC1-68B17DB354B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{525B4BAA-2E96-4FC3-845E-6559867215C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{525B4BAA-2E96-4FC3-845E-6559867215C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{525B4BAA-2E96-4FC3-845E-6559867215C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{525B4BAA-2E96-4FC3-845E-6559867215C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -13,7 +13,6 @@
   <ItemGroup>
     <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Core.DAO\TheOmenDen.CrowsAgainstHumility.Core.DAO.csproj" />
     <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Core.DTO\TheOmenDen.CrowsAgainstHumility.Core.DTO.csproj" />
-    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Core.Engine\TheOmenDen.CrowsAgainstHumility.Core.Engine.csproj" />
   </ItemGroup>
 
 </Project>

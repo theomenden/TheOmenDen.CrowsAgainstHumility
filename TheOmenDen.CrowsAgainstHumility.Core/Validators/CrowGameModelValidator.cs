@@ -1,6 +1,4 @@
 ﻿using FluentValidation;
-using TheOmenDen.CrowsAgainstHumility.Core.DTO.Models;
-using TheOmenDen.Shared.Extensions;
 
 namespace TheOmenDen.CrowsAgainstHumility.Core.Validators;
 public sealed class CrowGameModelValidator: AbstractValidator<CrowGameInputModel>

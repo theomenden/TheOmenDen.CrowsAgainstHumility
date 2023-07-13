@@ -33,7 +33,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.Azure.Cosmos;
 using Microsoft.Identity.Web;
 using TheOmenDen.CrowsAgainstHumility.Identity.Utilities;
 using TheOmenDen.CrowsAgainstHumility.Utilities;
@@ -45,7 +44,6 @@ using TheOmenDen.CrowsAgainstHumility.Core.Engine.Extensions;
 using TheOmenDen.CrowsAgainstHumility.Core.Extensions;
 using TheOmenDen.CrowsAgainstHumility.Core.Models.Settings;
 using TheOmenDen.CrowsAgainstHumility.Core.Validators;
-using TheOmenDen.CrowsAgainstHumility.Pages.Game;
 using TheOmenDen.CrowsAgainstHumility.Twitch.Extensions;
 #endregion
 #region Bootstrap Logger

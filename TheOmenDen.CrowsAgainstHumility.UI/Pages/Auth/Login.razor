@@ -2,6 +2,12 @@
 @page "/login/{ReturnUrl}"
 @using Microsoft.AspNetCore.Authentication
 <SEO Canonical="/login" Title="Crows Against Authority" Description="The login page for Crows Against Humility" />
+<ReCaptcha OnCallback="OnCallbackAsync"
+           OnExpired="OnExpiredAsync"
+           OnError="OnErrorAsync"
+           RenderParameters="_captchaParameters"
+           SiteKey="@ReCaptchaSettings.SiteKey"
+           ExplicitRenderingParameters="null" />
 <Row Height="Height.Is100">
     <Column Height="Height.Is100"
             ColumnSize="ColumnSize.Is8.OnTablet.IsHalf.OnDesktop.IsThird.OnWidescreen"
@@ -16,75 +22,75 @@
                   Border="Border.Is2.Secondary.OnAll.Rounded">
                 <LoadingIndicator @ref="@_loadingIndicator">
                     <ChildContent>
-                    <CardBody Background="Background.Transparent"
-                              TextColor="TextColor.Light">
-                        <Text TextAlignment="TextAlignment.Center" Margin="Margin.Is4.FromTop">
-                            <Heading Size="HeadingSize.Is2" TextAlignment="TextAlignment.Center">
-                                Welcome Back
-                            </Heading>
-                            <Paragraph TextAlignment="TextAlignment.Center">
-                                Sign in to your account to continue
-                            </Paragraph>
-                        </Text>
-                        <Div Margin="Margin.Is4.OnTablet">
-                            <Form>
-                                <Validations @ref="@_validationsRef" Model="@Input" Mode="ValidationMode.Manual">
-                                    <Validation>
-                                        <Field>
-                                            <FieldLabel>Email</FieldLabel>
-                                            <TextEdit @bind-Text="@Input.Email"
-                                                      Role="TextRole.Email"
-                                                      Placeholder="Enter your email">
-                                                <Feedback>
-                                                    <ValidationError/>
-                                                </Feedback>
-                                            </TextEdit>
-                                        </Field>
-                                    </Validation>
-                                    <Validation>
-                                        <Field>
-                                            <FieldLabel>Password</FieldLabel>
-                                            <FieldBody>
-                                                <TextEdit @bind-Text="@Input.Password"
-                                                          Role="TextRole.Password"
-                                                          Placeholder="Enter your password">
+                        <CardBody Background="Background.Transparent"
+                                  TextColor="TextColor.Light">
+                            <Text TextAlignment="TextAlignment.Center" Margin="Margin.Is4.FromTop">
+                                <Heading Size="HeadingSize.Is2" TextAlignment="TextAlignment.Center">
+                                    Welcome Back
+                                </Heading>
+                                <Paragraph TextAlignment="TextAlignment.Center">
+                                    Sign in to your account to continue
+                                </Paragraph>
+                            </Text>
+                            <Div Margin="Margin.Is4.OnTablet">
+                                <Form>
+                                    <Validations @ref="@_validationsRef" Model="@Input" Mode="ValidationMode.Manual">
+                                        <Validation>
+                                            <Field>
+                                                <FieldLabel>Email</FieldLabel>
+                                                <TextEdit @bind-Text="@Input.Email"
+                                                          Role="TextRole.Email"
+                                                          Placeholder="Enter your email">
                                                     <Feedback>
-                                                        <ValidationError/>
+                                                        <ValidationError />
                                                     </Feedback>
                                                 </TextEdit>
-                                            </FieldBody>
+                                            </Field>
+                                        </Validation>
+                                        <Validation>
+                                            <Field>
+                                                <FieldLabel>Password</FieldLabel>
+                                                <FieldBody>
+                                                    <TextEdit @bind-Text="@Input.Password"
+                                                              Role="TextRole.Password"
+                                                              Placeholder="Enter your password">
+                                                        <Feedback>
+                                                            <ValidationError />
+                                                        </Feedback>
+                                                    </TextEdit>
+                                                </FieldBody>
+                                            </Field>
+                                        </Validation>
+                                        <Field>
+                                            <Row>
+                                                <Column>
+                                                    <Check TValue="bool" @bind-Checked="@Input.IsRemembered">Remember Me</Check>
+                                                </Column>
+                                                <Column TextAlignment="TextAlignment.End">
+                                                    <Blazorise.Link To="forgot-password">Forgot Password?</Blazorise.Link>
+                                                </Column>
+                                            </Row>
                                         </Field>
-                                    </Validation>
-                                    <Field>
-                                        <Row>
-                                            <Column>
-                                                <Check TValue="bool" @bind-Checked="@Input.IsRemembered">Remember Me</Check>
-                                            </Column>
-                                            <Column TextAlignment="TextAlignment.End">
-                                                <Blazorise.Link To="forgot-password">Forgot Password?</Blazorise.Link>
-                                            </Column>
-                                        </Row>
-                                    </Field>
-                                    <Field>
-                                        <Button Type="ButtonType.Submit"
-                                                PreventDefaultOnSubmit
-                                                Color="Color.Primary"
-                                                Block
-                                                Clicked="@OnLoginAsync">
-                                            <Icon Name="IconName.UserCheck"/>
-                                            Login
-                                        </Button>
-                                    </Field>
-                                </Validations>
-                                <input type="hidden" name="__RequestVerificationToken" value="@TokenProvider.XSRFToken"/>
-                            </Form>
-                        </Div>
-                    </CardBody>
+                                        <Field>
+                                            <Button Type="ButtonType.Submit"
+                                                    PreventDefaultOnSubmit
+                                                    Color="Color.Primary"
+                                                    Block
+                                                    Clicked="@OnLoginAsync">
+                                                <Icon Name="IconName.UserCheck" />
+                                                Login
+                                            </Button>
+                                        </Field>
+                                    </Validations>
+                                    <input type="hidden" name="__RequestVerificationToken" value="@TokenProvider.XSRFToken" />
+                                </Form>
+                            </Div>
+                        </CardBody>
                     </ChildContent>
                     <IndicatorTemplate>
                         <Animate Animation="Animations.ZoomOutUp" Auto Duration="TimeSpan.FromMilliseconds(700)">
                             <Div>
-                                <SpinKit Type="SpinKitType.Wave" Size="100px"/>
+                                <SpinKit Type="SpinKitType.Wave" Size="100px" />
                             </Div>
                         </Animate>
                     </IndicatorTemplate>
@@ -95,10 +101,10 @@
                 <Row Margin="Margin.Is3.FromTop">
                     <Column ColumnSize="ColumnSize.Is12">
                         <Alert Color="Color.Danger" Margin="Margin.Is3.FromTop" Visible>
-                            <AlertMessage>Invalid Email or Password</AlertMessage>
-                        </Alert>
-                    </Column>
-                </Row>
+                        <AlertMessage>Invalid Email or Password</AlertMessage>
+                    </Alert>
+                </Column>
+            </Row>
             }
             <Row Margin="Margin.Is3.FromTop"
                  Background="Background.Dark"
@@ -140,21 +146,21 @@
                             <Buttons ElementId="#btn-animate">
                                 <Repeater TItem="AuthenticationScheme" Items="_externalProviders">
                                     <Animate Anchor="#btn-animate"
-                                         Auto
-                                         Animation="Animations.FlipUp"
-                                         DelayMilliseconds="500">
+                                          Auto
+                                             Animation="Animations.FlipUp"
+                                             DelayMilliseconds="500">
                                         <Button Color="Color.Primary"
-                                            Border="Border.Rounded"
-                                            Shadow="Shadow.Default"
-                                            Margin="Margin.Is2.OnX"
-                                            Padding="Padding.Is4.OnX"
+                                                Border="Border.Rounded"
+                                                Shadow="Shadow.Default"
+                                                Margin="Margin.Is2.OnX"
+                                                Padding="Padding.Is4.OnX"
                                             Outline
-                                            To="@GetExternalLoginUrl(context)"
-                                            Type="ButtonType.Link">
+                                                To="@GetExternalLoginUrl(context)"
+                                                Type="ButtonType.Link">
                                             <Span Class="visually-hidden">
                                                 Log in using your @context.DisplayName account
                                             </Span>
-                                        <i class="@GetLoginProviderIcon(context.DisplayName)"></i>
+                                            <i class="@GetLoginProviderIcon(context.DisplayName)"></i>
                                         </Button>
                                     </Animate>
                                 </Repeater>

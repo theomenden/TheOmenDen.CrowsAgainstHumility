@@ -1,50 +1,82 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Cards;
-using TheOmenDen.CrowsAgainstHumility.Core.DTO.ViewModels;
-using TheOmenDen.CrowsAgainstHumility.Core.Engine.Engine;
-using TheOmenDen.CrowsAgainstHumility.Core.Transformation.Mappers;
+﻿using System.Collections.Concurrent;
+using Microsoft.AspNetCore.SignalR;
+using TheOmenDen.CrowsAgainstHumility.Core.Providers;
 
 namespace TheOmenDen.CrowsAgainstHumility.Azure.SignalR.Hubs;
-public class CrowGameHub: Hub
+public class CrowGameHub : Hub
 {
-    public const string HubUrl = @"/hubs/crowGame";
-    private static readonly Lazy<PlayerMapper> _mapper = new(() => new());
-    private readonly ICrowGameEngine _crowGameEngine;
-    private readonly ICrowGameHubBroadcaster _eventBroadcaster;
-    
-    public CrowGameHub(ICrowGameEngine crowGameEngine, ICrowGameHubBroadcaster eventBroadcaster)
+    private readonly ConcurrentDictionary<string, CrowGameLobby> _games = new();
+
+    private readonly ICardProvider _cardProvider;
+
+    public CrowGameHub(ICardProvider cardProvider)
     {
-        _crowGameEngine = crowGameEngine;
-        _eventBroadcaster = eventBroadcaster;
+        _cardProvider = cardProvider;
     }
 
-    public Task Connect(Guid serverId, CancellationToken cancellationToken) => Groups.AddToGroupAsync(GetPlayerConnectionId(), serverId.ToString(), cancellationToken);
-    public Task KickPlayer(Guid serverId, string initiatingPlayerConnectionId, int playerPublicIdToRemove, CancellationToken cancellationToken = default) => _crowGameEngine.KickAsync(serverId, initiatingPlayerConnectionId, playerPublicIdToRemove, cancellationToken);
-    public Task PlayCard(Guid serverId, string playerConnectionId, WhiteCard playedCard, CancellationToken cancellationToken = default) => _crowGameEngine.PlayCardAsync(serverId, playerConnectionId, playedCard, cancellationToken);
-    public Task UnPlayCard(Guid serverId, string playerConnectionId, CancellationToken cancellationToken = default) => _crowGameEngine.RedactWhiteCardAsync(serverId, playerConnectionId, cancellationToken);
-    public Task ClearBoard(Guid serverId, CancellationToken cancellationToken = default) => _crowGameEngine.ClearCardsAsync(serverId, GetPlayerConnectionId(), cancellationToken);
-    public Task ShowCards(Guid serverId, CancellationToken cancellationToken = default) => _crowGameEngine.ShowCardsAsync(serverId, GetPlayerConnectionId(), cancellationToken);
-    public async Task<PlayerViewModel> ChangePlayerType(Guid serverId, Core.Engine.Enumerations.GameRoles type, CancellationToken cancellationToken = default)
+    public async Task GetGameState(string groupName, CancellationToken cancellationToken = default)
     {
-        var updatedPlayer = await _crowGameEngine.ChangePlayerTypeAsync(serverId, GetPlayerConnectionId(), type, cancellationToken);
-        return _mapper.Value.PlayerToPlayerViewModelWithPrivateId(updatedPlayer);
-    }
-    public async Task<ServerCreationResult> Create(CrowGameInputViewModel crowGameConfiguration, CancellationToken cancellationToken = default)
-    {
-        var (wasCreated, serverId, validationMessage) = await _crowGameEngine.CreateServerAsync(crowGameConfiguration, cancellationToken);
+        if(_games.TryGetValue(groupName, out var game))
+        {
+            var user = Context.UserIdentifier;
+            var hand = game.Hands[user];
+            var playedCards = game.PlayedCards;
+            var czar = game.CardTsar;
+            var currentBlackCard = game.CurrentBlackCard;
 
-        return new ServerCreationResult(wasCreated, serverId, validationMessage);
-    }
-    public async Task<PlayerViewModel> Join(Guid serverId, Guid recoveryId, string playerName, Core.Engine.Enumerations.GameRoles type, CancellationToken cancellationToken = default)
+            await Clients.Caller.SendAsync("ReceiveGameState", hand, playedCards, czar, currentBlackCard, cancellationToken);
+
+        }
+
+    public async Task JoinGame(string groupName)
     {
-        var joinedPlayer = await _crowGameEngine.JoinRoomAsync(serverId, recoveryId, playerName, GetPlayerConnectionId(), type, cancellationToken);
-        return _mapper.Value.PlayerToPlayerViewModelWithPrivateId(joinedPlayer);
-    }
-    public override async Task OnDisconnectedAsync(Exception? exception)
-    {
-        await _crowGameEngine.SetPlayerAsleepInAllRoomsAsync(GetPlayerConnectionId());
-        await base.OnDisconnectedAsync(exception);
+        var user = Context.UserIdentifier;
+        await Groups.AddToGroupAsync(Context.ConnectionId, groupName, cancellationToken);
+
+        if (!_games.TryGetValue(groupName, out var game))
+        {
+            game = new CrowGame();
+            _games[groupName] = game;
+        }
+
+        game.Hands[user] = DrawWhiteCards(7);
+        await Clients.Group(groupName).SendAsync("ReceiveMessage", game.Hands[user]);
     }
 
-    private string GetPlayerConnectionId() => Context.ConnectionId;
+    public async Task LeaveGame(string groupName, CancellationToken cancellationToken = default)
+    {
+        var await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
+
+        if (_games.TryGetValue(groupName, out var game))
+        {
+            game.Hands.TryRemove(user, out _);
+        }
+
+        await Clients.Group(groupName).SendAsync("ReceiveMessage", user, cancellationToken);
+    }
+}
+
+public async Task ChooseWinnerAsync(string groupName, string winner, CancellationToken cancellationToken = default)
+{
+    var user = Context.UserIdentifier;
+
+    if (_games.TryGetValue(groupName, out var game)
+        && game.CardTsar == user)
+    {
+        game.CardTsar = winner;
+        game.CurrentBlackCard = _cardProvider.DrawBlackCard();
+        game.PlayedCards.Clear();
+
+        foreach (var player in game.Hands.Keys)
+        {
+            var cardsToDraw = 7 - game.Hands[player].Count; //Ensure we always have 7 cards.
+
+            if (cardsToDraw <= 0) continue;
+            var newCards = _cardProvider.DrawWhiteCards(cardsToDraw);
+            game.Hands[player].AddRange(newCards);
+        }
+
+        await Clients.Group(groupName).SendAsync("ReceiveMessage", $"[SERVER]: {winner} won the round. The new Czar is {game.CardTsar}.", cancellationToken);
+    }
+    }
 }
