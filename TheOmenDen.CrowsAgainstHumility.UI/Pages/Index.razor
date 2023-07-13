@@ -19,6 +19,19 @@
         </Row>
     </Authorized>
     <NotAuthorized>
+        <Row Display="Display.Flex">
+            <Column ColumnSize="ColumnSize.IsFull.OnMobile">
+                <Container Fluid
+                           VerticalAlignment="VerticalAlignment.Middle"
+                           TextAlignment="TextAlignment.Center">
+                    <Button Type="ButtonType.Button" Color="Color.Primary"
+                            Border="Border.Is0.Rounded"
+                            Clicked="ShowGameCreator">
+                        Show Game Creator Screen <Icon Name="IconName.Gamepad" />
+                    </Button>
+                </Container>
+            </Column>
+        </Row>
         <Row>
             <Column ColumnSize="ColumnSize.IsHalf.OnWidescreen.Is8.OnTablet.IsFull.OnMobile">
                 <Container Fluid Margin="Margin.Is2.OnY.Is2.OnX.OnDesktop.Is4.OnX.OnTablet.Is5.OnX.OnMobile"

@@ -1,1 +1,15 @@
-﻿
+﻿<Card>
+    <CardBody>
+        <CardTitle>Players:</CardTitle>
+        <ListView TItem="PlayerViewModel" 
+                  Data="@(Enumerable.Empty<PlayerViewModel>())"
+                  TextField="item => item.Username"
+                  ValueField="item => item.Username"
+                  Scrollable
+                  Mode="ListGroupMode.Selectable"
+                  MaxHeight="300px"
+                  Flush>
+
+        </ListView>
+    </CardBody>
+</Card>

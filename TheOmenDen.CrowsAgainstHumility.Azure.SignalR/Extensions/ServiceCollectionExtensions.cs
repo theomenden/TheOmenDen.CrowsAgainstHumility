@@ -1,12 +1,15 @@
 ﻿using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using TheOmenDen.CrowsAgainstHumility.Azure.SignalR.Health;
+using TheOmenDen.CrowsAgainstHumility.Azure.SignalR.Hubs;
 
 namespace TheOmenDen.CrowsAgainstHumility.Azure.SignalR.Extensions;
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddSignalRServices(this IServiceCollection services, string connectionString)
+    public static IServiceCollection  AddCorvidSignalServices(this IServiceCollection services, string connectionString)
     {
+        services.AddSingleton<ICrowGameHubBroadcaster, CrowGameHubBroadcaster>();
+
         services.AddSignalR(options =>
             {
 #if DEBUG

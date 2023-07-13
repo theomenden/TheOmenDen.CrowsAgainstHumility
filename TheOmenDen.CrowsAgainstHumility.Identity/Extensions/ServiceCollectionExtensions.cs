@@ -45,8 +45,7 @@ public static class ServiceCollectionExtensions
             })
             .AddDefaultTokenProviders()
             .AddEntityFrameworkStores<AuthDbContext>()
-            .AddUserStore<ApplicationUserStore>()
-            .AddSignInManager();
+            .AddUserStore<ApplicationUserStore>();
 
         services.Configure<IdentityOptions>(options =>
         {

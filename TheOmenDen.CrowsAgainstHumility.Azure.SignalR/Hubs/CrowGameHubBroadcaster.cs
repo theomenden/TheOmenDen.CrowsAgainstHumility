@@ -2,6 +2,7 @@
 using TheOmenDen.CrowsAgainstHumility.Core.Engine.Engine;
 using TheOmenDen.CrowsAgainstHumility.Core.Engine.Events;
 using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
+using TheOmenDen.CrowsAgainstHumility.Core.Models;
 using TheOmenDen.CrowsAgainstHumility.Core.Providers;
 using TheOmenDen.CrowsAgainstHumility.Core.Results;
 using TheOmenDen.CrowsAgainstHumility.Core.Transformation.Mappers;
@@ -48,12 +49,8 @@ internal sealed class CrowGameHubBroadcaster : ICrowGameHubBroadcaster
     {
         var utcCurrent = _dateTimeProvider.UtcNow;
 
-        var logMessage = new LogMessage
-        {
-            User = e.InitiatingPlayer,
-            Message = e.LogMessage,
-            Timestamp = utcCurrent
-        };
+        var logMessage = new GameMessage(MessageTypes.Empty, e.LogMessage, e.InitiatingPlayer,
+            utcCurrent);
 
         _hubContext.Clients
             .Group(e.ServerId.ToString())

@@ -12,7 +12,7 @@
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.5" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="7.0.5" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="7.0.5" />
-    <PackageReference Include="StackExchange.Redis" Version="2.6.104" />
+    <PackageReference Include="StackExchange.Redis" Version="2.6.111" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
     <PackageReference Include="System.Reactive.Linq" Version="5.0.0" />
   </ItemGroup>

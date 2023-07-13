@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
 namespace TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Identity;
-public class ApplicationUserLogin: IdentityUserLogin<Guid>
+public sealed class ApplicationUserLogin: IdentityUserLogin<Guid>
 {
     public ApplicationUserLogin()
     {

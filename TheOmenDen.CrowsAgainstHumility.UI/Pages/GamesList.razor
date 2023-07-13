@@ -1,69 +1,44 @@
 ﻿@page "/game-list"
 <SEO Title="Games List" Description="This is a list where you can find current games, open lobbies, and create your own game" />
-<Jumbotron Background="Background.Dark"
-           TextColor="TextColor.Light"
-           Padding="Padding.Is3.OnY"
-           Margin="Margin.Is2.OnY.OnDesktop.Is5.OnY.OnTablet"
-           Border="Border.Is2.Secondary.OnAll.Rounded"
-           Shadow="Shadow.Default">
-    <JumbotronTitle>Games in Progress</JumbotronTitle>
-    <JumbotronSubtitle>You can try to join games by code too</JumbotronSubtitle>
-    <Span Display="Display.InlineFlex"
-          TextColor="TextColor.Light"
-          VerticalAlignment="VerticalAlignment.Middle">
-        Don't see your game listed? <Button Background="Background.Warning"
-                                            Shadow="Shadow.Default"
-                                            TextColor="TextColor.Dark"
-                                            Margin="Margin.Is2.FromStart.OnWidescreen.Is3.FromStart.OnTablet"
-                                            Clicked="InstantiateModalAsync">
-            Create a game! <Icon Name="IconName.Gamepad" 
-                                 IconSize="IconSize.Large" />
-        </Button>
-    </Span>
-</Jumbotron>
-
-<Row>
-    <Column ColumnSize="ColumnSize.IsFull">
-        <Div Display="Display.Flex" 
-             Width="Width.Is100" 
-             Height="Height.Is50"
-             Padding="Padding.Is4.OnY">
-        <ListGroup Flush
-                   Margin="Margin.Is2.FromTop.OnDesktop.Is4.FromTop.OnMobile"
-                   ElementId="#crowGameList"
-                   Width="Width.Is100">
-            <Repeater TItem="CrowGameServer" Items="_games">
-                <Animate Anchor="#crowGameList"
-                         Auto
-                         Animation="Animations.FadeUpLeft">
-                    <ListGroupItem Background="Background.Dark"
-                                   TextColor="TextColor.Light"
-                                   Border="Border.Is3.Secondary.OnBottom.Rounded"
-                                   Shadow="Shadow.Default"
-                                   Margin="Margin.Is2.OnWidescreen.Is4.OnMobile"
-                                   Width="Width.Is100">
-                        <Div Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100"
-                             Background="Background.Dark">
-                            <Heading Margin="Margin.Is2.FromBottom.Is2.FromEnd.OnTablet.Is4.FromEnd.OnMobile"
-                                     Size="HeadingSize.Is3"
-                                     TextWeight="TextWeight.Light">
-                                @context.Name
-                            </Heading>
-                            <Small TextColor="TextColor.Muted" TextWeight="TextWeight.Bold">@context.Code</Small>
-                            <Button Color="Color.Primary"
-                                    Margin="Margin.Is2.OnX.OnWidescreen.Is4.FromStart.OnTablet.Is5.FromStart.OnMobile">
-                                Join Game
-                                <sup>
-                                    <Badge Color="Color.Secondary" Pill>
-                                        @context.Players.Count() / 10
-                                    </Badge>
-                                </sup>
-                            </Button>
-                        </Div>
-                    </ListGroupItem>
-                </Animate>
-            </Repeater>
+@*<Container Fluid>
+    <Card Background="Background.Dark" WhiteText>
+        <CardBody>
+            <CardTitle Size="3">
+                Join a Lobby
+            </CardTitle>
+            <CardText>
+                
+            </CardText>
+            <Button Color="Color.Primary" Margin="Margin.Is2.FromTop">
+                Read more <Icon Name="IconName.ArrowRight" />
+            </Button>
+        </CardBody>
+    </Card>
+    <Div Position="Position.Fixed" Background="Background.Danger">
+        <ListGroup>
+            <ListGroupItem Clicked="@(()=>OnContextItemEditClicked(contextCrowGame))">
+                <Icon Name="IconName.PlusCircle" TextColor="TextColor.Secondary" /> Join
+            </ListGroupItem>
         </ListGroup>
-        </Div>
-    </Column>
-</Row>
+    </Div>
+    <DataGrid TItem="CrowGameServerViewModel"
+              RowSelectable="row => row.Item.CurrentSession.CanPlayCards"
+              @bind-SelectedRow="@_selectedGame"
+              RowStyling="@OnRowStyling"
+              SelectedRowStyling="@OnSelectedRowStyling"
+              RowContextMenu="@OnRowContextMenu"
+              RowContextMenuPreventDefault="true"
+              ShowPager
+              CommandMode="DataGridCommandMode.ButtonRow"
+              Responsive>
+        <EmptyTemplate>
+            <Span>
+                No games were found!
+            </Span>
+        </EmptyTemplate>
+        <LoadingTemplate>
+            <Progress @ref="_progressRef" Color="Color.Primary" Max="100" Value="_progress" />
+        </LoadingTemplate>
+    </DataGrid>
+    
+</Container>*@

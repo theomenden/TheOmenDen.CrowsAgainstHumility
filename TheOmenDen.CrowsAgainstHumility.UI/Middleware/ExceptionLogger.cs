@@ -2,7 +2,6 @@
 using System.Net.Mime;
 using System.Net;
 using TheOmenDen.Shared.Enumerations;
-using TheOmenDen.Shared.Extensions;
 using TheOmenDen.Shared.Logging.Templates;
 using TheOmenDen.Shared.Responses.Templates;
 using TheOmenDen.Shared.Responses;

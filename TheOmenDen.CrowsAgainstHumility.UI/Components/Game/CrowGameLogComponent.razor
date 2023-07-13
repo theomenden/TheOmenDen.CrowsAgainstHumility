@@ -1,45 +1,32 @@
-﻿<Card Height="Height.Is100"
-Background ="Background.Dark">
+﻿<Card>
     <CardBody>
-        <CardTitle Size="5">
-            Game History
+        <CardTitle>
+            Game Log
         </CardTitle>
-        <CardSubtitle Size="6"
-            Margin="Margin.Is2.FromBottom"
-            TextColor="TextColor.Muted">
-            @if(_log?.Any() == true)
-            {
-                <Table Borderless Striped Narrow FullWidth Hoverable>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHeaderCell>
-                                Player
-                            </TableHeaderCell>
-                            <TableHeaderCell>
-                                Message
-                            </TableHeaderCell>
-                            <TableHeaderCell>
-                                Timestamp
-                            </TableHeaderCell>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        <Repeater TItem="LogMessage" Items="_log">
-                            <TableRow>
-                                <TableRowCell>
-                                    @context.User
-                                </TableRowCell>
-                                <TableRowCell>
-                                    @context.Message
-                                </TableRowCell>
-                                <TableRowCell>
-                                    @ToLocalTime(@context.Timestamp).ToString("T")
-                                </TableRowCell>
-                            </TableRow>
-                        </Repeater>
-                    </TableBody>
-                </Table>
-            }
+        <CardSubtitle>
+            All game events will be displayed here
         </CardSubtitle>
+        <Row>
+            <Column>
+                <ListView TItem="GameMessage"
+                          Data="_gameLog"
+                          TextField="item => item.Message"
+                          ValueField="item => item.Id.ToString()"
+                          Mode="ListGroupMode.Static"
+                          MaxHeight="300px"
+                          Flush
+                          Scrollable>
+                    <ItemTemplate>
+                        <Div Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100">
+                            <Heading Margin="Margin.Is2.FromBottom">@context.Item.PlayerName</Heading>
+                            <Small>
+                                @($"{context.Item.PlayerName}: {context.Item.CreatedAt:t}")
+                            </Small>
+                        </Div>
+                        <Paragraph Margin="Margin.Is2.FromBottom">@context.Text</Paragraph>
+                    </ItemTemplate>
+                </ListView>
+            </Column>
+        </Row>
     </CardBody>
 </Card>

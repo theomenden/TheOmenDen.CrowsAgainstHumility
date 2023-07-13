@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Logging;
 using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Cards;
-using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Identity;
 using TheOmenDen.CrowsAgainstHumility.Core.DTO.ViewModels;
 using TheOmenDen.CrowsAgainstHumility.Core.Engine.Engine;
 using TheOmenDen.CrowsAgainstHumility.Core.Transformation.Mappers;
@@ -9,6 +7,7 @@ using TheOmenDen.CrowsAgainstHumility.Core.Transformation.Mappers;
 namespace TheOmenDen.CrowsAgainstHumility.Azure.SignalR.Hubs;
 public class CrowGameHub: Hub
 {
+    public const string HubUrl = @"/hubs/crowGame";
     private static readonly Lazy<PlayerMapper> _mapper = new(() => new());
     private readonly ICrowGameEngine _crowGameEngine;
     private readonly ICrowGameHubBroadcaster _eventBroadcaster;

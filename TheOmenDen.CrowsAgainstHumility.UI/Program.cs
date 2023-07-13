@@ -39,8 +39,13 @@ using TheOmenDen.CrowsAgainstHumility.Identity.Utilities;
 using TheOmenDen.CrowsAgainstHumility.Utilities;
 using TheOmenDen.CrowsAgainstHumility;
 using TheOmenDen.CrowsAgainstHumility.Azure.CosmosDb.Extensions;
+using TheOmenDen.CrowsAgainstHumility.Azure.SignalR.Extensions;
+using TheOmenDen.CrowsAgainstHumility.Azure.SignalR.Hubs;
+using TheOmenDen.CrowsAgainstHumility.Core.Engine.Extensions;
+using TheOmenDen.CrowsAgainstHumility.Core.Extensions;
 using TheOmenDen.CrowsAgainstHumility.Core.Models.Settings;
 using TheOmenDen.CrowsAgainstHumility.Core.Validators;
+using TheOmenDen.CrowsAgainstHumility.Pages.Game;
 using TheOmenDen.CrowsAgainstHumility.Twitch.Extensions;
 #endregion
 #region Bootstrap Logger
@@ -206,10 +211,10 @@ try
         options.MaxAge = TimeSpan.FromDays(365);
     });
 
-    var connectionString = builder.Configuration.GetConnectionString("CrowsAgainstAuthority")
-                           ?? throw new InvalidOperationException("Connection string 'UserContextConnection' not found.");
+    var connectionString = builder.Configuration["ConnectionStrings:CrowsAgainstAuthority"]
+                           ?? builder.Configuration["ConnectionStrings:CrowsAgainstHumilityDb"];
 
-    builder.Services.AddCorvidIdentityServices(connectionString);
+    builder.Services.AddCorvidIdentityServices(connectionString!);
 
     builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
     {
@@ -271,9 +276,7 @@ try
     builder.Services.AddSingleton(captchaSettings);
 
     builder.Services.AddTwitchManagementServices(builder.Configuration);
-
-    builder.Services.AddSingleton<CrowGameService>();
-
+    
     builder.Services.AddSingleton<ISessionDetails, SessionDetails>();
 
     builder.Services.AddScoped<CircuitHandler, TrackingCircuitHandler>(sp => new TrackingCircuitHandler(sp.GetRequiredService<ISessionDetails>()));
@@ -281,7 +284,7 @@ try
     builder.Services.AddResponseCaching();
 
     builder.Services.AddSignalR(options => options.MaximumReceiveMessageSize = 104_857_600)
-        .AddMessagePackProtocol();
+        .AddJsonProtocol();
 
     builder.Services.AddBlazoredSessionStorage(options =>
     {
@@ -314,8 +317,10 @@ try
         return sanitizer;
     });
 
-    builder.Services.AddCorvidCosmosServices(builder.Configuration["ConnectionStrings:omenden-cosmosdb"]);
-    
+    builder.Services.AddCorvidProviders();
+    builder.Services.AddCorvidCosmosServices(builder.Configuration);
+    builder.Services.AddCorvidEngineServices();
+    builder.Services.AddCorvidSignalServices(builder.Configuration["Azure:SignalR:ConnectionString"]);
     builder.Services.AddServerSideBlazor()
 #if DEBUG
         .AddCircuitOptions(options => options.DetailedErrors = true)
@@ -375,6 +380,7 @@ try
 
     app.MapControllers();
     app.MapRazorPages();
+    app.MapHub<CrowGameHub>(CrowGameHub.HubUrl);
     app.MapBlazorHub();
     app.MapFallbackToPage("/_Host");
 

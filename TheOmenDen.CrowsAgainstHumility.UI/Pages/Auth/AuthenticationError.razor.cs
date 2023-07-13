@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
-using TheOmenDen.Shared.Enumerations;
+﻿using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
 
 namespace TheOmenDen.CrowsAgainstHumility.Pages.Auth;
 
@@ -10,8 +8,8 @@ public partial class AuthenticationError : ComponentBase
     private string _errorText = String.Empty;
     #endregion
     #region Parameters
-    public String ErrorEnumValue { get; set; }
-    public String Description { get; set; }
+    [Parameter] public string ErrorEnumValue { get; set; } = ExternalAuthenticationResult.Unknown.ToString();
+    [Parameter] public string Description { get; set; }
     #endregion
     #region Injected Members
     [Inject] private NavigationManager NavigationManager { get; init; }
@@ -19,6 +17,8 @@ public partial class AuthenticationError : ComponentBase
     #region Lifecycle Methods
     protected override void OnInitialized()
     {
+        base.OnInitialized();
+
         var (isSuccess, result) = ExternalAuthenticationResult.TryParse(ErrorEnumValue, true);
 
         if (!isSuccess)

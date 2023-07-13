@@ -3,9 +3,10 @@ using TheOmenDen.CrowsAgainstHumility.Azure.SignalR.Constants;
 using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Cards;
 using TheOmenDen.CrowsAgainstHumility.Core.DTO.ViewModels;
 using TheOmenDen.CrowsAgainstHumility.Core.Engine.Enumerations;
+using TheOmenDen.CrowsAgainstHumility.Core.Models;
 
 namespace TheOmenDen.CrowsAgainstHumility.Azure.SignalR.Clients;
-internal sealed class CrowGameHubClient : ICrowGameHubClient
+public sealed class CrowGameHubClient : ICrowGameHubClient
 {
     #region Private Members
     private readonly HubConnection _hubConnection;
@@ -39,10 +40,10 @@ internal sealed class CrowGameHubClient : ICrowGameHubClient
     #region Hub Event Registration Methods
     public void OnSessionUpdated(Action<CrowGameServerViewModel> onSessionUpdatedHandler) => _hubConnection.On(BroadcastChannels.UPDATED, onSessionUpdatedHandler);
     public void OnPlayerKicked(Action<PlayerViewModel> onPlayerKickedHandler) => _hubConnection.On(BroadcastChannels.KICKED, onPlayerKickedHandler);
-    public void OnLogMessageReceived(Action<LogMessage> onLogMessageReceivedHandler) => _hubConnection.On(BroadcastChannels.LOG, onLogMessageReceivedHandler);
+    public void OnLogMessageReceived(Action<GameMessage> onLogMessageReceivedHandler) => _hubConnection.On(BroadcastChannels.LOG, onLogMessageReceivedHandler);
     public void OnGameBoardCleared(Action onGameBoardClearedHandler) => _hubConnection.On(BroadcastChannels.CLEAR, onGameBoardClearedHandler);
     public void OnReconnected(Func<string, Task> reconnectedHandler) => _hubConnection.Reconnected += reconnectedHandler;
-    public void OnReconnecting(Func<Exception, Task> closedHandler) => _hubConnection.Closed += closedHandler;
+    public void OnReconnecting(Func<Exception, Task> reconnectingHandler) => _hubConnection.Reconnecting += reconnectingHandler;
     public void OnClosed(Func<Exception, Task> closedHandler) => _hubConnection.Closed += closedHandler;
     public void OnConnected(Func<Task> connectedHandler) => Connected += connectedHandler;
     #endregion

@@ -71,14 +71,12 @@
     <Content Remove="C:\Users\andre\.nuget\packages\microsoft.azure.cosmos\3.32.3\contentFiles\any\netstandard2.0\ThirdPartyNotice.txt" />
     <Content Remove="C:\Users\andre\.nuget\packages\theomenden.shared.logging\1.11.13.2247\contentFiles\any\net7.0\omenden-jsonapi.ico" />
     <Content Remove="compilerconfig.json" />
-    <Content Remove="Components\Game\CrowGameLogComponent.razor" />
     <Content Remove="wwwroot\js\crowsAgainstSocialsScript.js" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="bundleconfig.json" />
     <None Include="compilerconfig.json" />
-    <None Include="Components\Game\CrowGameLogComponent.razor" />
     <None Include="wwwroot\js\crowsAgainstSocialsScript.js" />
   </ItemGroup>
 
@@ -101,18 +99,19 @@
     <PackageReference Include="Azure.Storage.Blobs" Version="12.16.0" />
     <PackageReference Include="Azure.Storage.Queues" Version="12.14.0" />
     <PackageReference Include="Blazored.SessionStorage" Version="2.3.0" />
-    <PackageReference Include="Blazorise" Version="1.2.2" />
-    <PackageReference Include="Blazorise.Animate" Version="1.2.2" />
-    <PackageReference Include="Blazorise.Bootstrap5" Version="1.2.2" />
-    <PackageReference Include="Blazorise.Components" Version="1.2.2" />
-    <PackageReference Include="Blazorise.FluentValidation" Version="1.2.2" />
-    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.2.2" />
-    <PackageReference Include="Blazorise.LoadingIndicator" Version="1.2.2" />
-    <PackageReference Include="Blazorise.Markdown" Version="1.2.2" />
-    <PackageReference Include="Blazorise.QRCode" Version="1.2.2" />
-    <PackageReference Include="Blazorise.SpinKit" Version="1.2.2" />
-    <PackageReference Include="Blazorise.TreeView" Version="1.2.2" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
+    <PackageReference Include="Blazorise" Version="1.2.3" />
+    <PackageReference Include="Blazorise.Animate" Version="1.2.3" />
+    <PackageReference Include="Blazorise.Bootstrap5" Version="1.2.3" />
+    <PackageReference Include="Blazorise.Components" Version="1.2.3" />
+    <PackageReference Include="Blazorise.DataGrid" Version="1.2.3" />
+    <PackageReference Include="Blazorise.FluentValidation" Version="1.2.3" />
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.2.3" />
+    <PackageReference Include="Blazorise.LoadingIndicator" Version="1.2.3" />
+    <PackageReference Include="Blazorise.Markdown" Version="1.2.3" />
+    <PackageReference Include="Blazorise.QRCode" Version="1.2.3" />
+    <PackageReference Include="Blazorise.SpinKit" Version="1.2.3" />
+    <PackageReference Include="Blazorise.TreeView" Version="1.2.3" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
     <PackageReference Include="Discord.Net" Version="3.10.0" />
     <PackageReference Include="FluentValidation" Version="11.5.2" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
@@ -123,7 +122,6 @@
     <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
-    <PackageReference Include="Microsoft.AspNetCore.Antiforgery" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="6.0.16" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="7.0.5" />
@@ -134,7 +132,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="7.0.5" />
-    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.32.3" />
+    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.33.0" />
     <PackageReference Include="Microsoft.Azure.SignalR" Version="1.21.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.5" />
@@ -227,11 +225,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <UpToDateCheckInput Remove="Components\Game\CrowGameLogComponent.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Components\Game\CrowGameLogComponent.razor" />
     <_ContentIncludedByDefault Remove="wwwroot\js\crowsAgainstSocialsScript.js" />
   </ItemGroup>
 </Project>

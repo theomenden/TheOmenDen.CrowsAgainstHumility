@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using TheOmenDen.CrowsAgainstHumility.Azure.CosmosDb.Extensions;
 using TheOmenDen.CrowsAgainstHumility.Core.DTO.ViewModels;
 using TheOmenDen.CrowsAgainstHumility.Core.Engine.Game;
@@ -22,21 +23,24 @@ internal sealed class CosmosLobbyRepository: IServerStore
     private readonly Container _container;
 
     public CosmosLobbyRepository(CosmosClient client,
-        CosmosDbSettings settings,
+        IOptions<CosmosDbSettings> cosmosSettings,
         ILogger<CosmosLobbyRepository> logger,
         IGuidProvider? guidProvider,
         IDateTimeProvider? dateTimeProvider)
     {
+        var settings = cosmosSettings.Value;
+
         _logger = logger;
-        _container = client.GetContainer(settings.DatabaseName, settings.ContainerName) ?? throw new ArgumentException(nameof(_container));
+        _container = client.GetContainer(settings.DatabaseName, settings.ContainerName);
         _servers = new ConcurrentDictionary<Guid, CrowGameServer>();
         _guidProvider = guidProvider ?? GuidProvider.Default;
         _dateTimeProvider = dateTimeProvider ?? DateTimeProvider.Default;
+
+        ArgumentNullException.ThrowIfNull(_container);
     }
 
     public async Task<CrowGameServer> CreateServerAsync(CreateCrowGameViewModel configuration, CancellationToken cancellationToken = default)
     {
-
         var newServerId = _guidProvider.NewGuid();
         
         var newServer = new CrowGameServer(newServerId,configuration.Name,configuration.Code, new ConcurrentDictionary<string, Player>(), new CrowGameSession(configuration.DesiredCards), _dateTimeProvider.UtcNow);

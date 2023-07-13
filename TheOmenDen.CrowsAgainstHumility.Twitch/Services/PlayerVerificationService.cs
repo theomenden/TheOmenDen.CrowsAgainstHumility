@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
+using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Settings;
 using TwitchLib.Api;
+using TwitchLib.Api.Core;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
 namespace TheOmenDen.CrowsAgainstHumility.Twitch.Services;
@@ -17,10 +19,14 @@ internal sealed class PlayerVerificationService : IPlayerVerificationService
 
     private readonly ILogger<PlayerVerificationService> _logger;
 
-    public PlayerVerificationService(TwitchAPI twitchApi, ILogger<PlayerVerificationService> logger)
+    public PlayerVerificationService(ITwitchStrings twitchConfig,ILogger<PlayerVerificationService> logger)
     {
         _logger = logger;
-        _twitchApi = twitchApi;
+        _twitchApi = new TwitchAPI(settings: new ApiSettings
+        {
+            ClientId = twitchConfig.ClientId,
+            Secret = twitchConfig.Key
+        });
     }
 
     public async ValueTask<String> GetProfileImageUrlAsync(string username,
@@ -28,7 +34,10 @@ internal sealed class PlayerVerificationService : IPlayerVerificationService
     {
         await GenerateAccessTokenAsync();
 
-        var userAccount = await _twitchApi!.Helix.Users.GetUsersAsync(null, new List<String> { username });
+        var userAccount = await _twitchApi!
+            .Helix
+            .Users
+            .GetUsersAsync(null, new List<String> { username });
 
         return userAccount.Users[0].ProfileImageUrl;
     }

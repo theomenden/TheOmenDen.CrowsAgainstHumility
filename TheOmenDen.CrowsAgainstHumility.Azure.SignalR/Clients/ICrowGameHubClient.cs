@@ -1,6 +1,7 @@
 ﻿using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Cards;
 using TheOmenDen.CrowsAgainstHumility.Core.DTO.ViewModels;
 using TheOmenDen.CrowsAgainstHumility.Core.Engine.Enumerations;
+using TheOmenDen.CrowsAgainstHumility.Core.Models;
 
 namespace TheOmenDen.CrowsAgainstHumility.Azure.SignalR.Clients;
 
@@ -25,10 +26,10 @@ public interface ICrowGameHubClient
     Task<PlayerViewModel> ChangePlayerType(Guid serverId, GameRoles newType, CancellationToken cancellationToken = default);
     void OnSessionUpdated(Action<CrowGameServerViewModel> onSessionUpdatedHandler);
     void OnPlayerKicked(Action<PlayerViewModel> onPlayerKickedHandler);
-    void OnLogMessageReceived(Action<LogMessage> onLogMessageReceivedHandler);
+    void OnLogMessageReceived(Action<GameMessage> onLogMessageReceivedHandler);
     void OnGameBoardCleared(Action onGameBoardClearedHandler);
     void OnReconnected(Func<string, Task> reconnectedHandler);
-    void OnReconnecting(Func<Exception, Task> closedHandler);
+    void OnReconnecting(Func<Exception, Task> reconnectingHandler);
     void OnClosed(Func<Exception, Task> closedHandler);
     void OnConnected(Func<Task> connectedHandler);
 }

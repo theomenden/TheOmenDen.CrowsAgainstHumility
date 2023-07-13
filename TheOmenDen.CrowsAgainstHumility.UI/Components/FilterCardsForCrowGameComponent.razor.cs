@@ -1,7 +1,4 @@
-﻿using NuGet.Packaging;
-using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
-
-namespace TheOmenDen.CrowsAgainstHumility.Components;
+﻿namespace TheOmenDen.CrowsAgainstHumility.Components;
 
 public partial class FilterCardsForCrowGameComponent: ComponentBase
 {
@@ -13,7 +10,7 @@ public partial class FilterCardsForCrowGameComponent: ComponentBase
 
     private string _filterText;
 
-    private readonly ICollection<String> _filterConditions = new List<String>();
+    private readonly List<String> _filterConditions = new List<String>();
     
     private Task OnTextChangedAsync(String changedText)
     {

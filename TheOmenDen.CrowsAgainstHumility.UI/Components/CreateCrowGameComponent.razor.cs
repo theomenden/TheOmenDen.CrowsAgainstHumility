@@ -1,12 +1,18 @@
 ﻿using Blazorise;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.JSInterop;
+using TheOmenDen.CrowsAgainstHumility.Azure.SignalR.Clients;
 using TheOmenDen.CrowsAgainstHumility.Core.Constants;
+using TheOmenDen.CrowsAgainstHumility.Core.DTO.Models;
+using TheOmenDen.CrowsAgainstHumility.Core.DTO.ViewModels;
 using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
 using TheOmenDen.CrowsAgainstHumility.Core.Interfaces.Services;
+using TheOmenDen.CrowsAgainstHumility.Core.Providers;
 using TheOmenDen.CrowsAgainstHumility.Services;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
-#nullable disable
 namespace TheOmenDen.CrowsAgainstHumility.Components;
 
 public partial class CreateCrowGameComponent : ComponentBase, IDisposable, IAsyncDisposable
@@ -16,6 +22,10 @@ public partial class CreateCrowGameComponent : ComponentBase, IDisposable, IAsyn
     [CascadingParameter] public Task<AuthenticationState> AuthenticationStateTask { get; set; }
     #endregion
     #region Injected Services
+    [Inject] private NavigationManager NavigationManager { get; init; }
+
+    [Inject] private IJSRuntime JsRuntime { get; init; }
+
     [Inject] private IMessageService MessageService { get; init; }
 
     [Inject] private IModalService ModalService { get; init; }
@@ -35,11 +45,17 @@ public partial class CreateCrowGameComponent : ComponentBase, IDisposable, IAsyn
     private readonly List<User> _players = new(10);
     #endregion
     #region Crow Game Input Models
+    private ServerCreationResult _creationResult;
+    private ICrowGameHubClient _hubClient;
+    private CrowGameInputModel _gameInputModel = new();
+    private int _roundtimeInMinutes = 15;
+    private int _awesomePointsToWin = 10;
+    private int _chosenGameRule = 1;
     #endregion
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-    }
+    #region public Properties
+    public string CreatedLobbyAddress { get; set; } = String.Empty;
+    public bool HasBeenCreated { get; set; }
+    #endregion
 
     #region Pack Manipulation Methods
     private int GetEstimatedWhiteCardCount()
@@ -92,7 +108,24 @@ public partial class CreateCrowGameComponent : ComponentBase, IDisposable, IAsyn
         return Task.CompletedTask;
     }
     #endregion
+    #region LifeCycle Methods
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
 
+        await using var connection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/hubs/crowGame"))
+            .WithAutomaticReconnect()
+            .Build();
+
+        await connection.StartAsync();
+
+        _hubClient = new CrowGameHubClient(connection);
+
+        _gameInputModel.GameCode = LobbyCodeProvider.GenerateGameCodeFromComponent(nameof(CreateCrowGameComponent));
+    }
+
+    #endregion
     #region  Twitch Methods
     private async Task AddPlayerToListAsync()
     {
@@ -127,7 +160,7 @@ public partial class CreateCrowGameComponent : ComponentBase, IDisposable, IAsyn
             return "fa-brands fa-twitch";
         }
 
-        return String.Equals(broadcasterType,BroadcasterTypes.Affiliate.ToString(), StringComparison.InvariantCultureIgnoreCase)
+        return String.Equals(broadcasterType, BroadcasterTypes.Affiliate.ToString(), StringComparison.InvariantCultureIgnoreCase)
             ? "fa-certificate"
             : "fa-badge-check";
     }
@@ -140,7 +173,7 @@ public partial class CreateCrowGameComponent : ComponentBase, IDisposable, IAsyn
             return "#fff";
         }
 
-        return String.Equals(broadcasterType, BroadcasterTypes.Partner.ToString(), StringComparison.InvariantCultureIgnoreCase) 
+        return String.Equals(broadcasterType, BroadcasterTypes.Partner.ToString(), StringComparison.InvariantCultureIgnoreCase)
             ? $"color: #{TwitchColorCodes.MAIN_COLOR};"
             : $"color: #{TwitchColorCodes.ACCENT_COLOR};";
     }
@@ -154,6 +187,27 @@ public partial class CreateCrowGameComponent : ComponentBase, IDisposable, IAsyn
     #endregion
     private Task OnCancelClickedAsync()
     => ModalService.Hide();
+
+    private async Task OnCrowGameCreated()
+    {
+        var creationResult = await _hubClient.CreateServer(_packs);
+        _creationResult = creationResult;
+
+        if (_creationResult.WasCreated)
+        {
+            var uri = NavigationManager.ToAbsoluteUri($"/lobby/{_creationResult.ServerId}");
+
+            CreatedLobbyAddress = uri.AbsoluteUri;
+            HasBeenCreated = true;
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task CopyServerAddressToClipboard() => await JsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", CreatedLobbyAddress);
+
+    private GameRules GetChosenGameRule() => GameRules.ParseFromValueOrDefault(_chosenGameRule, GameRules.Standard);
+
     #region Disposal Methods
     public void Dispose()
     {

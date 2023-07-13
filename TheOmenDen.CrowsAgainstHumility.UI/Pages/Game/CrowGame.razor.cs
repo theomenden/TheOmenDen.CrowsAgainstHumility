@@ -1,9 +1,12 @@
-﻿namespace TheOmenDen.CrowsAgainstHumility.Pages.Game;
+﻿using TheOmenDen.CrowsAgainstHumility.Azure.SignalR.Clients;
+using TheOmenDen.CrowsAgainstHumility.Core.DTO.Enums;
+using TheOmenDen.CrowsAgainstHumility.Core.DTO.ViewModels;
+using TheOmenDen.CrowsAgainstHumility.Core.Engine.Enumerations;
+using TheOmenDen.CrowsAgainstHumility.Storage;
 
-public partial class CrowGame: IDisposable
+namespace TheOmenDen.CrowsAgainstHumility.Pages.Game;
+
+public partial class CrowGame: ComponentBase
 {
-
-    public void Dispose()
-    {
-    }
+    
 }
