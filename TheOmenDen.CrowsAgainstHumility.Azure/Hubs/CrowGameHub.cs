@@ -25,36 +25,37 @@ public class CrowGameHub : Hub
             var czar = game.CardTsar;
             var currentBlackCard = game.CurrentBlackCard;
 
-            await Clients.Caller.SendAsync("ReceiveGameState", hand, playedCards, czar, currentBlackCard, cancellationToken);
+            await Clients.Caller.SendAsync("ReceiveGameState", hand, playedCards, czar, currentBlackCard,
+                cancellationToken);
 
         }
+    }
 
-        public async Task JoinGame(string groupName)
+    public async Task JoinGame(string groupName)
+    {
+        var user = Context.UserIdentifier;
+        await Groups.AddToGroupAsync(Context.ConnectionId, groupName, cancellationToken);
+
+        if (!_games.TryGetValue(groupName, out var game))
         {
-            var user = Context.UserIdentifier;
-            await Groups.AddToGroupAsync(Context.ConnectionId, groupName, cancellationToken);
-
-            if (!_games.TryGetValue(groupName, out var game))
-            {
-                game = new CrowGame();
-                _games[groupName] = game;
-            }
-
-            game.Hands[user] = DrawWhiteCards(7);
-            await Clients.Group(groupName).SendAsync("ReceiveMessage", game.Hands[user]);
+            game = new CrowGame();
+            _games[groupName] = game;
         }
 
-        public async Task LeaveGame(string groupName, CancellationToken cancellationToken = default)
+        game.Hands[user] = DrawWhiteCards(7);
+        await Clients.Group(groupName).SendAsync("ReceiveMessage", game.Hands[user]);
+    }
+
+    public async Task LeaveGame(string groupName, CancellationToken cancellationToken = default)
+    {
+        await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
+
+        if (_games.TryGetValue(groupName, out var game))
         {
-            var await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
-
-            if (_games.TryGetValue(groupName, out var game))
-            {
-                game.Hands.TryRemove(user, out _);
-            }
-
-            await Clients.Group(groupName).SendAsync("ReceiveMessage", user, cancellationToken);
+            game.Hands.TryRemove(user, out _);
         }
+
+        await Clients.Group(groupName).SendAsync("ReceiveMessage", user, cancellationToken);
     }
 
     public async Task ChooseWinnerAsync(string groupName, string winner, CancellationToken cancellationToken = default)

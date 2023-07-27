@@ -74,7 +74,6 @@
 		<Content Remove="C:\Users\andre\.nuget\packages\microsoft.azure.cosmos\3.32.3\contentFiles\any\netstandard2.0\ThirdPartyNotice.txt" />
 		<Content Remove="C:\Users\andre\.nuget\packages\theomenden.shared.logging\1.11.13.2247\contentFiles\any\net7.0\omenden-jsonapi.ico" />
 		<Content Remove="compilerconfig.json" />
-		<Content Remove="wwwroot\js\crowsAgainstSocialsScript.js" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -210,17 +209,6 @@
 
 	<ItemGroup>
 		<Folder Include="Storage\UseCases\" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Update="wwwroot\js\scriptLoader.min.js">
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-		</Content>
-	</ItemGroup>
-
-	<ItemGroup>
-		<_ContentIncludedByDefault Remove="wwwroot\js\crowsAgainstSocialsScript.js" />
 	</ItemGroup>
 
 	<ItemGroup>

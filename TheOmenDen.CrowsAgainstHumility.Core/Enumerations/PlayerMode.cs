@@ -1,6 +1,6 @@
 ﻿using TheOmenDen.Shared.Enumerations;
 
-namespace TheOmenDen.CrowsAgainstHumility.Core.DTO.Enums;
+namespace TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
 
 public sealed record PlayerMode : EnumerationBase<PlayerMode>
 {
@@ -8,6 +8,6 @@ public sealed record PlayerMode : EnumerationBase<PlayerMode>
     {
     }
 
-    public static readonly PlayerMode Awake = new (nameof(Awake), 1);
-    public static readonly PlayerMode Asleep = new (nameof(Asleep), 2);
+    public static readonly PlayerMode Awake = new(nameof(Awake), 1);
+    public static readonly PlayerMode Asleep = new(nameof(Asleep), 2);
 }

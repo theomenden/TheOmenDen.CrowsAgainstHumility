@@ -1,4 +1,4 @@
-﻿using TheOmenDen.CrowsAgainstHumility.Core.DTO.Enums;
+﻿using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
 
 namespace TheOmenDen.CrowsAgainstHumility.Core.DTO.ViewModels;
 public sealed class PlayerViewModel

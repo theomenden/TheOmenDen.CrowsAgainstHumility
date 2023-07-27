@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
+﻿using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace TheOmenDen.CrowsAgainstHumility.Azure.Health;
 internal class SignalRHealthCheck : IHealthCheck
@@ -7,7 +8,7 @@ internal class SignalRHealthCheck : IHealthCheck
 
     public SignalRHealthCheck(Func<HubConnection> hubConnectionBuilder)
     {
-        Guard.FromNull(hubConnectionBuilder, nameof(hubConnectionBuilder));
+        Shared.Guards.Guard.FromNull(hubConnectionBuilder, nameof(hubConnectionBuilder));
         _hubConnectionBuilder = hubConnectionBuilder;
     }
 

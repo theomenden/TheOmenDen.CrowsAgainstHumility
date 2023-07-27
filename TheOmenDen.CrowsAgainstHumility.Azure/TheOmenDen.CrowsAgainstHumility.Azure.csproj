@@ -24,6 +24,7 @@
     <PackageReference Include="Azure.Storage.Common" Version="12.16.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.21.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client.Core" Version="7.0.9" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.35.2" />
     <PackageReference Include="Microsoft.Azure.SignalR" Version="1.21.5" />
     <PackageReference Include="Microsoft.Azure.SignalR.Protocols" Version="1.21.5" />

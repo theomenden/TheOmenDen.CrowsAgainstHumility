@@ -1,6 +1,6 @@
 ﻿using TheOmenDen.Shared.Enumerations;
 
-namespace TheOmenDen.CrowsAgainstHumility.Core.DTO.Enums;
+namespace TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
 
 public sealed record GameRole : EnumerationBase<GameRole>
 {

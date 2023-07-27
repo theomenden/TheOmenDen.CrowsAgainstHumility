@@ -10,8 +10,8 @@ internal class CosmosDbHealthCheck : IHealthCheck
 
     public CosmosDbHealthCheck(CosmosClient client, CosmosDbHealthCheckOptions options)
     {
-        Guard.FromNull(client, nameof(client));
-        Guard.FromNull(options, nameof(options));
+        Shared.Guards.Guard.FromNull(client, nameof(client));
+        Shared.Guards.Guard.FromNull(options, nameof(options));
         _client = client;
         _options = options;
     }
@@ -27,15 +27,17 @@ internal class CosmosDbHealthCheck : IHealthCheck
                 var database = _client.GetDatabase(_options.DatabaseId);
                 await database.ReadAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
-                if (_options.ContainerIds?.Any() is true)
+                if (_options.ContainerIds?.Any() is not true)
                 {
-                    foreach (var containerId in _options.ContainerIds)
-                    {
-                        await database
-                            .GetContainer(containerId)
-                            .ReadContainerAsync(cancellationToken: cancellationToken)
-                            .ConfigureAwait(false);
-                    }
+                    return HealthCheckResult.Healthy();
+                }
+
+                foreach (var containerId in _options.ContainerIds)
+                {
+                    await database
+                        .GetContainer(containerId)
+                        .ReadContainerAsync(cancellationToken: cancellationToken)
+                        .ConfigureAwait(false);
                 }
             }
             return HealthCheckResult.Healthy();
