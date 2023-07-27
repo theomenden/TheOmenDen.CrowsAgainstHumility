@@ -7,10 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Requests\**" />
+    <EmbeddedResource Remove="Requests\**" />
+    <None Remove="Requests\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.6.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.21.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.9" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
@@ -25,10 +30,6 @@
     <PackageReference Include="TwitchLib.Api.Core.Interfaces" Version="3.9.0" />
     <PackageReference Include="TwitchLib.Api.Helix" Version="3.9.0" />
     <PackageReference Include="TwitchLib.PubSub" Version="3.2.6" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Core.DAO\TheOmenDen.CrowsAgainstHumility.Core.DAO.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,7 +49,6 @@
 
   <ItemGroup>
     <Folder Include="Engine\Hands\" />
-    <Folder Include="Requests\" />
   </ItemGroup>
 
 </Project>

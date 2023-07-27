@@ -1,7 +1,7 @@
 ﻿using Blazorise.LoadingIndicator;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.SignalR.Client;
-using TheOmenDen.CrowsAgainstHumility.Azure.SignalR.Clients;
+using TheOmenDen.CrowsAgainstHumility.Azure.Clients;
 using TheOmenDen.CrowsAgainstHumility.Core.DTO.Enums;
 using TheOmenDen.CrowsAgainstHumility.Core.Engine.Enumerations;
 using TheOmenDen.CrowsAgainstHumility.Core.Engine.Stores;
@@ -30,14 +30,14 @@ public partial class JoinCrowGameComponent : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-       
+
         var connection = new HubConnectionBuilder()
             .WithUrl(NavigationManager.ToAbsoluteUri("/hubs/crowGame"))
             .WithAutomaticReconnect()
             .Build();
 
         _hubClient = new CrowGameHubClient(connection);
-        
+
 
         _authState ??= await AuthenticationStateTask;
 

@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <TypeScriptTarget>ESNext</TypeScriptTarget>
-  </PropertyGroup>
+	<PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<TypeScriptTarget>ESNext</TypeScriptTarget>
+	</PropertyGroup>
 
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <TypeScriptTarget>ESNext</TypeScriptTarget>
-  </PropertyGroup>
+	<PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<TypeScriptTarget>ESNext</TypeScriptTarget>
+	</PropertyGroup>
 
 	<PropertyGroup>
 		<Deterministic>False</Deterministic>
@@ -16,223 +16,219 @@
 		<SupportedPlatform Include="browser" />
 		<Content Update="assets\**" Pack="false" />
 	</ItemGroup>
-  <PropertyGroup>
-	<Date>$([System.DateTime]::Now.ToString("1.MM.dd.HHss"))</Date>
-	<AssemblyFileVersionAttribute>[assembly:System.Reflection.AssemblyFileVersion("$(Date)")]</AssemblyFileVersionAttribute>
-	  <AssemblyCompanyAttribute>[assembly:System.Reflection.AssemblyCompany("The Omen Den L.L.C.")]</AssemblyCompanyAttribute>
-	  <AssemblyTitleAttribute>[assembly:System.Reflection.AssemblyTitle("Crows Against Humility")]</AssemblyTitleAttribute>
-	  <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Title>Crows Against Humility</Title>
-    <Company>The Omen Den L.L.C.</Company>
-    <Product>Crows Against Humility</Product>
-    <Description>A simple client for the popular Cards Against Humanity game, written in Blazor - not affiliated at all with the official Cards Against Humanity.</Description>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/theomenden/TheOmenDen.CrowsAgainstHumility</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageTags>blazor;csharp;theomenden;cardsagainsthumanity;crows</PackageTags>
-    <PackageLicenseExpression>CC-BY-NC-SA-4.0</PackageLicenseExpression>
-    <SignAssembly>False</SignAssembly>
-    <UserSecretsId>25d93bbd-3c81-4aed-82e2-36899ef356a2</UserSecretsId>
-    <ErrorReport>prompt</ErrorReport>
-    <Copyright>2022</Copyright>
-    <PackageProjectUrl>https://crowsagainsthumility.app</PackageProjectUrl>
-    <ApplicationInsightsResourceId>/subscriptions/394c7b7c-e40b-45b8-9e4c-2219a70a83e7/resourceGroups/TheOmenDenCrowsAgainstHumilityResourceGroup/providers/microsoft.insights/components/crowsagainsthumility</ApplicationInsightsResourceId>
-  </PropertyGroup>
-	
+	<PropertyGroup>
+		<Date>$([System.DateTime]::Now.ToString("1.MM.dd.HHss"))</Date>
+		<AssemblyFileVersionAttribute>[assembly:System.Reflection.AssemblyFileVersion("$(Date)")]</AssemblyFileVersionAttribute>
+		<AssemblyCompanyAttribute>[assembly:System.Reflection.AssemblyCompany("The Omen Den L.L.C.")]</AssemblyCompanyAttribute>
+		<AssemblyTitleAttribute>[assembly:System.Reflection.AssemblyTitle("Crows Against Humility")]</AssemblyTitleAttribute>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Title>Crows Against Humility</Title>
+		<Company>The Omen Den L.L.C.</Company>
+		<Product>Crows Against Humility</Product>
+		<Description>A simple client for the popular Cards Against Humanity game, written in Blazor - not affiliated at all with the official Cards Against Humanity.</Description>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryUrl>https://github.com/theomenden/TheOmenDen.CrowsAgainstHumility</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>blazor;csharp;theomenden;cardsagainsthumanity;crows</PackageTags>
+		<PackageLicenseExpression>CC-BY-NC-SA-4.0</PackageLicenseExpression>
+		<SignAssembly>False</SignAssembly>
+		<UserSecretsId>25d93bbd-3c81-4aed-82e2-36899ef356a2</UserSecretsId>
+		<ErrorReport>prompt</ErrorReport>
+		<Copyright>2022</Copyright>
+		<PackageProjectUrl>https://crowsagainsthumility.app</PackageProjectUrl>
+		<ApplicationInsightsResourceId>/subscriptions/394c7b7c-e40b-45b8-9e4c-2219a70a83e7/resourceGroups/TheOmenDenCrowsAgainstHumilityResourceGroup/providers/microsoft.insights/components/crowsagainsthumility</ApplicationInsightsResourceId>
+	</PropertyGroup>
+
 	<Target Name="GenerateVersionInfo" BeforeTargets="BeforeBuild">
 		<WriteLinesToFile File="Properties\VersionInfo.cs" Lines="$(AssemblyFileVersionAttribute)$([System.Environment]::NewLine)$(AssemblyCompanyAttribute)$([System.Environment]::NewLine)$(AssemblyTitleAttribute)" Overwrite="true"></WriteLinesToFile>
 	</Target>
 
 	<ItemGroup>
-    <Compile Remove="TheOmenDen.CrowsAgainstHumility.Core\**" />
-    <Compile Remove="TheOmenDen.CrowsAgainstHumility.Data\**" />
-    <Compile Remove="TheOmenDen.CrowsAgainstHumility.Mediator\**" />
-    <Compile Remove="TheOmenDen.CrowsAgainstHumility.Services\**" />
-    <Compile Remove="TheOmenDen.CrowsAgainstHumility.Twitch\**" />
-    <Content Remove="TheOmenDen.CrowsAgainstHumility.Core\**" />
-    <Content Remove="TheOmenDen.CrowsAgainstHumility.Data\**" />
-    <Content Remove="TheOmenDen.CrowsAgainstHumility.Mediator\**" />
-    <Content Remove="TheOmenDen.CrowsAgainstHumility.Services\**" />
-    <Content Remove="TheOmenDen.CrowsAgainstHumility.Twitch\**" />
-    <EmbeddedResource Remove="TheOmenDen.CrowsAgainstHumility.Core\**" />
-    <EmbeddedResource Remove="TheOmenDen.CrowsAgainstHumility.Data\**" />
-    <EmbeddedResource Remove="TheOmenDen.CrowsAgainstHumility.Mediator\**" />
-    <EmbeddedResource Remove="TheOmenDen.CrowsAgainstHumility.Services\**" />
-    <EmbeddedResource Remove="TheOmenDen.CrowsAgainstHumility.Twitch\**" />
-    <None Remove="TheOmenDen.CrowsAgainstHumility.Core\**" />
-    <None Remove="TheOmenDen.CrowsAgainstHumility.Data\**" />
-    <None Remove="TheOmenDen.CrowsAgainstHumility.Mediator\**" />
-    <None Remove="TheOmenDen.CrowsAgainstHumility.Services\**" />
-    <None Remove="TheOmenDen.CrowsAgainstHumility.Twitch\**" />
-    <TypeScriptCompile Remove="TheOmenDen.CrowsAgainstHumility.Twitch\**" />
-  </ItemGroup>
+		<Compile Remove="TheOmenDen.CrowsAgainstHumility.Core\**" />
+		<Compile Remove="TheOmenDen.CrowsAgainstHumility.Data\**" />
+		<Compile Remove="TheOmenDen.CrowsAgainstHumility.Mediator\**" />
+		<Compile Remove="TheOmenDen.CrowsAgainstHumility.Services\**" />
+		<Compile Remove="TheOmenDen.CrowsAgainstHumility.Twitch\**" />
+		<Content Remove="TheOmenDen.CrowsAgainstHumility.Core\**" />
+		<Content Remove="TheOmenDen.CrowsAgainstHumility.Data\**" />
+		<Content Remove="TheOmenDen.CrowsAgainstHumility.Mediator\**" />
+		<Content Remove="TheOmenDen.CrowsAgainstHumility.Services\**" />
+		<Content Remove="TheOmenDen.CrowsAgainstHumility.Twitch\**" />
+		<EmbeddedResource Remove="TheOmenDen.CrowsAgainstHumility.Core\**" />
+		<EmbeddedResource Remove="TheOmenDen.CrowsAgainstHumility.Data\**" />
+		<EmbeddedResource Remove="TheOmenDen.CrowsAgainstHumility.Mediator\**" />
+		<EmbeddedResource Remove="TheOmenDen.CrowsAgainstHumility.Services\**" />
+		<EmbeddedResource Remove="TheOmenDen.CrowsAgainstHumility.Twitch\**" />
+		<None Remove="TheOmenDen.CrowsAgainstHumility.Core\**" />
+		<None Remove="TheOmenDen.CrowsAgainstHumility.Data\**" />
+		<None Remove="TheOmenDen.CrowsAgainstHumility.Mediator\**" />
+		<None Remove="TheOmenDen.CrowsAgainstHumility.Services\**" />
+		<None Remove="TheOmenDen.CrowsAgainstHumility.Twitch\**" />
+		<TypeScriptCompile Remove="TheOmenDen.CrowsAgainstHumility.Twitch\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Content Remove="bundleconfig.json" />
-    <Content Remove="C:\Users\andre\.nuget\packages\microsoft.azure.cosmos\3.32.3\contentFiles\any\netstandard2.0\ThirdPartyNotice.txt" />
-    <Content Remove="C:\Users\andre\.nuget\packages\theomenden.shared.logging\1.11.13.2247\contentFiles\any\net7.0\omenden-jsonapi.ico" />
-    <Content Remove="compilerconfig.json" />
-    <Content Remove="wwwroot\js\crowsAgainstSocialsScript.js" />
-  </ItemGroup>
+	<ItemGroup>
+		<Content Remove="bundleconfig.json" />
+		<Content Remove="C:\Users\andre\.nuget\packages\microsoft.azure.cosmos\3.32.3\contentFiles\any\netstandard2.0\ThirdPartyNotice.txt" />
+		<Content Remove="C:\Users\andre\.nuget\packages\theomenden.shared.logging\1.11.13.2247\contentFiles\any\net7.0\omenden-jsonapi.ico" />
+		<Content Remove="compilerconfig.json" />
+		<Content Remove="wwwroot\js\crowsAgainstSocialsScript.js" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="bundleconfig.json" />
-    <None Include="compilerconfig.json" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="bundleconfig.json" />
+		<None Include="compilerconfig.json" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AspNet.Security.OAuth.Discord" Version="7.0.2" />
-    <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="7.0.2" />
-    <PackageReference Include="AspNet.Security.OAuth.Patreon" Version="7.0.2" />
-    <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="7.0.2" />
-    <PackageReference Include="AspNetCore.HealthChecks.AzureStorage" Version="6.1.2" />
-    <PackageReference Include="AspNetCore.HealthChecks.CosmosDb" Version="6.1.0" />
-    <PackageReference Include="AspNetCore.HealthChecks.Publisher.ApplicationInsights" Version="6.0.2" />
-    <PackageReference Include="AspNetCore.HealthChecks.SignalR" Version="6.0.2" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.5" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.Core" Version="6.0.5" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.SqlServer.Storage" Version="6.0.5" />
-    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
-    <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Blobs" Version="1.3.2" />
-    <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Keys" Version="1.2.2" />
-    <PackageReference Include="Azure.Identity" Version="1.9.0" />
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.17.0" />
-    <PackageReference Include="Azure.Storage.Queues" Version="12.15.0" />
-    <PackageReference Include="Blazored.SessionStorage" Version="2.3.0" />
-    <PackageReference Include="Blazorise" Version="1.2.4" />
-    <PackageReference Include="Blazorise.Animate" Version="1.2.4" />
-    <PackageReference Include="Blazorise.Bootstrap5" Version="1.2.4" />
-    <PackageReference Include="Blazorise.Components" Version="1.2.4" />
-    <PackageReference Include="Blazorise.DataGrid" Version="1.2.4" />
-    <PackageReference Include="Blazorise.FluentValidation" Version="1.2.4" />
-    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.2.4" />
-    <PackageReference Include="Blazorise.LoadingIndicator" Version="1.2.4" />
-    <PackageReference Include="Blazorise.Markdown" Version="1.2.4" />
-    <PackageReference Include="Blazorise.QRCode" Version="1.2.4" />
-    <PackageReference Include="Blazorise.SpinKit" Version="1.2.4" />
-    <PackageReference Include="Blazorise.TreeView" Version="1.2.4" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
-    <PackageReference Include="Discord.Net" Version="3.11.0" />
-    <PackageReference Include="FluentValidation" Version="11.6.0" />
-    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.6.0" />
-    <PackageReference Include="Fluxor" Version="5.9.0" />
-    <PackageReference Include="Fluxor.Blazor.Web" Version="5.9.0" />
-    <PackageReference Include="HtmlSanitizer" Version="8.0.645" />
-    <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
-    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="6.0.20" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.9" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="7.0.9" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="7.0.9" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" Version="7.0.9" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.9" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.9" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.9" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.9" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="7.0.9" />
-    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.35.1" />
-    <PackageReference Include="Microsoft.Azure.SignalR" Version="1.21.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.9" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.9" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.9">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Azure" Version="1.6.3" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="7.0.9" />
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="7.0.9" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.9" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
-    <PackageReference Include="Microsoft.Identity.Web" Version="2.12.4" />
-    <PackageReference Include="Microsoft.Identity.Web.UI" Version="2.12.4" />
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.1.5">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.8" />
-    <PackageReference Include="Serilog" Version="3.0.1" />
-    <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
-    <PackageReference Include="Serilog.Enrichers.AssemblyName" Version="1.0.9" />
-    <PackageReference Include="Serilog.Enrichers.CorrelationId" Version="3.0.1" />
-    <PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />
-    <PackageReference Include="Serilog.Enrichers.Memory" Version="1.0.4" />
-    <PackageReference Include="Serilog.Enrichers.Process" Version="2.0.2" />
-    <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
-    <PackageReference Include="Serilog.Extensions.Hosting" Version="7.0.0" />
-    <PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0" />
-    <PackageReference Include="Serilog.Formatting.Compact" Version="1.1.0" />
-    <PackageReference Include="Serilog.Settings.Configuration" Version="7.0.0" />
-    <PackageReference Include="Serilog.Sinks.ApplicationInsights" Version="4.0.0" />
-    <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
-    <PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
-    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
-    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
-    <PackageReference Include="TheOmenDen.Shared" Version="2023.3.25.112" />
-    <PackageReference Include="TheOmenDen.Shared.Interfaces" Version="2.3.20.1734" />
-    <PackageReference Include="TheOmenDen.Shared.Logging" Version="2.3.20.1750" />
-    <PackageReference Include="TwitchLib" Version="3.5.3" />
-    <PackageReference Include="TwitchLib.Api" Version="3.9.0" />
-    <PackageReference Include="TwitchLib.Client" Version="3.3.1" />
-    <PackageReference Include="TwitchLib.PubSub" Version="3.2.6" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AspNet.Security.OAuth.Discord" Version="7.0.2" />
+		<PackageReference Include="AspNet.Security.OAuth.GitHub" Version="7.0.2" />
+		<PackageReference Include="AspNet.Security.OAuth.Patreon" Version="7.0.2" />
+		<PackageReference Include="AspNet.Security.OAuth.Twitch" Version="7.0.2" />
+		<PackageReference Include="AspNetCore.HealthChecks.AzureStorage" Version="6.1.2" />
+		<PackageReference Include="AspNetCore.HealthChecks.CosmosDb" Version="6.1.0" />
+		<PackageReference Include="AspNetCore.HealthChecks.Publisher.ApplicationInsights" Version="6.0.2" />
+		<PackageReference Include="AspNetCore.HealthChecks.SignalR" Version="6.0.2" />
+		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.5" />
+		<PackageReference Include="AspNetCore.HealthChecks.UI.Core" Version="6.0.5" />
+		<PackageReference Include="AspNetCore.HealthChecks.UI.SqlServer.Storage" Version="6.0.5" />
+		<PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
+		<PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Blobs" Version="1.3.2" />
+		<PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Keys" Version="1.2.2" />
+		<PackageReference Include="Azure.Identity" Version="1.9.0" />
+		<PackageReference Include="Azure.Storage.Blobs" Version="12.17.0" />
+		<PackageReference Include="Azure.Storage.Queues" Version="12.15.0" />
+		<PackageReference Include="Blazored.SessionStorage" Version="2.3.0" />
+		<PackageReference Include="Blazorise" Version="1.2.4" />
+		<PackageReference Include="Blazorise.Animate" Version="1.2.4" />
+		<PackageReference Include="Blazorise.Bootstrap5" Version="1.2.4" />
+		<PackageReference Include="Blazorise.Components" Version="1.2.4" />
+		<PackageReference Include="Blazorise.DataGrid" Version="1.2.4" />
+		<PackageReference Include="Blazorise.FluentValidation" Version="1.2.4" />
+		<PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.2.4" />
+		<PackageReference Include="Blazorise.LoadingIndicator" Version="1.2.4" />
+		<PackageReference Include="Blazorise.Markdown" Version="1.2.4" />
+		<PackageReference Include="Blazorise.QRCode" Version="1.2.4" />
+		<PackageReference Include="Blazorise.SpinKit" Version="1.2.4" />
+		<PackageReference Include="Blazorise.TreeView" Version="1.2.4" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+		<PackageReference Include="Discord.Net" Version="3.11.0" />
+		<PackageReference Include="FluentValidation" Version="11.6.0" />
+		<PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.6.0" />
+		<PackageReference Include="Fluxor" Version="5.9.0" />
+		<PackageReference Include="Fluxor.Blazor.Web" Version="5.9.0" />
+		<PackageReference Include="HtmlSanitizer" Version="8.0.645" />
+		<PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
+		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
+		<PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="6.0.20" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="7.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="7.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" Version="7.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="7.0.9" />
+		<PackageReference Include="Microsoft.Azure.Cosmos" Version="3.35.2" />
+		<PackageReference Include="Microsoft.Azure.SignalR" Version="1.21.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.9" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.9" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.9">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Azure" Version="1.6.3" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="7.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="7.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
+		<PackageReference Include="Microsoft.Identity.Web" Version="2.13.1" />
+		<PackageReference Include="Microsoft.Identity.Web.UI" Version="2.13.1" />
+		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.1.5">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.8" />
+		<PackageReference Include="Serilog" Version="3.0.1" />
+		<PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
+		<PackageReference Include="Serilog.Enrichers.AssemblyName" Version="1.0.9" />
+		<PackageReference Include="Serilog.Enrichers.CorrelationId" Version="3.0.1" />
+		<PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />
+		<PackageReference Include="Serilog.Enrichers.Memory" Version="1.0.4" />
+		<PackageReference Include="Serilog.Enrichers.Process" Version="2.0.2" />
+		<PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
+		<PackageReference Include="Serilog.Extensions.Hosting" Version="7.0.0" />
+		<PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0" />
+		<PackageReference Include="Serilog.Formatting.Compact" Version="1.1.0" />
+		<PackageReference Include="Serilog.Settings.Configuration" Version="7.0.0" />
+		<PackageReference Include="Serilog.Sinks.ApplicationInsights" Version="4.0.0" />
+		<PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+		<PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
+		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+		<PackageReference Include="System.Linq.Async" Version="6.0.1" />
+		<PackageReference Include="TheOmenDen.Shared" Version="2023.3.25.112" />
+		<PackageReference Include="TheOmenDen.Shared.Interfaces" Version="2.3.20.1734" />
+		<PackageReference Include="TheOmenDen.Shared.Logging" Version="2.3.20.1750" />
+		<PackageReference Include="TwitchLib" Version="3.5.3" />
+		<PackageReference Include="TwitchLib.Api" Version="3.9.0" />
+		<PackageReference Include="TwitchLib.Client" Version="3.3.1" />
+		<PackageReference Include="TwitchLib.PubSub" Version="3.2.6" />
+	</ItemGroup>
 
 	<ItemGroup Condition="$(Configuration)=='Debug'">
 		<PackageReference Include="Fluxor.Blazor.Web.ReduxDevTools" Version="5.9.0" />
 	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\theomenden\TheOmenDen.Shared.Components\TheOmenDen.Shared.Components\TheOmenDen.Shared.Components.csproj" />
-    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Azure.CosmosDb\TheOmenDen.CrowsAgainstHumility.Azure.CosmosDb.csproj" />
-    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Azure.SignalR\TheOmenDen.CrowsAgainstHumility.Azure.SignalR.csproj" />
-    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Azure.Storage\TheOmenDen.CrowsAgainstHumility.Azure.Storage.csproj" />
-    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Discord\TheOmenDen.CrowsAgainstHumility.Discord.csproj" />
-    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Email\TheOmenDen.CrowsAgainstHumility.Email.csproj" />
-    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Identity\TheOmenDen.CrowsAgainstHumility.Identity.csproj" />
-    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Core\TheOmenDen.CrowsAgainstHumility.Core.csproj" />
-    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Data\TheOmenDen.CrowsAgainstHumility.Data.csproj" />
-    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Redis\TheOmenDen.CrowsAgainstHumility.Azure.Redis.csproj" />
-    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Twitch\TheOmenDen.CrowsAgainstHumility.Twitch.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\TheOmenDen.Shared.Components\TheOmenDen.Shared.Components\TheOmenDen.Shared.Components.csproj" />
+		<ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Azure\TheOmenDen.CrowsAgainstHumility.Azure.csproj" />
+		<ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Discord\TheOmenDen.CrowsAgainstHumility.Discord.csproj" />
+		<ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Email\TheOmenDen.CrowsAgainstHumility.Email.csproj" />
+		<ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Identity\TheOmenDen.CrowsAgainstHumility.Identity.csproj" />
+		<ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Core\TheOmenDen.CrowsAgainstHumility.Core.csproj" />
+		<ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Data\TheOmenDen.CrowsAgainstHumility.Data.csproj" />
+		<ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Twitch\TheOmenDen.CrowsAgainstHumility.Twitch.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Update="README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Storage\UseCases\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Storage\UseCases\" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Content Update="wwwroot\js\scriptLoader.min.js">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
+	<ItemGroup>
+		<Content Update="wwwroot\js\scriptLoader.min.js">
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+	</ItemGroup>
 
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\js\crowsAgainstSocialsScript.js" />
-  </ItemGroup>
+	<ItemGroup>
+		<_ContentIncludedByDefault Remove="wwwroot\js\crowsAgainstSocialsScript.js" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Content Include="assets\blazorCookieStore.js" />
-    <Content Include="assets\blazorCookieStore.min.js">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="assets\crowsAgainstSocialsScript.min.js" />
-  </ItemGroup>
+	<ItemGroup>
+		<Content Include="assets\blazorCookieStore.js" />
+		<Content Include="assets\blazorCookieStore.min.js">
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+		<Content Include="assets\crowsAgainstSocialsScript.min.js" />
+	</ItemGroup>
 </Project>

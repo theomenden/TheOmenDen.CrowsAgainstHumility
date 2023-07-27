@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.JSInterop;
-using TheOmenDen.CrowsAgainstHumility.Azure.SignalR.Clients;
+using TheOmenDen.CrowsAgainstHumility.Azure.Clients;
 using TheOmenDen.CrowsAgainstHumility.Core.Constants;
 using TheOmenDen.CrowsAgainstHumility.Core.DTO.Models;
 using TheOmenDen.CrowsAgainstHumility.Core.DTO.ViewModels;

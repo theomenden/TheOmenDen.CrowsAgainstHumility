@@ -1,7 +1,7 @@
 ﻿using Blazorise;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
-using TheOmenDen.CrowsAgainstHumility.Azure.SignalR.Clients;
+using TheOmenDen.CrowsAgainstHumility.Azure.Clients;
 using TheOmenDen.CrowsAgainstHumility.Components;
 using TheOmenDen.CrowsAgainstHumility.Components.Game;
 using TheOmenDen.CrowsAgainstHumility.Core.Engine.Enumerations;
@@ -28,7 +28,7 @@ public partial class GamesList : ComponentBase, IDisposable
     #region Fields
     private AuthenticationState _authState;
     private List<CrowGameServer> _games = new(52);
-    private bool _showContextMenu  = false;
+    private bool _showContextMenu = false;
     #endregion
     protected override async Task OnInitializedAsync()
     {

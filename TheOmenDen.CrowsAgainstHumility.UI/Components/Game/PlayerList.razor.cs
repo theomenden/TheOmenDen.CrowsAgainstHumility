@@ -1,4 +1,4 @@
-﻿using TheOmenDen.CrowsAgainstHumility.Azure.SignalR.Clients;
+﻿using TheOmenDen.CrowsAgainstHumility.Azure.Clients;
 using TheOmenDen.CrowsAgainstHumility.Core.DTO.Enums;
 using TheOmenDen.CrowsAgainstHumility.Core.DTO.ViewModels;
 using TheOmenDen.CrowsAgainstHumility.Core.Engine.Enumerations;

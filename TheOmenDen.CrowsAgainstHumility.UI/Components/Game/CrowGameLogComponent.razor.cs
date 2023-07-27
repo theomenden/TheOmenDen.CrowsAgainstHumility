@@ -1,18 +1,18 @@
-﻿using TheOmenDen.CrowsAgainstHumility.Azure.SignalR.Clients;
+﻿using TheOmenDen.CrowsAgainstHumility.Azure.Clients;
 
 namespace TheOmenDen.CrowsAgainstHumility.Components.Game;
 
-public partial class CrowGameLogComponent: ComponentBase
+public partial class CrowGameLogComponent : ComponentBase
 {
     [Parameter] public ICrowGameHubClient HubClient { get; set; }
     [Parameter] public EventCallback<ICrowGameHubClient> OnHubClientChanged { get; set; }
-    
-    private List<GameMessage> _gameLog = new (50);
+
+    private List<GameMessage> _gameLog = new(50);
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        
+
         HubClient.OnLogMessageReceived(logMessage =>
         {
             _gameLog.Add(logMessage);
