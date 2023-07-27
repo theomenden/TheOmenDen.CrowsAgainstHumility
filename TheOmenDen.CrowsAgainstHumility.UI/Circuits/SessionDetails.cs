@@ -1,10 +1,13 @@
-﻿using System.Security.Principal;
+﻿using System.Collections.Concurrent;
+using System.Security.Claims;
+using System.Security.Principal;
+using SendGrid.Helpers.Mail;
 using TheOmenDen.CrowsAgainstHumility.Events;
 
 namespace TheOmenDen.CrowsAgainstHumility.Circuits;
 public sealed class SessionDetails : ISessionDetails
 {
-    private readonly Dictionary<String, SessionModel> _sessions = new(30);
+    private readonly ConcurrentDictionary<string, SessionModel> _sessions = new();
 
     private readonly ILogger<SessionDetails> _logger;
 
@@ -31,50 +34,82 @@ public sealed class SessionDetails : ISessionDetails
 
     public void ConnectSession(SessionModel session, String userId)
     {
-        if (_sessions.ContainsKey(session.CircuitId))
-        {
-            var updatedUser = _sessions[session.CircuitId].User with
+        var model = _sessions.AddOrUpdate(
+            session.CircuitId,
+            _ =>
             {
-                UserId = userId
-            };
+                session.User = SessionUser.DefaultUser with
+                {
+                    UserId = userId
+                };
+                session.CreatedAt = DateTime.UtcNow;
+                return session;
+            },
+            (_, existingSession) => UpdateCurrentSessionModel(session.CircuitId, userId, existingSession));
 
-            _sessions[session.CircuitId].User = updatedUser;
-
+        if (!_sessions.ContainsKey(model.CircuitId))
+        {
+            _logger.LogCritical("Session with circuitId {CircuitId} could not be found", model.CircuitId);
             return;
         }
-        session.CreatedAt = DateTime.UtcNow;
 
-        _sessions.Add(session.CircuitId, session);
+        _logger.LogInformation("Successfully added Session with Id {SessionId}", model.Id);
+    }
 
-        _logger.LogInformation("Successfully added Session with Id {SessionId}", session.Id);
+    public void ConnectSession(string circuitId, ClaimsPrincipal user)
+    {
+        var model = _sessions.AddOrUpdate(
+            circuitId,
+            _ =>
+            {
+                var session = new SessionModel
+                {
+                    CircuitId = circuitId,
+                    CreatedAt = DateTime.UtcNow,
+                    User = SessionUser.DefaultUser with
+                    {
+                        UserId = user.Identity?.Name,
+                        IsAuthenticated = user.Identity?.IsAuthenticated ?? false,
+                        AuthenticationType = user.Identity?.AuthenticationType
+                    }
+                };
+                return session;
+            },
+            (_, session) => UpdateCurrentSessionModel(circuitId, user.Identity?.Name, session));
+
+        if (!_sessions.ContainsKey(model.CircuitId))
+        {
+            _logger.LogCritical("Session with circuitId {CircuitId} could not be added for user {@User}", user);
+            return;
+        }
+
+        _logger.LogInformation("Successfully added Session with Id {SessionId}", model.Id);
     }
 
     public void ConnectSession(String circuitId, IIdentity user)
     {
-        if (_sessions.ContainsKey(circuitId))
-        {
-            var updatedUser = _sessions[circuitId].User with
+        var model = _sessions.AddOrUpdate(
+            circuitId,
+            _ =>
             {
-                UserId = user.Name ?? String.Empty
-            };
+                var session = new SessionModel
+                {
+                    User = new SessionUser(user.Name, user.IsAuthenticated, user.AuthenticationType),
+                    CircuitId = circuitId,
+                    CreatedAt = DateTime.UtcNow
+                };
 
-            _sessions[circuitId].User = updatedUser;
+                _logger.LogInformation(
+                    "Session with circuitId {CircuitId} was not found. Creating new session for user {@User}",
+                    circuitId, session.User);
+                return session;
+            },
+            (_, session) => UpdateCurrentSessionModel(circuitId, user, session));
 
-            _logger.LogInformation("Successfully updated Session Information for circuit with Id: {Circuit}", circuitId);
-            return;
-        }
-
-
-        var session = new SessionModel
+        if (!_sessions.ContainsKey(model.CircuitId))
         {
-            User = new SessionUser(user.Name, user.IsAuthenticated, user.AuthenticationType),
-            CreatedAt = DateTime.UtcNow,
-            CircuitId = circuitId
-        };
-
-        _sessions.Add(circuitId, session);
-
-        _logger.LogInformation("Successfully added Session with Id {SessionId}", session.Id);
+            _logger.LogCritical("Session with circuitId {CircuitId} could not be added for user {@User}", user);
+        }
     }
 
     public void DisconnectSession(String? circuitId)
@@ -85,8 +120,10 @@ public sealed class SessionDetails : ISessionDetails
             return;
         }
 
-        if (_sessions.TryGetValue(circuitId, out var userSession)
-            && _sessions.Remove(circuitId))
+        var (wasRemoved, userSession) = CanRemoveUserSession(circuitId);
+
+
+        if (wasRemoved && userSession is not null)
         {
             OnUserRemoved(userSession.User.UserId);
             OnCircuitsChanged();
@@ -96,5 +133,31 @@ public sealed class SessionDetails : ISessionDetails
         }
 
         _logger.LogError("Session with circuitId {CircuitId} could not be found", circuitId);
+    }
+
+    private (bool wasRemoved, SessionModel? userSession) CanRemoveUserSession(string circuitId) =>
+    (_sessions.Remove(circuitId, out var sessionModel), sessionModel);
+
+    private SessionModel UpdateCurrentSessionModel(string circuitId, IIdentity user, SessionModel session)
+    {
+        var updateduser = session.User with
+        {
+            UserId = user.Name ?? string.Empty
+        };
+
+        session.User = updateduser;
+
+        _logger.LogInformation("Successfully updated session information for circuit with Id: {Circuit}", circuitId);
+        return session;
+    }
+
+    private SessionModel UpdateCurrentSessionModel(string circuitId, string username, SessionModel session)
+    {
+        var updatedUser = session.User with
+        {
+            UserId = username
+        };
+        _logger.LogInformation("Successfully updated session informati9on for circuit with Id: {Circuit}", circuitId);
+        return session;
     }
 }

@@ -30,6 +30,7 @@ using Azure.Storage.Blobs;
 using Blazorise.FluentValidation;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -38,6 +39,8 @@ using TheOmenDen.CrowsAgainstHumility.Identity.Utilities;
 using TheOmenDen.CrowsAgainstHumility.Utilities;
 using TheOmenDen.CrowsAgainstHumility;
 using TheOmenDen.CrowsAgainstHumility.Azure.CosmosDb.Extensions;
+using TheOmenDen.CrowsAgainstHumility.Azure.Extensions;
+using TheOmenDen.CrowsAgainstHumility.Azure.Hubs;
 using TheOmenDen.CrowsAgainstHumility.Azure.SignalR.Extensions;
 using TheOmenDen.CrowsAgainstHumility.Azure.SignalR.Hubs;
 using TheOmenDen.CrowsAgainstHumility.Core.Engine.Extensions;
@@ -121,7 +124,7 @@ try
     builder.Services
         .AddAuthentication(options =>
         {
-            options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultAuthenticateScheme = OpenIdConnectDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = TwitchAuthenticationDefaults.AuthenticationScheme;
         })
         .AddTwitter(options =>
@@ -164,8 +167,22 @@ try
 
             options.SlidingExpiration = true;
         })
-        .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"), cookieScheme: "microsoftCookies");
+        .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"), cookieScheme: "microsoftCookies")
+        .EnableTokenAcquisitionToCallDownstreamApi()
+        .AddInMemoryTokenCaches();
 
+    builder.Services.ConfigureApplicationCookie(options =>
+    {
+        options.Cookie.Name = builder.Configuration["Cookies:SharedCookieName"];
+        options.Cookie.Path = builder.Configuration["Cookies:SharedCookiePath"];
+        options.Cookie.HttpOnly = true;
+        options.ExpireTimeSpan = TimeSpan.FromDays(5);
+
+        options.LoginPath = "/Identity/Account/Login";
+        options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+
+        options.SlidingExpiration = true;
+    });
 
     var socketsHttpHandler = new SocketsHttpHandler
     {
@@ -190,24 +207,6 @@ try
                                  ?? builder.Configuration["ConnectionStrings:CrowsAgainstHumilityDb"];
 
     builder.Services.AddCorvidDataServices(corvidConnectionString!);
-
-    builder.Services.AddResponseCompression(options =>
-    {
-        options.MimeTypes = new[] { MediaTypeNames.Application.Octet };
-        options.EnableForHttps = true;
-        options.Providers.Add<BrotliCompressionProvider>();
-        options.Providers.Add<GzipCompressionProvider>();
-    });
-
-    builder.Services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
-    builder.Services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.SmallestSize);
-
-    builder.Services.AddHsts(options =>
-    {
-        options.Preload = true;
-        options.IncludeSubDomains = true;
-        options.MaxAge = TimeSpan.FromDays(365);
-    });
 
     var connectionString = builder.Configuration["ConnectionStrings:CrowsAgainstAuthority"]
                            ?? builder.Configuration["ConnectionStrings:CrowsAgainstHumilityDb"];
@@ -274,7 +273,7 @@ try
     builder.Services.AddSingleton(captchaSettings);
 
     builder.Services.AddTwitchManagementServices(builder.Configuration);
-    
+
     builder.Services.AddSingleton<ISessionDetails, SessionDetails>();
 
     builder.Services.AddScoped<CircuitHandler, TrackingCircuitHandler>(sp => new TrackingCircuitHandler(sp.GetRequiredService<ISessionDetails>()));
@@ -294,15 +293,32 @@ try
         options.JsonSerializerOptions.ReadCommentHandling = JsonCommentHandling.Skip;
         options.JsonSerializerOptions.WriteIndented = false;
     });
+
+    builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+    builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApplicationUser>>();
+
     builder.Services.AddRazorPages();
+    builder.Services.AddResponseCompression(options =>
+        {
+            options.MimeTypes = new[] { MediaTypeNames.Application.Octet };
+            options.EnableForHttps = true;
+            options.Providers.Add<BrotliCompressionProvider>();
+            options.Providers.Add<GzipCompressionProvider>();
+        })
+        .Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest)
+        .Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.SmallestSize)
+        .AddHsts(options =>
+        {
+            options.Preload = true;
+            options.IncludeSubDomains = true;
+            options.MaxAge = TimeSpan.FromDays(365);
+        }); ;
     builder.Services.AddControllers();
     builder.Services.AddSingleton<HttpClient>();
     builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
     {
         options.TokenLifespan = TimeSpan.FromDays(2);
     });
-
-    builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
     builder.Services.AddValidatorsFromAssemblies(new[]
         { typeof(App).Assembly, typeof(RegisterInputModelValidator).Assembly });
@@ -317,7 +333,6 @@ try
 
     builder.Services.AddCorvidProviders();
     builder.Services.AddCorvidCosmosServices(builder.Configuration);
-    builder.Services.AddCorvidEngineServices();
     builder.Services.AddCorvidSignalServices(builder.Configuration["Azure:SignalR:ConnectionString"]);
     builder.Services.AddServerSideBlazor()
 #if DEBUG
@@ -330,7 +345,6 @@ try
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddHttpClient<IRecaptchaService, ReCaptchaService>("captchaClient", cfg => cfg.BaseAddress = new Uri(builder.Configuration["Recaptcha:VerifyUri"] ?? String.Empty));
     builder.Services.AddScoped<IRecaptchaService, ReCaptchaService>();
-    builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApplicationUser>>();
     builder.Services.AddScoped<UserInfo>();
     builder.Services.AddScoped<IHostEnvironmentAuthenticationStateProvider>(sp =>
     {
@@ -361,18 +375,11 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
 
-    app.MapGet("/robots.txt", async context =>
-    {
-        await SearchEngineGenerators.GenerateRobotsAsync(context);
-    });
-    app.MapGet("/sitemap.txt", async context =>
-    {
-        await SearchEngineGenerators.GenerateSitemapAsync(context);
-    });
-    app.MapGet("/sitemap.xml", async context =>
-    {
-        await SearchEngineGenerators.GenerateSitemapXmlAsync(context);
-    });
+    app.MapGet("/robots.txt", SearchEngineGenerators.GenerateRobotsAsync);
+    app.MapGet("/sitemap.txt", SearchEngineGenerators.GenerateSitemapAsync);
+    app.MapGet("/sitemap.xml", SearchEngineGenerators.GenerateSitemapXmlAsync);
+
+    app.UseMiddleware<CorvidSessionMiddleware>();
 
     app.MapHealthChecks("/healthcheck");
 
@@ -390,5 +397,5 @@ catch (Exception ex)
 }
 finally
 {
-    Log.CloseAndFlush();
+    await Log.CloseAndFlushAsync().ConfigureAwait(false);
 }
