@@ -149,7 +149,7 @@
     <PackageReference Include="TheOmenDen.Shared.Logging" Version="1.11.13.2247" />
     <PackageReference Include="TwitchLib" Version="3.4.1" />
     <PackageReference Include="TwitchLib.Api" Version="3.7.0" />
-    <PackageReference Include="TwitchLib.Client" Version="3.2.6" />
+    <PackageReference Include="TwitchLib.Client" Version="3.3.1" />
     <PackageReference Include="TwitchLib.PubSub" Version="3.2.5" />
   </ItemGroup>
 
