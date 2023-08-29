@@ -1,7 +1,6 @@
 ﻿using Riok.Mapperly.Abstractions;
 using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Identity;
 using TheOmenDen.CrowsAgainstHumility.Core.DTO.ViewModels;
-using TheOmenDen.CrowsAgainstHumility.Core.Engine.Models;
 using TheOmenDen.CrowsAgainstHumility.Core.Enumerations;
 
 namespace TheOmenDen.CrowsAgainstHumility.Core.Transformation.Mappers;
@@ -15,13 +14,6 @@ public partial class PlayerMapper
 
     public partial IEnumerable<PlayerViewModel> ApplicationUsersToPlayers(IEnumerable<ApplicationUser> users);
 
-    [MapperIgnoreSource(nameof(Player.ConnectionId))]
-    [MapperIgnoreTarget(nameof(PlayerViewModel.ConnectionId))]
-    public partial PlayerViewModel PlayerToPlayerViewModel(Player player);
-
-    [MapProperty(nameof(Player.ConnectionId), nameof(PlayerViewModel.ConnectionId))]
-    public partial PlayerViewModel PlayerToPlayerViewModelWithPrivateId(Player player);
-
-    private PlayerMode EngineToDtoMode(Engine.Enumerations.PlayerMode mode) => PlayerMode.ParseFromValueOrDefault(mode.Value, PlayerMode.Awake);
+    private PlayerMode EngineToDtoMode(Core.Enumerations.PlayerMode mode) => PlayerMode.ParseFromValueOrDefault(mode.Value, PlayerMode.Awake);
 
 }

@@ -15,7 +15,7 @@ public interface IGameService
     Task PlayCardAsync(CrowGame game, Guid playerId, WhiteCard card, CancellationToken cancellationToken = default);
     Task ChooseWinnerAsync(CrowGame game, Guid playerId, Guid winnerId, CancellationToken cancellationToken = default);
 }
-internal class GameService: IGameService
+internal class GameService : IGameService
 {
     private readonly ICardProvider _cardProvider;
     private readonly ILogger<GameService> _logger;
@@ -26,6 +26,8 @@ internal class GameService: IGameService
             DateTimeOffset.UtcNow, TimeSpan.FromMinutes(12));
 
         _logger.LogInformation("Created new Game {Game} with initial Czar {Czar}", game, czarId);
+
+        return game;
     }
 
     public async Task JoinGameAsync(CrowGame game, Guid playerId, CancellationToken cancellationToken = default)
@@ -47,11 +49,6 @@ internal class GameService: IGameService
 
             game.ConnectedPlayers[playerId] = player;
 
-            if (game.Rules != GameRules.RandoCardrissian
-                || !game.ConnectedPlayers.All(x => x.Value.PlayedCard != null))
-            {
-                return;
-            }
 
             var randoCardrissian = game.ConnectedPlayers.First(p => p.Key == Guid.Empty).Value;
             randoCardrissian = randoCardrissian with { PlayedCard = _cardProvider.DrawWhiteCards(1).First() };
