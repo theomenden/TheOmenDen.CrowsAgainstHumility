@@ -154,7 +154,7 @@
   </ItemGroup>
 
 	<ItemGroup Condition="$(Configuration)=='Debug'">
-		<PackageReference Include="Fluxor.Blazor.Web.ReduxDevTools" Version="5.6.0" />
+		<PackageReference Include="Fluxor.Blazor.Web.ReduxDevTools" Version="5.9.1" />
 	</ItemGroup>
 
   <ItemGroup>
