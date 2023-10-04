@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <TypeScriptTarget>ESNext</TypeScriptTarget>
@@ -93,7 +93,7 @@
     <PackageReference Include="Discord.Net" Version="3.8.1" />
     <PackageReference Include="Fluxor" Version="5.6.0" />
     <PackageReference Include="Fluxor.Blazor.Web" Version="5.6.0" />
-    <PackageReference Include="HtmlSanitizer" Version="8.0.645" />
+    <PackageReference Include="HtmlSanitizer" Version="8.0.723" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
     <PackageReference Include="Microsoft.AspNetCore.Antiforgery" Version="2.2.0" />
