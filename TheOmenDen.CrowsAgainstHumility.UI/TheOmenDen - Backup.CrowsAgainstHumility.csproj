@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <TypeScriptTarget>ESNext</TypeScriptTarget>
@@ -79,7 +79,7 @@
     <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="7.0.0" />
     <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="7.0.0" />
     <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
-    <PackageReference Include="Azure.Identity" Version="1.9.0" />
+    <PackageReference Include="Azure.Identity" Version="1.10.2" />
     <PackageReference Include="Blazored.SessionStorage" Version="2.2.0" />
     <PackageReference Include="Blazorise" Version="1.1.3.1" />
     <PackageReference Include="Blazorise.Animate" Version="1.1.3.1" />
