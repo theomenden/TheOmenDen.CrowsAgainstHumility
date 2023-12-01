@@ -39,7 +39,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
     <PackageReference Include="TheOmenDen.Shared" Version="2023.3.25.112" />
-    <PackageReference Include="TheOmenDen.Shared.Interfaces" Version="2.3.20.1734" />
+    <PackageReference Include="TheOmenDen.Shared.Interfaces" Version="2.12.1.48" />
   </ItemGroup>
 
 </Project>
