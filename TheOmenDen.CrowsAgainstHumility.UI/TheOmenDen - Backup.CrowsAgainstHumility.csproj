@@ -146,7 +146,7 @@
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
     <PackageReference Include="TheOmenDen.Shared" Version="2022.11.13.2149" />
     <PackageReference Include="TheOmenDen.Shared.Interfaces" Version="1.11.13.2216" />
-    <PackageReference Include="TheOmenDen.Shared.Logging" Version="1.11.13.2247" />
+    <PackageReference Include="TheOmenDen.Shared.Logging" Version="2.12.24.2336" />
     <PackageReference Include="TwitchLib" Version="3.4.1" />
     <PackageReference Include="TwitchLib.Api" Version="3.7.0" />
     <PackageReference Include="TwitchLib.Client" Version="3.2.6" />
