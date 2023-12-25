@@ -178,7 +178,7 @@
 		<PackageReference Include="System.Linq.Async" Version="6.0.1" />
 		<PackageReference Include="TheOmenDen.Shared" Version="2023.3.25.112" />
 		<PackageReference Include="TheOmenDen.Shared.Interfaces" Version="2.3.20.1734" />
-		<PackageReference Include="TheOmenDen.Shared.Logging" Version="2.3.20.1750" />
+		<PackageReference Include="TheOmenDen.Shared.Logging" Version="2.12.24.2336" />
 		<PackageReference Include="TwitchLib" Version="3.5.3" />
 		<PackageReference Include="TwitchLib.Api" Version="3.9.0" />
 		<PackageReference Include="TwitchLib.Client" Version="3.3.1" />
