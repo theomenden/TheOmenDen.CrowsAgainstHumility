@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "identityapp1": {
+      "connectionInfo": "App registration: Crows Against Humility-Client, Tenant: The Omen Den L.L.C. (theomenden.com - Microsoft Entra ID)",
+      "secretStore": "LocalSecretsFile",
+      "type": "identityapp.secretStore",
+      "connectionId": "AzureAD:ClientSecret"
+    },
+    "secrets1": {
+      "secretStore": null,
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.KeyVault/vaults/CorvidSecureVault",
+      "type": "secrets.keyVault",
+      "connectionId": "VaultUri"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsAspireHost>true</IsAspireHost>
+    <UserSecretsId>05a6ec90-3639-46ef-b4bd-d80e40b3f4b0</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.Api\TheOmenDen.CrowsAgainstHumility.Api.csproj" />
+    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.United\TheOmenDen.CrowsAgainstHumility.United\TheOmenDen.CrowsAgainstHumility.United.csproj" />
+  </ItemGroup>
+
+</Project>

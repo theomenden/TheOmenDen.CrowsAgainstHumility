@@ -1,32 +1,29 @@
-﻿using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Cards;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using TheOmenDen.CrowsAgainstHumility.Core.Models.Cards;
 
 namespace TheOmenDen.CrowsAgainstHumility.Data.Contexts.Configurations;
 
-public partial class WhiteCardConfiguration : IEntityTypeConfiguration<WhiteCard>
+internal sealed class WhiteCardConfiguration : IEntityTypeConfiguration<WhiteCard>
 {
     public void Configure(EntityTypeBuilder<WhiteCard> entity)
     {
-        entity.ToTable("WhiteCards");
+        entity.ToTable("WhiteCards", "CAH");
         entity.HasKey(e => e.Id)
-            .IsClustered()
-            .HasName("PK_WhiteCards_Id");
+            .IsClustered();
 
-        entity.HasIndex(e => e.PackId, "IX_WhiteCards_PackId");
+        entity.Property(e => e.Id)
+            .ValueGeneratedOnAdd();
 
-        entity.Property(e => e.Id).HasDefaultValueSql("(newsequentialid())");
-
-        entity.Property(e => e.CardText)
+        entity.Property(e => e.Text)
             .IsRequired()
-            .HasMaxLength(1000);
+            .HasMaxLength(255);
 
-        entity.HasOne(d => d.Pack)
-            .WithMany(p => p.WhiteCards)
-            .HasForeignKey(d => d.PackId)
-            .OnDelete(DeleteBehavior.ClientSetNull)
-            .HasConstraintName("FK_WhiteCards_Packs");
+        entity.HasOne(e => e.Expansion)
+            .WithMany(e => e.WhiteCards)
+            .HasForeignKey(e => e.ExpansionId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-        OnConfigurePartial(entity);
+        entity.HasIndex(e => e.ExpansionId);
     }
-
-    partial void OnConfigurePartial(EntityTypeBuilder<WhiteCard> entity);
 }

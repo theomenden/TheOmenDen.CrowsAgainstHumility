@@ -1,57 +1,58 @@
-﻿using EFCoreSecondLevelCacheInterceptor;
+﻿using EasyCaching.InMemory;
+using EFCoreSecondLevelCacheInterceptor;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using TheOmenDen.CrowsAgainstHumility.Core.DAO.Models.Cards;
 using TheOmenDen.CrowsAgainstHumility.Data.Contexts;
-using TheOmenDen.CrowsAgainstHumility.Data.Repositories;
 
 namespace TheOmenDen.CrowsAgainstHumility.Data.Extensions;
+
 public static class ServiceCollectionExtensions
 {
-   private static readonly ILoggerFactory LoggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
-   {
-       builder.AddJsonConsole();
-       builder.AddDebug();
-   });
-
-    public static IServiceCollection AddCorvidDataServices(this IServiceCollection services, String connectionString)
+    private const string providerName = "CAH_InMemory";
+    public static IServiceCollection AddCorvidCardData(this IServiceCollection services, string connectionString)
     {
+
         services.AddEFSecondLevelCache(options =>
-                options.UseMemoryCacheProvider(CacheExpirationMode.Absolute, TimeSpan.FromMinutes(30))
-                    .DisableLogging(true)
-                    .CacheQueriesContainingTypes(CacheExpirationMode.Absolute, TimeSpan.FromMinutes(30), 
-                        TableTypeComparison.Contains,
-                        typeof(WhiteCard), 
-                        typeof(BlackCard),
-                        typeof(Pack), 
-                        typeof(FilteredWhiteCardsByPack), 
-                        typeof(FilteredBlackCardsByPack))
-                    .CacheQueriesContainingTableNames(CacheExpirationMode.Absolute, TimeSpan.FromMinutes(30),
-                        TableNameComparison.Contains,
-                        "vw_FilteredWhiteCardsByPack", "vw_FilteredBlackCardsByPack", "BlackCards", "WhiteCards", "Packs")
-                    .SkipCacheInvalidationCommands(commandText =>
-                        commandText.Contains("NEWID()", StringComparison.InvariantCultureIgnoreCase)));
+            options.UseEasyCachingCoreProvider(providerName, isHybridCache: false)
+                .ConfigureLogging(true)
+                .UseCacheKeyPrefix("CAH_")
+                .UseDbCallsIfCachingProviderIsDown(TimeSpan.FromMinutes(1))
+                .CacheAllQueriesExceptContainingTableNames(CacheExpirationMode.Absolute, TimeSpan.FromMinutes(30), "Expansions", "Players"));
+
+        services.AddEasyCaching(options =>
+        {
+            options.UseInMemory(config =>
+            {
+                config.DBConfig = new InMemoryCachingOptions
+                {
+                    // scan time, default is 60s
+                    ExpirationScanFrequency = 60, // seconds
+                    // total count of cache items, default is 10000
+                    SizeLimit = 1000,
+                    EnableReadDeepClone = false,
+                    EnableWriteDeepClone = false
+                };
+            });
+        });
 
         services.AddPooledDbContextFactory<CrowsAgainstHumilityContext>((serviceProvider, options) =>
         {
-            options.UseSqlServer(connectionString, 
-                    sqlOptions => sqlOptions.CommandTimeout((int)TimeSpan.FromMinutes(3).TotalSeconds))
-                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+            options
+                .ReplaceService<IValueConverterSelector, StronglyTypedIdValueConverter>()
+                .UseSqlServer(connectionString, options =>
+                {
+                    options
+                        .CommandTimeout((int)TimeSpan.FromMinutes(3).TotalSeconds)
+                        .EnableRetryOnFailure()
+                        .MigrationsAssembly(typeof(CrowsAgainstHumilityContext).Assembly.FullName);
+                })
+                .AddInterceptors(serviceProvider.GetRequiredService<SecondLevelCacheInterceptor>())
 #if DEBUG
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors()
 #endif
-                .AddInterceptors(serviceProvider.GetRequiredService<SecondLevelCacheInterceptor>())
-                .UseLoggerFactory(LoggerFactory);
+                .EnableServiceProviderCaching();
         });
-
-        services.AddHealthChecks()
-            .AddSqlServer(connectionString)
-            .AddDbContextCheck<CrowsAgainstHumilityContext>();
-
-        services.AddScoped<IPackRepository, PackRepository>();
-
-        return services;
     }
 }
-

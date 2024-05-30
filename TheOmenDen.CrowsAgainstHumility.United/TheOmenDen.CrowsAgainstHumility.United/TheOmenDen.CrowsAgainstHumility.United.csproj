@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\TheOmenDen.CrowsAgainstHumility.ServiceDefaults\TheOmenDen.CrowsAgainstHumility.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\TheOmenDen.CrowsAgainstHumility.United.Client\TheOmenDen.CrowsAgainstHumility.United.Client.csproj" />
+    <PackageReference Include="Azure.Core" Version="1.39.0" />
+    <PackageReference Include="Blazorise" Version="1.5.2" />
+    <PackageReference Include="Blazorise.Animate" Version="1.5.2" />
+    <PackageReference Include="Blazorise.Bootstrap5" Version="1.5.2" />
+    <PackageReference Include="Blazorise.Captcha.ReCaptcha" Version="1.5.2" />
+    <PackageReference Include="Blazorise.Components" Version="1.5.2" />
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.5.2" />
+    <PackageReference Include="Blazorise.LoadingIndicator" Version="1.5.2" />
+    <PackageReference Include="Blazorise.QRCode" Version="1.5.2" />
+    <PackageReference Include="Blazorise.Snackbar" Version="1.5.2" />
+    <PackageReference Include="Blazorise.SpinKit" Version="1.5.2" />
+    <PackageReference Include="Blazorise.Video" Version="1.5.2" />
+    <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.6" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Serilog" Version="3.1.1" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
+    <PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
+  </ItemGroup>
+
+</Project>

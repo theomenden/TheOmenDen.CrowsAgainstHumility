@@ -1,14 +1,21 @@
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":preserveSemverRanges",
+    ":automergeMinor"
+  ],
   "packageRules": [
     {
-      "matchUpdateTypes": [ "minor", "patch", "pin", "digest" ],
+      "description": "Automerge non-major updates",
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "matchCurrentVersion": "!/^0/",
       "automerge": true,
       "automergeStrategy": "squash"
     }
   ],
-  "rangeStrategy": "auto",
-  "extends": [
-    "config:base",
-    ":preserveSemverRanges"
-  ]
+  "rangeStrategy": "auto"
 }
