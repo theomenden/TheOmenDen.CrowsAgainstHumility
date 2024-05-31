@@ -1,9 +1,10 @@
 ﻿namespace TheOmenDen.CrowsAgainstHumility.Core.Models.Cards;
 
-public class Deck<T> : IDisposable where T : BaseCard
+public sealed class Deck<T>(IEnumerable<T> cards) : IDisposable where T : BaseImmutableCard
 {
-    private readonly List<T> _cards = new();
+    private readonly List<T> _cards = new(cards);
     private readonly List<T> _discards = new();
+    private int _currentCardIndex = 0;
     private readonly Random _random = new();
     private readonly SemaphoreSlim _semaphore = new(1, 1);
 
@@ -12,33 +13,16 @@ public class Deck<T> : IDisposable where T : BaseCard
         _cards.Add(card);
     }
 
-    public T DrawCard()
-    {
-        _semaphore.Wait();
-        try
-        {
-            if (_cards.Count == 0)
-            {
-                throw new InvalidOperationException("Deck is empty");
-            }
+    public bool IsEmpty => _currentCardIndex >= _cards.Count;
 
-            var index = _random.Next(_cards.Count);
-            var card = _cards[index];
-            _cards.RemoveAt(index);
-            return card;
-        }
-        finally
-        {
-            _semaphore.Release();
-        }
-    }
+    public IEnumerable<T> Cards => _cards;
 
     public async Task<T> DrawCardAsync(CancellationToken cancellationToken = default)
     {
         await _semaphore.WaitAsync(cancellationToken);
         try
         {
-            if (_cards.Count == 0)
+            if (_currentCardIndex >= _cards.Count)
             {
                 if (_discards.Count == 0)
                 {
@@ -46,12 +30,10 @@ public class Deck<T> : IDisposable where T : BaseCard
                 }
 
                 await ReshuffleDiscardsIntoDeckAsync(cancellationToken);
+                _currentCardIndex = 0;
             }
 
-            var index = _random.Next(_cards.Count);
-            var card = _cards[index];
-            _cards.RemoveAt(index);
-            return card;
+            return _cards[_currentCardIndex++];
         }
         finally
         {
@@ -70,11 +52,12 @@ public class Deck<T> : IDisposable where T : BaseCard
         }
     }
 
-    public async Task AddToDiscardPileAsync(T card)
+    public async Task AddToDiscardPileAsync(T card, CancellationToken cancellationToken = default)
     {
-        await _semaphore.WaitAsync();
+        await _semaphore.WaitAsync(cancellationToken);
         try
         {
+            _cards.Remove(card);
             _discards.Add(card);
         }
         finally

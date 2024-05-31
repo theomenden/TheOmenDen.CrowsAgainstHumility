@@ -2,22 +2,20 @@
 
 namespace TheOmenDen.CrowsAgainstHumility.Core.Rules;
 
-public class RuleEngine
+public sealed class RuleEngine
 {
-    private readonly List<IRule> _rules = new();
+    private readonly SortedList<int, IRule> _rules = new();
 
-    public void AddRule(IRule rule)
-    {
-        _rules.Add(rule);
-    }
+    public void AddRule(IRule rule) => _rules.Add(rule.Priority, rule);
 
-    public async ValueTask ExecuteAsync(GameContext context, CancellationToken cancellationToken = default)
+
+    public async ValueTask ApplyRoundRules(GameContext context, CancellationToken cancellationToken = default)
     {
-        foreach (var rule in _rules.OrderBy(r => r.Priority))
+        foreach (var rule in _rules)
         {
-            if (await rule.EvaluateAsync(context, cancellationToken))
+            if (await rule.Value.EvaluateAsync(context, cancellationToken))
             {
-                await rule.ExecuteAsync(context, cancellationToken);
+                await rule.Value.ExecuteAsync(context, cancellationToken);
             }
         }
     }
