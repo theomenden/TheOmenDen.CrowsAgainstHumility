@@ -1,35 +1,59 @@
-﻿using System.Linq.Expressions;
-using TheOmenDen.CrowsAgainstHumility.Core.Models;
-using TheOmenDen.CrowsAgainstHumility.Core.Rules;
+﻿using TheOmenDen.CrowsAgainstHumility.Core.Enums;
 
 namespace TheOmenDen.CrowsAgainstHumility.Api.Sagas;
 
-public sealed class GameSagaOrchestrator(RuleEngine ruleEngine, GameEngine gameEngine, ILogger<GameSagaOrchestrator> logger)
+public sealed class GameSagaOrchestrator(IGameStateService gameStateService, ILogger<GameSagaOrchestrator> logger)
 {
-    public async ValueTask<bool> ExecuteGameSagaAsync(GameSessionDto session, CancellationToken cancellationToken = default)
+    public async Task StartGameAsync(SessionId sessionId, CancellationToken cancellationToken = default)
     {
-        try
-        {
-            await gameEngine.SetupGame(session, cancellationToken);
-            while (!gameEngine.IsGameOver)
-            {
-                await ExecutePlayPhaseAsync(session, cancellationToken);
-            }
-            await gameEngine.FinalizeGameAsync(session, cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "An error occurred while executing the game saga: {Message}", ex.Message);
-            return false;
-        }
+        var initialState = await gameStateService.InitializeGameStateAsync(sessionId, cancellationToken);
+
+        await gameStateService.SaveGameStateAsync(initialState, cancellationToken);
+
+        await NotifyPlayersAsync(sessionId, "Game has started", cancellationToken);
+
+        await ExecuteGameLoopAsync(sessionId, cancellationToken);
     }
 
-    private async ValueTask ExecutePlayPhaseAsync(GameSessionDto session, CancellationToken cancellationToken = default)
+    private async Task ExecuteGameLoopAsync(SessionId sessionId, CancellationToken cancellationToken)
     {
-        var tasks = session.Players.Select(player =>
-            gameEngine.ProcessPlayerMoveAsync(session.Id, player.Id, player.NextMove, cancellationToken));
-        await Task.WhenAll(tasks);
-        await ruleEngine.ApplyRoundRules(session, cancellationToken);
-        await gameEngine.UpdateGameStateAsync(session, cancellationToken);
+        var gameIsRunning = true;
+        while (gameIsRunning)
+        {
+            var gameState = await gameStateService.GetGameStateAsync(sessionId, cancellationToken);
+
+            // Handle game round Logic
+            await HandleRoundAsync(gameState);
+
+            // Check if game should continue
+            gameIsRunning = CheckGameForContinuation(gameState);
+        }
+
+        // Finalize Game and clean up
+        await FinalizeGameAsync(sessionId, cancellationToken);
+    }
+
+    private async Task HandleRoundAsync(GameSessionDto gameState)
+    {
+        // Stub this out later
+    }
+
+    private bool CheckGameForContinuation(GameSessionDto gameState) => gameState.Status != GameStatus.Completed;
+
+    private async Task FinalizeGameAsync(SessionId sessionId, CancellationToken cancellationToken)
+    {
+        await gameStateService.UpdateGameStatusAsync(sessionId, new PlayerAction { Type = ActionType.EndGame }, cancellationToken);
+
+        await NotifyPlayersAsync(sessionId, "Game has ended", cancellationToken);
+
+        await gameStateService.DeleteGameStateAsync(sessionId, cancellationToken);
+    }
+
+
+    private async Task NotifyPlayersAsync(SessionId sessionId, string message, CancellationToken cancellationToken)
+    {
+        var players = await gameStateService.GetPlayersAsync(sessionId, cancellationToken);
+
+        // Notify Players via SignalR Hub
     }
 }
