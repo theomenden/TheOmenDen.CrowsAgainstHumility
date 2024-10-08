@@ -24,18 +24,18 @@
 		<PackageReference Include="FastEndpoints.Security" Version="5.25.0" />
 		<PackageReference Include="FastEndpoints.Swagger" Version="5.25.0" />
 		<PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.6" NoWarn="NU1605" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.6" NoWarn="NU1605" />
-		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.6" />
-		<PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="8.0.6" />
-		<PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="8.0.6" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" NoWarn="NU1605" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.10" NoWarn="NU1605" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.10" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="8.0.10" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="8.0.10" />
 		<PackageReference Include="Microsoft.Azure.SignalR" Version="1.25.2" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Http.Polly" Version="8.0.6" />
-		<PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="8.5.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Http.Polly" Version="8.0.10" />
+		<PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="8.10.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
 		<PackageReference Include="Microsoft.Graph" Version="5.54.0" />
 		<PackageReference Include="Microsoft.Identity.Web" Version="2.19.0" />
 		<PackageReference Include="Microsoft.Identity.Web.DownstreamApi" Version="2.19.0" />

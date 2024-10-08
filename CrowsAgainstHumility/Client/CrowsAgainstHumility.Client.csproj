@@ -31,12 +31,12 @@
     <PackageReference Include="Humanizer" Version="2.14.1" />
     <PackageReference Include="Humanizer.Core" Version="2.14.1" />
     <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.12" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.12" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Authentication.WebAssembly.Msal" Version="7.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.20" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.20" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Authentication.WebAssembly.Msal" Version="7.0.20" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
-    <PackageReference Include="Microsoft.JSInterop.WebAssembly" Version="7.0.12" />
-    <PackageReference Include="Microsoft.NET.Runtime.WebAssembly.Sdk" Version="7.0.12" />
+    <PackageReference Include="Microsoft.JSInterop.WebAssembly" Version="7.0.20" />
+    <PackageReference Include="Microsoft.NET.Runtime.WebAssembly.Sdk" Version="7.0.20" />
     <PackageReference Include="Polly" Version="8.0.0" />
     <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
     <PackageReference Include="Serilog" Version="3.0.1" />
