@@ -12,7 +12,7 @@
     <PackageReference Include="Azure.Core" Version="1.39.0" />
     <PackageReference Include="Blazorise" Version="1.5.2" />
     <PackageReference Include="Blazorise.Animate" Version="1.5.2" />
-    <PackageReference Include="Blazorise.Bootstrap5" Version="1.5.2" />
+    <PackageReference Include="Blazorise.Bootstrap5" Version="1.6.2" />
     <PackageReference Include="Blazorise.Captcha.ReCaptcha" Version="1.5.2" />
     <PackageReference Include="Blazorise.Components" Version="1.5.2" />
     <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.5.2" />
