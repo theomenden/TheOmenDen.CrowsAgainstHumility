@@ -19,7 +19,7 @@
     <PackageReference Include="Blazorise.LoadingIndicator" Version="1.3.2" />
     <PackageReference Include="Blazorise.LottieAnimation" Version="1.3.2" />
     <PackageReference Include="Blazorise.Markdown" Version="1.3.2" />
-    <PackageReference Include="Blazorise.QRCode" Version="1.3.2" />
+    <PackageReference Include="Blazorise.QRCode" Version="1.6.2" />
     <PackageReference Include="Blazorise.SignaturePad" Version="1.3.2" />
     <PackageReference Include="Blazorise.Snackbar" Version="1.3.2" />
     <PackageReference Include="Blazorise.SpinKit" Version="1.3.2" />
